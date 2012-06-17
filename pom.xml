@@ -202,18 +202,6 @@
 
     </dependencies>
 
-    <!--
-    <repositories>
-        <repository>
-            <id>watt_releases</id>
-            <url>http://watt.at:8080/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    -->
-
     <build>
         <resources>
             <resource>
