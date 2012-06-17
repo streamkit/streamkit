@@ -1,0 +1,1 @@
+<span style="font-size: 13px;">Live Preview Widget</span>
