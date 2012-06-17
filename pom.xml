@@ -190,6 +190,7 @@
                             </coffeeJoinSets>
                         </configuration>
                     </execution>
+                    <!--
                     <execution>
                         <id>coffee-tests</id>
                         <phase>process-test-resources</phase>
@@ -205,6 +206,7 @@
                             <version>1.2.0</version>
                         </configuration>
                     </execution>
+                    -->
                 </executions>
             </plugin>
 
