@@ -1,0 +1,12 @@
+{
+    "jcr:primaryType" : "nt:unstructured",
+    "jcr:title" : "Storage location",
+    "jcr:description" : "Location on disk for the media files",
+    "sling:resourceType" : "mediacenter:storage_location",
+    "rootPath" : "/storage/",
+    "activeServer" : "s1",
+        "s1":
+        {
+            "path": "hdd1"
+        }
+}
