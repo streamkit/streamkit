@@ -1,0 +1,23 @@
+.widget {
+    margin: 5px;
+  padding: 5px;
+  background: #D8D5D2;
+  font-size: 11px;
+  line-height: 1.4em;
+  float: left;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px
+}
+.heightSpan1{ height: 60px}
+.heightSpan2{ height: 140px}
+.heightSpan3{ height: 220px}
+.heightSpan4{ height: 300px}
+.heightSpan5{ height: 380px}
+.heightSpan6{ height: 460px}
+.heightSpan7{ height: 540px}
+.heightSpan8{ height: 620px}
+.heightSpan9{ height: 700px}
+.heightSpan10{ height: 780px}
+.heightSpan11{ height: 860px}
+.heightSpan12{ height: 940px}
