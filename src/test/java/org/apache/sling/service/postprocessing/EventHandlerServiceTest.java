@@ -31,7 +31,7 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
     private EventHandlerMediaAdded ehs = new EventHandlerMediaAdded();
     private String propPath =  "/content/channel/adventist_at/ondemand/27_1311867496192/mediaFile";
 
-    @Before
+    // @Before
     public void init()  {
         // Find path to package on disk
         Class myClass = FFmpegService.class;
@@ -44,22 +44,22 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
     }
 
 
-    @Test
+    // @Test
     public void getChannel_channelName() {
         assertEquals("adventist_at", ehs.getChannel(propPath));
     }
 
-    @Test
+    // @Test
     public void getFilePathDir_dirPath() {
         assertEquals("/content/channel/adventist_at/ondemand", ehs.getVideoDirPath(propPath));
     }
 
-    @Test
+    // @Test
     public void getFilePath_filePath() {
         // assertEquals("/content/channel/adventist_at/ondemand/27_1311867496192.mp4", ehs.getVideoPath(propPath));
     }
 
-    @Test
+    // @Test
     public void persistMediaProperties_setProperties() throws Exception {
         startRepository();
         String nodePath =  "content/channel/adventist_at/content_1";
@@ -87,35 +87,6 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
         assertEquals(height, createdNode.getProperty("jcr:height").getValue().getString());
     }
 
-    @Test
-    public void getSnapshotPath_ok() {
-        // String filePath = ehs.getVideoPath(propPath);
-//        String snapshotPath = ehs.getSnapshotPath(filePath);
-//
-//        assertEquals("/content/channel/adventist_at/images/27_1311867496192.jpg", snapshotPath);
-    }
 
-//    @Test
-//    public void process () throws Exception {
-//        startRepository();
-//        Node content = session.getRootNode().addNode("content");
-//        Node channel = content.addNode("channel");
-//        Node adventist_at = channel.addNode("adventist_at");
-//        Node ondemand = adventist_at.addNode("ondemand");
-//        Node content_1 = ondemand.addNode("content_1");
-//        Node mediaFile = content_1.addNode("jcr:content", "nt:resource");
-//
-//        Binary data = session.getValueFactory().createBinary(new FileInputStream(TEST_FILE_PATH_OK));
-//        mediaFile.setProperty("jcr:data", data);
-//        mediaFile.setProperty("jcr:mimeType", "video/mp4");
-//        session.save();
-//
-//        Dictionary<String, String> dict = new Hashtable<String, String>();
-//        dict.put(SlingConstants.PROPERTY_PATH, "/content/channel/adventist_at/ondemand/content_1/mediaFile");
-//        dict.put(SlingConstants.PROPERTY_RESOURCE_TYPE, "nt:resource");
-//        Event event = new Event("org/apache/sling/api/resource/Resource/ADDED", dict);
-//
-//        boolean testBoolean = ehs.process(event);
-//    }
 
 }
