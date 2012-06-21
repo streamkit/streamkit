@@ -9,7 +9,7 @@ A: FIRST TIME YOU INSTALL THIS BUNDLE
    2.1 Stop the bundle
    2.2 Refresh package imports
    2.3 Start bundle
-3. Check that the status of this bundle has changed from "Installed" into fragment.
+3. Check that the status of this bundle has changed from "Installed" into "Fragment".
 
 B: CONSECUTIVE INSTALLS
 NOTE: once this bundle is recognized as a fragment, you should be fine executing just step 1:
