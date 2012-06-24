@@ -23,9 +23,10 @@
     </properties>
 
     <scm>
-        <!--<connection>scm:git:${git.repo}</connection>-->
-         <connection>scm:git:http://${git.username}:${git.password}@git.crestin.tv/media_center</connection>
-        <developerConnection>scm:git:http://${git.username}:${git.password}@git.crestin.tv/media_center</developerConnection>
+        <connection>scm:git:${git.repo}</connection>
+         <!--<connection>scm:git:http://${git.username}:${git.password}@git.crestin.tv/media_center</connection>-->
+        <!--<developerConnection>scm:git:http://${git.username}:${git.password}@git.crestin.tv/media_center</developerConnection>-->
+        <developerConnection>scm:git:${git.repo}</developerConnection>
     </scm>
 
     <profiles>
