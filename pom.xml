@@ -19,6 +19,44 @@
         a simple customized login form.
     </description>
 
+    <properties>
+        <git.repo>http://${git.username}:${git.password}@git.crestin.tv/media_center_bundles/authentication.git</git.repo>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <profiles>
+        <profile>
+            <id>push-subtree</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <configuration>
+                            <workingDirectory>../../</workingDirectory>
+                            <executable>git</executable>
+                            <arguments>
+                                <argument>subtree</argument>
+                                <argument>push</argument>
+                                <argument>--prefix=bundles/authentication</argument>
+                                <argument>${git.repo}</argument>
+                                <argument>master</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <!-- Bundling the project -->
