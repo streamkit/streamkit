@@ -12,7 +12,6 @@
     <artifactId>commons</artifactId>
     <packaging>bundle</packaging>
 
-    <!-- Properties -->
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
         <fileMount>false</fileMount>
