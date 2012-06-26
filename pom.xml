@@ -19,7 +19,7 @@
     </description>
 
     <properties>
-        <git.repo>git@git.crestin.tv:/repos/media_center_bundles/authentication.git</git.repo>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/authentication.git</git.repo>
         <git.subtree>bundles/authentication</git.subtree>
     </properties>
 
