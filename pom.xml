@@ -14,7 +14,7 @@
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
         <fileMount>false</fileMount>
-        <git.repo>http://${git.username}:${git.password}@git.crestin.tv/media_center_bundles/commons.git</git.repo>
+        <git.repo>git@git.crestin.tv:/repos/media_center_bundles/commons.git</git.repo>
         <git.subtree>bundles/commons</git.subtree>
     </properties>
 
