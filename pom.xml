@@ -21,6 +21,12 @@
         <git.subtree>bundles/commons_api</git.subtree>
     </properties>
 
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <name>MediaCenter commons api</name>
     <description>Shared libraries and services</description>
 
