@@ -17,6 +17,12 @@
         <git.subtree>bundles/dashboard</git.subtree>
     </properties>
 
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <!-- Generation of SCR descriptors -->
