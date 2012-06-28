@@ -15,6 +15,12 @@
     <packaging>bundle</packaging>
     <version>1.5-SNAPSHOT</version>
 
+
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/commons_api.git</git.repo>
+        <git.subtree>bundles/commons_api</git.subtree>
+    </properties>
+
     <name>MediaCenter commons api</name>
     <description>Shared libraries and services</description>
 
