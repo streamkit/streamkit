@@ -23,7 +23,15 @@
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
         <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/content_management.git</git.repo>
+        <git.subtree>bundles/content_management</git.subtree>
     </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
 
     <build>
         <resources>
