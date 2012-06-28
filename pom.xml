@@ -12,6 +12,11 @@
     <artifactId>dashboard</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/dashboard.git</git.repo>
+        <git.subtree>bundles/dashboard</git.subtree>
+    </properties>
+
     <build>
         <plugins>
             <!-- Generation of SCR descriptors -->
