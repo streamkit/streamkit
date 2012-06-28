@@ -15,14 +15,9 @@
 
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
-        <!--<fileMount>false</fileMount>-->
+        <fileMount>false</fileMount>
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/video-library.git</git.repo>
         <git.subtree>bundles/video-library</git.subtree>
-    </properties>
-
-    <properties>
-        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
-        <fileMount>false</fileMount>
     </properties>
 
     <build>
