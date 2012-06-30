@@ -41,28 +41,6 @@
     }
 
     function allWidgetsLoadCallback(data) {
-        var w;
-        w = data[0];
-        w.grid_size = "8x4";
-        displayWidget(w);
-        w.grid_size = "4x2";
-        displayWidget(w);
-        w.grid_size = "4x2";
-        displayWidget(w);
-        w.grid_size = "4x2";
-        displayWidget(w);
-        w.grid_size = "4x2";
-        displayWidget(w);
-        w.grid_size = "4x4";
-        displayWidget(w);
-        w.grid_size = "8x4";
-        displayWidget(w);
-        w.grid_size = "4x4";
-        displayWidget(w);
-        w.grid_size = "8x4";
-        displayWidget(w);
-        w.grid_size = "4x2";
-        displayWidget(w);
 
         $.each(data, function (index, widget)
         {
