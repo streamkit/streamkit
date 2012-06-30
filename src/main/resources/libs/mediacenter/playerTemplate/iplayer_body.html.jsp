@@ -19,7 +19,11 @@
 
         var absoluteMediaPath = "http://" + streamUrl + mediaPath + "/playlist.m3u8";
         var absoluteSnapshotPath = httpServerUrl + "/" + snapshotPath;
-        // alert(absoluteMediaPath);
+        var absoluteMediaDownloadPath = httpServerUrl + "/" + mediaPath;
+
+
+        // Add menu download link value
+        $("#download").attr("href", absoluteMediaDownloadPath);
 
         var videoPlayerContainer = $("#video_player");
         videoPlayerContainer.html("<video width='100%' height='100%' poster='" + absoluteSnapshotPath + "' src='" + absoluteMediaPath + "' controls></video>");

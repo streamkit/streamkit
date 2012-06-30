@@ -126,15 +126,11 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             // Display resource properties
             w.object();
 
-            String resourceType = "";
             PropertyIterator itResourceNodeProperties = resourceNode.getProperties();
             while(itResourceNodeProperties.hasNext()) {
                 javax.jcr.Property property = itResourceNodeProperties.nextProperty();
                 String propertyName = property.getName();
                 String propertyValue = property.getValue().getString();
-                if ("sling:resourceType".equals(propertyName)) {
-                    resourceType = propertyValue;
-                }
                 w.key(propertyName).value(propertyValue);
             }
 

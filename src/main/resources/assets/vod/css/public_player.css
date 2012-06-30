@@ -95,11 +95,13 @@ a:hover {
     background: #000000;
 }
 
-.video_menu a {
+.video_menu a,
+.video_menu a:hover {
     cursor: pointer;
     color: #ffffff;
     padding-right: 20px;
     padding-left: 20px;
     font-size: 0.8em;
     text-transform: uppercase;
+    text-decoration: none;
 }

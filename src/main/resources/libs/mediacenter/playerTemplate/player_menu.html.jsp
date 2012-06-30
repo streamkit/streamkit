@@ -24,7 +24,7 @@
 <!-- Menu buttons -->
 <div class="video_menu">
     <a id="library">Video Library</a>
-    <a id="download">Download Video</a>
+    <a id="download" target="_black">Download Video</a>
     <a id="embed" data-controls-modal="modal-embed">Embed Video</a>
 
     <!-- TODO: add a share/like button -->
