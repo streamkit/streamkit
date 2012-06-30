@@ -80,7 +80,7 @@ public class EventHandlerMediaAdded implements EventHandler {
         
         logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
 
-         if (propPath.endsWith("/mediaFile") && propResType.equals("nt:resource")) {
+         if (propResType.equals("mediacenter:vod")) {
 
              String videoDirPath = getVideoDirPath(propPath);
              String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
