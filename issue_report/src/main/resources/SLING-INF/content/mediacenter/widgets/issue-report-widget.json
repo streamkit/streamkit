@@ -1,7 +1,7 @@
 {
 	"sling:resourceType" : "mediacenter:widget",
 	"jcr:primaryType" : "nt:unstructured",
-	"title" : "Live Stats",
+	"title" : "Report a problem",
     "grid_size": "2x2",
     "removable": true,
     "active": true,

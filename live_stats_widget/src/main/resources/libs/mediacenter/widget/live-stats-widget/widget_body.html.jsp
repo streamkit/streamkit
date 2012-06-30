@@ -22,9 +22,8 @@
 <body>
 
 <!-- Display online viewers -->
-<div id="stats-container">
-    Live viewers: <br>
-    <div id="online-viewers" style="font-size: 5em; font-weight: bold;"></div>
+<div id="stats-container" style="font-family: Helvetica Neue,Helvetica,Arial,sans-serif; font-weight: bold">
+    <div id="online-viewers" style="font-size: 3em"></div> viewers
 </div>
 
 
@@ -34,21 +33,17 @@
         var queryLiveContentSerach, channelPath;
         channelPath = "<%=channelPath%>";
 
-        // getting channel's live content
-        queryLiveContentSerach = channelPath + ".query.tidy.json?queryType=xpath&statement=//*";
-        queryLiveContentSerach += "[sling:resourceType='mediacenter:live']";
+        var currentChannelNode = Sling.getContent( channelPath , 1 );
+        var channelName = currentChannelNode["title"];
 
-        var ajaxReturnJsonLivePath = ajaxCall(queryLiveContentSerach);
-        var jsonObjLivePath = jQuery.parseJSON(ajaxReturnJsonLivePath);
-        var liveContentPath = jsonObjLivePath[0]['jcr:path'];
-
-        return liveContentPath;
+        var liveContentJsonPath = channelPath + "/live/" + channelName + ".player.json";
+        return liveContentJsonPath;
     }
 
 
     function getCurrentUsers(liveContentPath) {
         // getting content live json, containg live viewer information
-        var ajaxReturnJsonLive = ajaxCall(liveContentPath + ".player.json");
+        var ajaxReturnJsonLive = ajaxCall(liveContentPath);
         var jsonObjLive = jQuery.parseJSON(ajaxReturnJsonLive);
         var mediaPathsObj = jsonObjLive.mediaPaths;
 
@@ -57,7 +52,6 @@
         for (var i = 0; i < mediaPathsObj.length; i++) {
             connectionCounts += mediaPathsObj[i].connectionCounts;
         }
-
         // display users
         $("#online-viewers").html(connectionCounts);
 
