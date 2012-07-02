@@ -3,8 +3,8 @@
     <parent>
         <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.8-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <version>1.7</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
