@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>media-center-bundles</artifactId>
+        <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>commons</artifactId>
-  <version>1.7-SNAPSHOT</version>
+    <version>1.7-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <properties>
@@ -63,10 +64,10 @@
                             /img
                         </Sling-Bundle-Resources>
                         <!--<Sling-Initial-Content>-->
-                            <!--/libs/mediacenter/contentManager;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/contentManager,-->
+                        <!--/libs/mediacenter/contentManager;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/contentManager,-->
                         <!--</Sling-Initial-Content>-->
                         <!--<Embed-Dependency>-->
-                            <!--org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"-->
+                        <!--org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"-->
                         <!--</Embed-Dependency>-->
                     </instructions>
                 </configuration>
@@ -86,7 +87,8 @@
                         </goals>
                         <configuration>
                             <coffeeDir>src/main/coffee</coffeeDir>
-                            <coffeeOutputDirectory>${project.build.directory}/coffee/js/mediacenter</coffeeOutputDirectory>
+                            <coffeeOutputDirectory>${project.build.directory}/coffee/js/mediacenter
+                            </coffeeOutputDirectory>
                             <compileIndividualFiles>true</compileIndividualFiles>
                             <bare>false</bare>
 
