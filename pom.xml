@@ -21,7 +21,7 @@
     <groupId>org.mediacenter</groupId>
     <artifactId>media-center-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
 
     <name>Media Center Bundles Parent</name>
     <description>The parent project for Media Center Bundles</description>
