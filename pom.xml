@@ -12,6 +12,9 @@
     <version>1.10-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
+    <name>Media Center Commons</name>
+    <description>Bundle containing common files for Client Side usage mainly.</description>
+
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
         <fileMount>false</fileMount>
