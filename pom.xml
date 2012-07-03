@@ -15,6 +15,9 @@
     <packaging>bundle</packaging>
     <version>1.5-SNAPSHOT</version>
 
+    <name>MediaCenter commons api</name>
+    <description>Shared libraries and services for Java services mainly.</description>
+
 
     <properties>
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/commons_api.git</git.repo>
@@ -26,9 +29,6 @@
         <url>scm:git:${git.repo}</url>
         <developerConnection>scm:git:${git.repo}</developerConnection>
     </scm>
-
-    <name>MediaCenter commons api</name>
-    <description>Shared libraries and services</description>
 
     <build>
         <plugins>
