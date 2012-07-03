@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.mediacenter</groupId>
-        <artifactId>media-center-bundles</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>media-center-parent</artifactId>
+        <version>1.7</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
     </parent>
 
 
