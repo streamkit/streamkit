@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <artifactId>media-center-bundles</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.7</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
     </parent>
 
     <groupId>org.mediacenter.admin</groupId>
@@ -239,7 +239,7 @@
         <dependency>
             <groupId>org.mediacenter</groupId>
             <artifactId>commons_api</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.5</version>
         </dependency>
 
         <dependency>
