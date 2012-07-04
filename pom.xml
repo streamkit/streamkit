@@ -19,6 +19,20 @@
     <name>Player</name>
     <description>Bundle containing the default public player</description>
 
+    <!-- Properties -->
+    <properties>
+        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
+        <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/player.git</git.repo>
+        <git.subtree>bundles/player</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <profiles>
         <profile>
             <!-- run this profile only when you need to upgrade the flash player -->
