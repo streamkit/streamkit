@@ -17,7 +17,7 @@
 
     <groupId>org.mediacenter.service</groupId>
     <artifactId>mediacenter-postprocessing</artifactId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Postprocessing</name>
