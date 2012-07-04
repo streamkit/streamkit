@@ -289,10 +289,21 @@
                         <configuration>
                             <workingDirectory>../../</workingDirectory>
                             <executable>git</executable>
+                            <!--
                             <arguments>
                                 <argument>subtree</argument>
                                 <argument>pull</argument>
-                                <argument>--prefix=${git.subtree}</argument>
+                                <argument> - - prefix=${git.subtree}</argument>
+                                <argument>${git.repo}</argument>
+                                <argument>master</argument>
+                            </arguments>
+                            -->
+
+                            <!-- the following command seems to be better with MERGING when pulling in changes from subtrees -->
+                            <!-- see http://stackoverflow.com/questions/9777564/git-subtree-pull-complications -->
+                            <arguments>
+                                <argument>pull</argument>
+                                <argument>--strategy=subtree</argument>
                                 <argument>${git.repo}</argument>
                                 <argument>master</argument>
                             </arguments>
