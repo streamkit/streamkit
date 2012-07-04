@@ -4,11 +4,12 @@
 
     <!--
     <parent>
-        <artifactId>media-center-bundles</artifactId>
+        <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.7</version>
     </parent>
      -->
+
     <groupId>org.mediacenter.service</groupId>
     <artifactId>mediacenter-notifications</artifactId>
     <packaging>bundle</packaging>
