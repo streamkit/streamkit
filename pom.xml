@@ -14,7 +14,6 @@
     <version>1.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-
     <name>Player</name>
     <description>Bundle containing the default public player</description>
 
