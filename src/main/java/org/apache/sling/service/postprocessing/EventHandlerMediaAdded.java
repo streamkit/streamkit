@@ -25,7 +25,7 @@ import java.io.*;
    @org.apache.felix.scr.annotations.Property(name="event.topics", value=org.apache.sling.api.SlingConstants.TOPIC_RESOURCE_ADDED)
 })
 @Service
-public class EventHandlerMediaAdded implements EventHandler {
+public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
     private Session session = null;
     private static final String JCR_MEDIA_PATH_CONFIG = "config/storage/servers";
     private static String MEDIA_ABSOLUTE_PATH = null;
@@ -62,7 +62,9 @@ public class EventHandlerMediaAdded implements EventHandler {
     }
 
 	public void handleEvent(Event event) {
-	    process(event);
+	    if (EventUtil.isLocal(event)) {
+	        EventUtil.processJob(event, this);
+	    }
 	}
 
     private void getStoragePaths() throws Exception {
@@ -80,7 +82,7 @@ public class EventHandlerMediaAdded implements EventHandler {
         
         logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
 
-         if (propResType.equals("mediacenter:vod")) {
+         if (propPath.endsWith("/mediaFile") && propResType.equals("nt:resource")) {
 
              String videoDirPath = getVideoDirPath(propPath);
              String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
