@@ -12,7 +12,7 @@
     <groupId>org.mediacenter.service</groupId>
     <artifactId>mediacenter-notifications</artifactId>
     <packaging>bundle</packaging>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
     <name>Notifications</name>
     <description>
         Notifications messages to be saved to repository or sent through mail
