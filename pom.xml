@@ -11,7 +11,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>widgets</artifactId>
+    <version>1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/widgets.git</git.repo>
+        <git.subtree>bundles/widgets</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <modules>
         <module>content_widget</module>
         <module>live_stats_widget</module>
