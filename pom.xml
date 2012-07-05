@@ -16,7 +16,6 @@
 
     <name>Admin Content Management</name>
 
-
     <!-- Properties -->
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
@@ -53,6 +52,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
             </plugin>
+
             <!-- Bundling the content management bundle -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -113,7 +113,7 @@
                                     </outputDirectory>
                                     <groupId>org.mediacenter</groupId>
                                     <artifactId>commons</artifactId>
-                                    <version>${project.parent.version}</version>
+                                    <version>1.5</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
