@@ -18,6 +18,17 @@
         Notifications messages to be saved to repository or sent through mail
     </description>
 
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/notifications.git</git.repo>
+        <git.subtree>bundles/notifications</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <build>
         <!-- Add new java source dir, required for OSGI JUnit tests -->
         <resources>
