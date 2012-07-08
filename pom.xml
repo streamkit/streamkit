@@ -25,6 +25,7 @@
 
     <modules>
         <module>content_widget</module>
+        <module>issue_report</module>
         <module>live_stats_widget</module>
         <module>live_preview_widget</module>
     </modules>
