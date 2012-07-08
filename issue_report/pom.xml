@@ -54,36 +54,6 @@
                 </configuration>
             </plugin>
 
-            <!-- COPY COMMON BUNDLE AND UNPACK IT -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-common_bundle-dependencies</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <outputDirectory>
-                                        ${project.build.directory}/commons
-                                    </outputDirectory>
-                                    <groupId>org.mediacenter</groupId>
-                                    <artifactId>commons</artifactId>
-                                    <version>${project.parent.version}</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>**/*.js</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
