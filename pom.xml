@@ -17,6 +17,8 @@
         <fileMount>false</fileMount>
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/video-library.git</git.repo>
         <git.subtree>bundles/video-library</git.subtree>
+
+        <commons.version>1.9</commons.version>
     </properties>
 
     <scm>
@@ -35,6 +37,14 @@
             </resource>
             <resource>
                 <directory>${project.build.directory}/classes/less</directory>
+            </resource>
+            <!-- REPLACING JS VERSIONS WITHIN THE HTML -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/widget_body.html.jsp</include>
+                </includes>
             </resource>
         </resources>
 
@@ -121,7 +131,7 @@
                                     </outputDirectory>
                                     <groupId>org.mediacenter</groupId>
                                     <artifactId>commons</artifactId>
-                                    <version>${project.parent.version}</version>
+                                    <version>${commons.version}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>

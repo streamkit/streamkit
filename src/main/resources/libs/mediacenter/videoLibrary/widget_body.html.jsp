@@ -36,7 +36,7 @@
         </form>
         <div id="librarySearchResultsContainer" class="searchResults"
              data-component="VideoResultsForm"
-             data-component-item-renderer-template="\${document.querySelector('#videoItem').textContent}">
+             data-component-item-renderer-template="\\${document.querySelector('#videoItem').textContent}">
 
             <a id="libraryLoadingAnimation" class="loading">
                 <div>
@@ -47,19 +47,6 @@
         </div>
     </div>
 </div>
-
-<!-- templates -->
-
-<script id="videoItem" type="text/template">
-    <a href="{{path}}.player.html">
-        <div>
-            <img style="background-image:url({{element.snapshotUrl}});"/>
-            <!-- using timeago plugin from http://timeago.yarp.com/ -->
-            <time class="time-ago" datetime="{{created}}">{{created}}</time>
-            <p>{{element.title}}</p>
-        </div>
-    </a>
-</script>
 
 
 <script type="text/javascript">
@@ -119,14 +106,13 @@
                     {
                         window.videoLibrary.logger("Backbone dependency has been loaded");
                         _.templateSettings = {
-                            //interpolate : /\\$\{(.+?)\}/g
                             interpolate : /{{(.+?)}}/g
                         };
                         window.videoLibrary.initLibrary();
                     }
                 };
                 var _bootstrapDef = {
-                    test: $.fn.popover, // one of Bootstrap's jQ plugins
+                    test: jQuery.fn.popover, // one of Bootstrap's jQ plugins
                     nope:['<%= request.getContextPath() %>/js/bootstrap/bootstrap.js'],
                     complete: function()
                     {
@@ -137,8 +123,8 @@
 
                 var _videoLibraryDef = {
                     test: window.VideoSearchForm, // should be a custom namespace: window.videoLibrary
-                    nope:['<%= request.getContextPath() %>/js/mediacenter/commons-1.5-SNAPSHOT.js',
-                        '<%= request.getContextPath() %>/js/mediacenter/video-library-1.5-SNAPSHOT.js'],
+                    nope:['<%= request.getContextPath() %>/js/mediacenter/commons-${commons.version}.js',
+                        '<%= request.getContextPath() %>/js/mediacenter/video-library-${project.version}.js'],
                     complete: function ()
                     {
                         window.videoLibrary.logger("VideoLibrary dependency has been loaded");
@@ -175,4 +161,17 @@
             }
         }
     ])
+</script>
+
+<!-- templates -->
+
+<script id="videoItem" type="text/template">
+    <a href="{{path}}.player.html">
+        <div>
+            <img style="background-image:url({{element.snapshotUrl}});"/>
+            <!-- using timeago plugin from http://timeago.yarp.com/ -->
+            <time class="time-ago" datetime="{{created}}">{{created}}</time>
+            <p>{{element.title}}</p>
+        </div>
+    </a>
 </script>

@@ -13,8 +13,6 @@
     <script type="text/javascript" src="/system/sling.js"></script>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/yepnope/yepnope.1.5.4.js"></script>
 
-    <%--<script type="text/javascript" src="<%= request.getContextPath() %>/js/mediacenter/commons-1.5-SNAPSHOT.js"></script>--%>
-
     <title>Video Library</title>
     <!-- %=
             //Packages.java.text.MessageFormat.format(rb.getString("page.template.title"), title)
