@@ -22,6 +22,7 @@
         <fileMount>false</fileMount>
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/content_management.git</git.repo>
         <git.subtree>bundles/content_management</git.subtree>
+            <commons.version>1.9</commons.version>
     </properties>
 
     <scm>
@@ -37,6 +38,14 @@
             </resource>
             <resource>
                 <directory>${project.build.directory}/coffee</directory>
+            </resource>
+            <!-- REPLACING JS VERSIONS WITHIN THE HTML -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/pageTmpl.html.jsp</include>
+                </includes>
             </resource>
         </resources>
 
@@ -113,7 +122,7 @@
                                     </outputDirectory>
                                     <groupId>org.mediacenter</groupId>
                                     <artifactId>commons</artifactId>
-                                    <version>1.5</version>
+                                    <version>${commons.version}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
