@@ -126,6 +126,10 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             // Display resource properties
             w.object();
 
+
+            // TODO: simplify this code
+            // 1. use a specialized Sling class to write a node to JSON
+
             PropertyIterator itResourceNodeProperties = resourceNode.getProperties();
             while(itResourceNodeProperties.hasNext()) {
                 javax.jcr.Property property = itResourceNodeProperties.nextProperty();
@@ -146,6 +150,12 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                 w.object();
                 while (itMediaPathProperties.hasNext()) {
                     javax.jcr.Property p = itMediaPathProperties.nextProperty();
+
+                    // fix for CMS-48
+                    if ("jcr:data".equals(p.getName()) ) {
+                        continue;
+                    }
+
                     String value = p.getValue().getString();
                     if ("mediaPath".equals(p.getName()) && cdnService != null) {
                         w.key("connectionCounts").value(cdnService.connectionCounts(value));
