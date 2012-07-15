@@ -23,11 +23,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-modal.js"></script>
     <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
-    <link href="/assets/vod/css/public_player.css" media="screen" rel="stylesheet">
+    <link href="<%= request.getContextPath() %>/assets/vod/css/public_player.css" media="screen" rel="stylesheet">
 
-    <script type="text/javascript" src="/system/sling.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/system/sling.js"></script>
 
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/yepnope/yepnope.1.5.4.js"></script>
+
+    <!--[if lt IE 9]>
+        <script src="<%= request.getContextPath() %>/assets/polyfills/html5shiv.js"></script>
+        <script type="text/javascript" src="<%= request.getContextPath() %>/assets/polyfills/selectivizr-min.js"></script>
+        <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/vod/css/public_player.ie.css" />
+    <![endif]-->
 
 </head>
 <body>

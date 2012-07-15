@@ -432,7 +432,9 @@ var swfobject = function() {
 						par += '<param name="' + j + '" value="' + parObj[j] + '" />';
 					}
 				}
-				el.outerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + att + '>' + par + '</object>';
+
+                var finalObj = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + att + '>' + par + '</object>';
+				el.outerHTML = finalObj;
 				objIdArr[objIdArr.length] = attObj.id; // stored to fix object 'leaks' on unload (dynamic publishing only)
 				r = getElementById(attObj.id);
 			}

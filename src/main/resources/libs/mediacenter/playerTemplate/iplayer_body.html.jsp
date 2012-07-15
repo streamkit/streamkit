@@ -26,16 +26,32 @@
         $("#download").attr("href", absoluteMediaDownloadPath);
 
         var videoPlayerContainer = $("#video_player");
-        videoPlayerContainer.html("<video width='100%' height='100%' poster='" + absoluteSnapshotPath + "' src='" + absoluteMediaPath + "' controls></video>");
+        videoPlayerContainer.html("<video id='video' width='100%' height='100%' poster='" + absoluteSnapshotPath + "' src='" + absoluteMediaPath + "' controls></video>");
 
-        // Bugfix for IDevices. Video container must be off screen when on overlay div appears
-        $(".video_menu span").click(function() {
-            videoPlayerContainer.css("-webkit-transform","translateX(-2048px)");
+        videoPlayerContainer.css("-webkit-transform-style", "preserve-3d");
+        $("#video").css("-webkit-transform-style", "preserve-3d");
+
+        // Bugfix for IDevices.
+        // inspired by http://stackoverflow.com/questions/3683211/ipad-safari-mobile-seems-to-ignore-z-indexing-position-for-html5-video-elements
+
+        $(".video_menu #library").click(function() {
+//            console.log("Library button clicked");
+//            videoPlayerContainer.css("-webkit-transform","translateX(-2048px)");
+            $("#video").css({visibility: "hidden"});
+            videoPlayerContainer.css({visibility: "hidden"});
+
         });
 
-        $(".close, #close").click(function() {
-            videoPlayerContainer.css("-webkit-transform","translateX(0)");
+        $(".video_library #closeLibraryWidget").click(function()
+        {
+            $("#video").css({visibility: "visible"});
+            videoPlayerContainer.css({visibility: "visible"});
+//            videoPlayerContainer.css("-webkit-transform","translateX(0)");
         });
+
+        // TODO: the click listeners above are ERROR-PRONE, Hard to detect. Must handle things differently
+        // an alternative: when library is opened, library could add a CSS style on the <body>, "library-open"
+        // based on library-open css style, we could alter the #video and #video_player container.
 
 
         function ajaxCall(url) {
