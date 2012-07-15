@@ -36,7 +36,7 @@
         </form>
         <div id="librarySearchResultsContainer" class="searchResults"
              data-component="VideoResultsForm"
-             data-component-item-renderer-template="\\${document.querySelector('#videoItem').textContent}">
+             data-component-item-renderer-template="\\${jQuery('#videoItem')[0].textContent}">
 
             <a id="libraryLoadingAnimation" class="loading">
                 <div>
@@ -56,7 +56,7 @@
 
     window.videoLibrary.logger = function (msg)
     {
-        if (console != null && typeof console != "undefined")
+        if (typeof console != "undefined" && console != null)
         {
             console.log(msg);
         }
@@ -82,11 +82,8 @@
         }
         _searchModel.setChannelPath(_channelPath);
 
-        _searchForm =
-                Backbone.View.Factory.createView(document.querySelector("#librarySearchFormContainer"), _searchModel);
-        _searchResults =
-                Backbone.View.Factory.createView(document.querySelector("#librarySearchResultsContainer"),
-                        _searchModel);
+        _searchForm = Backbone.View.Factory.createView( jQuery("#librarySearchFormContainer")[0], _searchModel);
+        _searchResults = Backbone.View.Factory.createView( jQuery("#librarySearchResultsContainer")[0], _searchModel);
     }
 
     yepnope([
