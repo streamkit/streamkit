@@ -35,7 +35,7 @@
         // inspired by http://stackoverflow.com/questions/3683211/ipad-safari-mobile-seems-to-ignore-z-indexing-position-for-html5-video-elements
 
         $(".video_menu #library").click(function() {
-            console.log("Library button clicked");
+//            console.log("Library button clicked");
 //            videoPlayerContainer.css("-webkit-transform","translateX(-2048px)");
             $("#video").css({visibility: "hidden"});
             videoPlayerContainer.css({visibility: "hidden"});
@@ -50,6 +50,8 @@
         });
 
         // TODO: the click listeners above are ERROR-PRONE, Hard to detect. Must handle things differently
+        // an alternative: when library is opened, library could add a CSS style on the <body>, "library-open"
+        // based on library-open css style, we could alter the #video and #video_player container.
 
 
         function ajaxCall(url) {
