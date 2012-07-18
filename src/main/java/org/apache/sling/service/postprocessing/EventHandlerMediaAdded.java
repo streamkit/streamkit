@@ -1,21 +1,21 @@
 package org.apache.sling.service.postprocessing;
 
 import org.apache.felix.scr.annotations.*;
-import org.apache.sling.event.EventUtil;
+import org.apache.sling.api.SlingConstants;
 import org.apache.sling.event.JobProcessor;
 import org.apache.sling.jcr.api.SlingRepository;
+import org.apache.sling.jcr.resource.JcrResourceResolverFactory;
 import org.apache.sling.service.postprocessing.dto.MediaProperties;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
-import org.apache.sling.api.SlingConstants;
-import org.apache.sling.jcr.resource.JcrResourceResolverFactory;
 import org.osgi.service.log.LogService;
 
-
-import javax.jcr.*;
+import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.io.*;
 
 
@@ -30,8 +30,6 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
     private static final String JCR_MEDIA_PATH_CONFIG = "config/storage/servers";
     private static String MEDIA_ABSOLUTE_PATH = null;
     private static String MEDIA_HDD_PATH = null;
-    private String propPath = null;
-    private String propResType = null;
     private String channel = null;
     private Exception e;
 
@@ -62,9 +60,7 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
     }
 
 	public void handleEvent(Event event) {
-	    if (EventUtil.isLocal(event)) {
-	        EventUtil.processJob(event, this);
-	    }
+        process(event);
 	}
 
     private void getStoragePaths() throws Exception {
@@ -77,12 +73,12 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
     // When a new media file is added to JCR, copy the file to disk and apply ffmpeg to read all properties
     public boolean process(Event event) {
 
-        propPath = (String) event.getProperty(SlingConstants.PROPERTY_PATH);
-        propResType = (String) event.getProperty(SlingConstants.PROPERTY_RESOURCE_TYPE);
+        String propPath = (String) event.getProperty(SlingConstants.PROPERTY_PATH);
+        String propResType = (String) event.getProperty(SlingConstants.PROPERTY_RESOURCE_TYPE);
         
         logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
 
-         if (propResType.equals("mediacenter:vod")) {
+         if (!propPath.endsWith("mediaFile") && propResType.equals("mediacenter:vod")) {
 
              String videoDirPath = getVideoDirPath(propPath);
              String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
@@ -218,11 +214,10 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
     }
 
     protected String getVideoPath(String propPath, String mediaHddPath) {
-        String path = propPath.substring(0, propPath.lastIndexOf("/"));
-        String filePath = path.substring(0, path.lastIndexOf("/"));
-        String fileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+        String dirPath = propPath.substring(0, propPath.lastIndexOf("/"));
+        String fileName = propPath.substring(propPath.lastIndexOf("/") + 1, propPath.length());
         fileName = fileName.replaceAll("\\W", "_");
-        return mediaHddPath + filePath + "/" + fileName +  ".mp4";
+        return mediaHddPath + dirPath + "/" + fileName +  ".mp4";
     }
 
     protected String getSnapshotPath(String mediaPath) {
