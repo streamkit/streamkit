@@ -36,7 +36,7 @@
         </form>
         <div id="librarySearchResultsContainer" class="searchResults"
              data-component="VideoResultsForm"
-             data-component-item-renderer-template="\\${jQuery('#videoItem')[0].textContent}">
+             data-component-item-renderer-template="\\${jQuery('#videoItem').html()}">
 
             <a id="libraryLoadingAnimation" class="loading">
                 <div>
