@@ -4,22 +4,6 @@
 <%-- Ensure the presence of the Sling objects --%>
 <sling:defineObjects/>
 
-<script type="text/javascript">
-    $(document).ready(function()
-    {
-        var library = $(".video_library");
-        var contact = $(".channel_contact");
-        $(".video_menu #library").click(function()
-        {
-            library.fadeToggle(300);
-        });
-        $(".video_library #closeLibraryWidget").click(function()
-        {
-            library.fadeToggle(300);
-        });
-
-    });
-</script>
 
 <!-- Menu buttons -->
 <div class="video_menu">
@@ -57,11 +41,55 @@
 
     %>
 
+
     <!-- TODO: this is a hardcoded dependency; need to handle it/configure it elsewhere -->
     <!-- these extra modules to be included must be defined differently, so that if mediacenter/videoLibrary
         doesn't exists, the player looks ok -->
     <sling:include path="<%= videoLibraryPath %>" resourceType="mediacenter/videoLibrary"/>
 </div>
+
+<script type="text/javascript">
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        var library = $(".video_library");
+        var contact = $(".channel_contact");
+        $(".video_menu #library").click(function()
+        {
+            library.fadeToggle(300);
+        });
+        $(".video_library #closeLibraryWidget").click(function()
+        {
+            library.fadeToggle(300);
+        });
+
+    });
+</script>
+
+<!--[if lt IE 9]>
+<script type="text/javascript">
+    window.videoLibraryPath = "<%=channelPath%>.library.html";
+    $(document).ready(function()
+    {
+        var library = $(".video_library");
+        var contact = $(".channel_contact");
+        $(".video_menu #library").click(function()
+        {
+            window.location.href = window.videoLibraryPath;
+        });
+        $(".video_library #closeLibraryWidget").click(function()
+        {
+            // nothing to do
+            // window.history.go( -1 );
+        });
+
+    });
+</script>
+<![endif]-->
+
 
 <!-- Block containing the Contact form -->
 <div id="modal-contact" class="modal hide fade">
