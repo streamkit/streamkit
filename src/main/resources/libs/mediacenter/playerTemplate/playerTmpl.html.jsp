@@ -21,6 +21,13 @@
         % -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof jQuery == 'undefined')
+        {
+            document.write('\<script src="<%= request.getContextPath() %>/js/jquery-1.7.1.min.js"\>\<\/script\>');
+        }
+    </script>
+
     <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-modal.js"></script>
     <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
     <link href="<%= request.getContextPath() %>/assets/vod/css/public_player.css" media="screen" rel="stylesheet">
