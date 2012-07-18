@@ -82,7 +82,7 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
         
         logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
 
-         if (propPath.endsWith("/mediaFile") && propResType.equals("nt:resource")) {
+         if (propResType.equals("mediacenter:vod")) {
 
              String videoDirPath = getVideoDirPath(propPath);
              String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
@@ -94,12 +94,16 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
             channel = getChannel(propPath);
             try {
                 session = (session != null) ? session : repository.loginAdministrative(null);
-                Node fileNode = session.getRootNode().getNode(propPath.substring(1));
-                Property mimeTypeProperty = fileNode.getProperty("jcr:mimeType");
+                String jcrContentNodePathShort = propPath.substring(1) + "/mediaFile";
+                String jcrContentNodePathLong = jcrContentNodePathShort + "/jcr:content";
+                // Try both {..}/mediaFile and {..}/mediaFile/jcr:content  
+                String jcrContentNodePath = (session.getRootNode().hasNode(jcrContentNodePathLong)) ? jcrContentNodePathLong : jcrContentNodePathShort;
+                Node dataNode = session.getRootNode().getNode(jcrContentNodePath);
+                Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
                 String mimeType = mimeTypeProperty.getValue().getString();
                 if ("video/mp4".equals(mimeType) || "video/mpeg4".equals(mimeType)) {
 
-                    InputStream fileInputStrem = fileNode.getProperty("jcr:data").getBinary().getStream();
+                    InputStream fileInputStrem = dataNode.getProperty("jcr:data").getBinary().getStream();
 
                     // 1. Copy the file stored to repository to a physical location on disc
                     outputFile(fileInputStrem, absoluteVideoDirPath, absoluteVideoPath);
@@ -119,11 +123,11 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
 
 
                     // 4. Persist all properties to a JCR node
-                    persistMediaProperties(props, fileNode);
+                    persistMediaProperties(props, dataNode);
 
                     // 5. Remove mediaFile node
-                    fileNode.remove();
-                    logger.log(LogService.LOG_INFO, "FieleNode removed: " + fileNode.getIdentifier());
+                    dataNode.remove();
+                    logger.log(LogService.LOG_INFO, "FieleNode removed: " + dataNode.getIdentifier());
 
                     session.save();
 
