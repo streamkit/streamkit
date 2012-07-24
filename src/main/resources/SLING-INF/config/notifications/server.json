@@ -8,7 +8,7 @@
     "mail.smtp.socketFactory.class" : "javax.net.ssl.SSLSocketFactory",
     "mail.smtp.auth" : "true",
     "mail.smtp.port" : "465",
-    "mail.smtp.username" : "info@selfxp.com",
-    "mail.smtp.password" : "fericire",
-    "email.from" : "info@selfxp.com"
+    "mail.smtp.username" : "_changeme",
+    "mail.smtp.password" : "__changeme",
+    "email.from" : "__changeme"
 }
