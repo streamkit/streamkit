@@ -1014,4 +1014,48 @@ public class Encoder {
 		}
 	}
 
+    public void encodeCopy(File source, File target, EncodingAttributes attributes) throws IllegalArgumentException, EncoderException {
+        Float offsetAttribute = attributes.getOffset();
+        AudioAttributes audioAttributes = attributes.getAudioAttributes();
+        VideoAttributes videoAttributes = attributes.getVideoAttributes();
+        if (audioAttributes == null && videoAttributes == null) {
+            throw new IllegalArgumentException(
+                    "Both audio and video attributes are null");
+        }
+        target = target.getAbsoluteFile();
+        target.getParentFile().mkdirs();
+        FFMPEGExecutor ffmpeg = locator.createExecutor();
+        if (offsetAttribute != null) {
+            ffmpeg.addArgument("-ss");
+            ffmpeg.addArgument(String.valueOf(offsetAttribute.floatValue()));
+        }
+        ffmpeg.addArgument("-i");
+        ffmpeg.addArgument(source.getAbsolutePath());
+
+        if (videoAttributes == null) {
+            ffmpeg.addArgument("-vn");
+        } else {
+            String codec = videoAttributes.getCodec();
+            if (codec != null) {
+                ffmpeg.addArgument("-vcodec");
+                ffmpeg.addArgument(codec);
+            }
+        }
+        if (audioAttributes == null) {
+            ffmpeg.addArgument("-an");
+        } else {
+            String codec = audioAttributes.getCodec();
+            if (codec != null) {
+                ffmpeg.addArgument("-acodec");
+                ffmpeg.addArgument(codec);
+            }
+        }
+        ffmpeg.addArgument(target.getAbsolutePath());
+        try {
+            ffmpeg.execute();
+        } catch (IOException e) {
+            throw new EncoderException(e);
+        }
+    }
+
 }
