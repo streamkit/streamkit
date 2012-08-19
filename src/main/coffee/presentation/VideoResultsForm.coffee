@@ -34,7 +34,7 @@ class window.VideoResultsForm extends Backbone.View
                         element:   vodItem,
                         index:      _i+1,
                         path:       vodItem['jcr:path'],
-                        created:    $.timeago( new Date(vodItem['jcr:created']))} for vodItem in data )
+                        created:    $.timeago( new Date( (vodItem['created'] || vodItem['jcr:created']) ) )} for vodItem in data )
 
         })
 
@@ -55,7 +55,8 @@ class window.VideoResultsForm extends Backbone.View
         @listDataProvider.reset()
         $(@el).find("a:not(:last-child)").remove()
 
-        queryBuilder = new SearchVodQueryBuilder(["title", "jcr:created", "active"])
+        # created can be different from jcr:created when content is imported
+        queryBuilder = new SearchVodQueryBuilder(["title", "created", "jcr:created", "active"])
         queryString = queryBuilder.getQuery( @model.getSearchString(), @model.getChannelPath() )
 
         @listDataProvider.getLoader().url = queryString
