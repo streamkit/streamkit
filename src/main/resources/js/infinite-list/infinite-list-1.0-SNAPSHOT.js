@@ -654,13 +654,35 @@ Save a reference to the global object (window in the browser, global on the serv
 
     WindowScroll.prototype.offset = 0;
 
+    /*
+            How much time to wait before asking to load more items, if there is enough space
+            in the initial screen.
+    */
+
+    WindowScroll.prototype.reloadTimeout = 2000;
+
     function WindowScroll(offsetPx) {
-      this.window_scrollHandler = __bind(this.window_scrollHandler, this);      this.offset = offsetPx || this.offset;
+      this.window_scrollHandler = __bind(this.window_scrollHandler, this);
+      this.ensureTheEntireWindowIsOccupied = __bind(this.ensureTheEntireWindowIsOccupied, this);      this.offset = offsetPx || this.offset;
       this.initialize();
     }
 
     WindowScroll.prototype.initialize = function() {
-      return $(window).scroll(this.window_scrollHandler);
+      $(window).scroll(this.window_scrollHandler);
+      return this.ensureTheEntireWindowIsOccupied(3);
+    };
+
+    WindowScroll.prototype.ensureTheEntireWindowIsOccupied = function(maxReloads) {
+      var intervalId, reloads,
+        _this = this;
+      if (maxReloads == null) maxReloads = 3;
+      reloads = 0;
+      intervalId = window.setInterval(function() {
+        if (!_this.window_scrollHandler() || ++reloads >= maxReloads) {
+          return window.clearInterval(intervalId);
+        }
+      }, this.reloadTimeout);
+      return true;
     };
 
     WindowScroll.prototype.window_scrollHandler = function() {
@@ -672,7 +694,11 @@ Save a reference to the global object (window in the browser, global on the serv
       viewTop = $(window).scrollTop();
       viewBottom = viewTop + $(window).height();
       pos = $(document).height() - this.offset;
-      if (viewBottom >= pos) return this.triggerLoadEvent("window_scroll");
+      if (viewBottom >= pos) {
+        this.triggerLoadEvent("window_scroll");
+        return true;
+      }
+      return false;
     };
 
     return WindowScroll;
