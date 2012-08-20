@@ -131,7 +131,7 @@
 
                 var _iListDef = {
                     test: window.iList,
-                    nope:['<%= request.getContextPath() %>/js/infinite-list/infinite-list-1.0-SNAPSHOT.js'],
+                    nope:['<%= request.getContextPath() %>/js/infinite-list/infinite-list-1.1-SNAPSHOT.js'],
                     complete: function()
                     {
                         window.videoLibrary.logger("Infinite List dependency has been loaded");
