@@ -199,7 +199,6 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             }
             w.endArray();
 
-
             w.key("streamingServers");
             w.array();
             for (CDNServer cdnServer : cdnServers) {
