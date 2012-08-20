@@ -112,11 +112,6 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
                     ffmpegService.generateSnapshot(absoluteVideoPath, props.getDuration(), props.getWidth(), props.getHeight());
                     props.setSnapshotPath(snapshotPath);
 
-                    // 3.1 Remove first frame from video
-                    if (absoluteVideoPath.endsWith("f4v")) {
-                        ffmpegService.cutFirstFrame(absoluteVideoPath);
-                    }
-
                     logger.log(LogService.LOG_INFO, "SnapshotPath set: " + snapshotPath);
 
 
