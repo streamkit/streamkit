@@ -11,7 +11,7 @@
 
     <groupId>org.mediacenter.service</groupId>
     <artifactId>player</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
     <packaging>bundle</packaging>
 
     <name>Player</name>
