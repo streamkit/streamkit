@@ -34,22 +34,19 @@
             res = res.getParent();
         }
 
-
-        getServletConfig().getServletContext().setAttribute("channelPath", request.getContextPath() + channelPath);
-
         String videoLibraryPath = channelPath + ".widget_body.html";
-
     %>
 
 
     <!-- TODO: this is a hardcoded dependency; need to handle it/configure it elsewhere -->
     <!-- these extra modules to be included must be defined differently, so that if mediacenter/videoLibrary
         doesn't exists, the player looks ok -->
-    <sling:include path="<%= videoLibraryPath %>" resourceType="mediacenter/videoLibrary"/>
+    <sling:include path="<%= videoLibraryPath %>" resourceType="mediacenter/videoLibrary" />
 </div>
 
 <script type="text/javascript">
-
+    // TODO: define a proper ApplicationContext and set this property in there
+    var playerMenu_channelPath = "<%=channelPath%>";
 </script>
 
 <script type="text/javascript">
