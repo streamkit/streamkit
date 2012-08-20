@@ -176,7 +176,7 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
 
                     String value = p.getValue().getString();
                     
-                    // Build absolute path to Wowza media file
+                    // Build absolute path to Wowza media files
                     if ("mediaPath".equals(p.getName())) {
                         String mediaHttpUrl = httpUrl.replace("http://", "http/");
                         // Media path should be with prefix for VOD and only the streamname for LIVE
