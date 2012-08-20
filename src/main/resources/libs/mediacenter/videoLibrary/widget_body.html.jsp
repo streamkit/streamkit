@@ -73,13 +73,13 @@
         var _searchModel, _searchForm, _searchResults, _channelPath;
         _searchModel = new VideoSearchModel();
 
-        // try to see if you are in a specific context first
-        _channelPath = "<%=getServletConfig().getServletContext().getAttribute("channelPath")%>";
-
-        if (_channelPath === "null")
-        {
+        try {
+            // playerMenu_channelPath may be set from player_menu.html.jsp
+            _channelPath = playerMenu_channelPath;
+        } catch (exception) {
             _channelPath = Sling.currentPath;
         }
+
         _searchModel.setChannelPath(_channelPath);
 
         _searchForm = Backbone.View.Factory.createView( jQuery("#librarySearchFormContainer")[0], _searchModel);

@@ -111,7 +111,7 @@
                         <Sling-Initial-Content>
                             SLING-INF;overwrite:=false,
                             /libs/mediacenter/channel/library.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/channel,
-                            /libs/mediacenter/videoLibrary;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/videoLibrary
+                            /libs/mediacenter/videoLibrary/widget_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/videoLibrary/
                         </Sling-Initial-Content>
                         <Embed-Dependency>
                             org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"
