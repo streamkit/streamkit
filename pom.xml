@@ -18,7 +18,7 @@
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/video-library.git</git.repo>
         <git.subtree>bundles/video-library</git.subtree>
 
-        <commons.version>1.9</commons.version>
+        <commons.version>1.10</commons.version>
     </properties>
 
     <scm>
@@ -26,6 +26,15 @@
         <url>scm:git:${git.repo}</url>
         <developerConnection>scm:git:${git.repo}</developerConnection>
     </scm>
+
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <commons.version>1.11-SNAPSHOT</commons.version>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <resources>
