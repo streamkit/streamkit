@@ -18,7 +18,7 @@
 
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/mediacenter/commons-${commons.version}.js"></script>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/mediacenter/content_management-${project.version}.js"></script>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/infinite-list/infinite-list-1.0-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/infinite-list/infinite-list-1.1-SNAPSHOT.js"></script>
 
     <title>Content Manager</title>
     <!-- %=
