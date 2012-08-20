@@ -73,6 +73,9 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             throw new ResourceNotFoundException("No data to render.");
         }
 
+        // Display streamingServers property array
+        Boolean isVodResource = "mediacenter:vod".equals(resource.getResourceType());
+
         List<CDNServer> cdnServers = new ArrayList<CDNServer>();
 
         // Read addresses from CDN in case plugin is installed
@@ -176,29 +179,27 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                     // Build absolute path to Wowza media file
                     if ("mediaPath".equals(p.getName())) {
                         String mediaHttpUrl = httpUrl.replace("http://", "http/");
-                        String mediaPath = mediaHttpUrl + "/" + value;
+                        // Media path should be with prefix for VOD and only the streamname for LIVE
+                        String mediaPath = (isVodResource) ? mediaHttpUrl + "/" + value : value;
                         w.key(p.getName()).value(mediaPath);
 
                         // Build absolute download path to media file
                         String downloadPath = httpUrl + "/" + value;
                         w.key("downloadPath").value(downloadPath);
+
+                        if (cdnService != null) {
+                            w.key("connectionCounts").value(cdnService.connectionCounts(value));
+                        }
                         continue;
                     }
 
-
-
-
-                    if ("mediaPath".equals(p.getName()) && cdnService != null) {
-                        w.key("connectionCounts").value(cdnService.connectionCounts(value));
-                    }
                     w.key(p.getName()).value(value);
                 }
                 w.endObject();
             }
             w.endArray();
 
-            // Display streamingServers property array
-            Boolean isVodResource = "mediacenter:vod".equals(resource.getResourceType());
+
             w.key("streamingServers");
             w.array();
             for (CDNServer cdnServer : cdnServers) {
