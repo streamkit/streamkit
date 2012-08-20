@@ -64,5 +64,37 @@
 
 </script>
 
+<!-- TODO:// The download link should be generated on page init together with the entire content -->
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        // Read JSON with content information, parse it, and display the HMTL5 video tag
+        var browserUrl = window.location.href;
+        var jsonBrowserUrl = browserUrl.replace(".fplayer.html", ".player.json");
+        var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
+        var jsonObj = jQuery.parseJSON(ajaxReturnJson);
+        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
+
+        var absoluteMediaDownloadPath = downloadPath;
+
+        // Add menu download link value
+        $("#download").attr("href", absoluteMediaDownloadPath);
+
+        function ajaxCall(url) {
+            var ajaxValue = $.ajax ({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                timeout: 5000,
+                error: function(){
+                    alert('Internet connection error');
+                },
+                async: false
+            }).responseText;
+            return ajaxValue;
+        }
+    });
+</script>
+
 
 

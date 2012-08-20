@@ -13,13 +13,13 @@
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
         var streamUrl = jsonObj.streamingServers[0].streamUrl;
-        var httpServerUrl = jsonObj.httpServer.httpUrl;
         var snapshotPath = jsonObj.snapshotPath;
         var mediaPath = jsonObj.mediaPaths[0].mediaPath;
+        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
 
         var absoluteMediaPath = "http://" + streamUrl + mediaPath + "/playlist.m3u8";
-        var absoluteSnapshotPath = httpServerUrl + "/" + snapshotPath;
-        var absoluteMediaDownloadPath = httpServerUrl + "/" + mediaPath;
+        var absoluteSnapshotPath = snapshotPath;
+        var absoluteMediaDownloadPath = downloadPath;
 
 
         // Add menu download link value

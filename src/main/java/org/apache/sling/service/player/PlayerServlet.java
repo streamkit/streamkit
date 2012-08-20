@@ -77,7 +77,12 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
 
         // Read addresses from CDN in case plugin is installed
         if (cdnService != null) {
-            String ip = request.getRemoteAddr();
+            // In case a mod_proxy is being used, client ip is available only in header "X-Forwarded-For"
+            String ip = request.getHeader("X-Forwarded-For");
+            if (ip == null) {
+                ip = request.getRemoteAddr();
+            }
+
             cdnServers = cdnService.hostAddresses(ip);
         }
 
@@ -107,6 +112,13 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
         try {
             Node httpServerNode = session.getRootNode().getNode(HTTP_SERVERS_PATH);
             httpUrl = httpServerNode.getProperty("httpUrl").getValue().getString();
+            if (!httpUrl.startsWith("http://")) {
+                httpUrl = "http://" + httpUrl;
+            }
+
+            if (httpUrl.endsWith("/")) {
+                httpUrl.substring(0, httpUrl.length() -1);
+            }
 
         } catch (RepositoryException e) {
             throw new ServletException("No https servers have been found in the system. Please provide at least one..");
@@ -135,6 +147,9 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                 javax.jcr.Property property = itResourceNodeProperties.nextProperty();
                 String propertyName = property.getName();
                 String propertyValue = property.getValue().getString();
+                if ("snapshotPath".equals(propertyName)) {
+                    propertyValue = httpUrl + "/" + propertyValue;
+                }
                 w.key(propertyName).value(propertyValue);
             }
 
@@ -157,6 +172,22 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                     }
 
                     String value = p.getValue().getString();
+                    
+                    // Build absolute path to Wowza media file
+                    if ("mediaPath".equals(p.getName())) {
+                        String mediaHttpUrl = httpUrl.replace("http://", "http/");
+                        String mediaPath = mediaHttpUrl + "/" + value;
+                        w.key(p.getName()).value(mediaPath);
+
+                        // Build absolute download path to media file
+                        String downloadPath = httpUrl + "/" + value;
+                        w.key("downloadPath").value(downloadPath);
+                        continue;
+                    }
+
+
+
+
                     if ("mediaPath".equals(p.getName()) && cdnService != null) {
                         w.key("connectionCounts").value(cdnService.connectionCounts(value));
                     }
@@ -184,12 +215,6 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                 w.endObject();
             }
             w.endArray();
-
-            // Display httpServer property
-            w.key("httpServer");
-            w.object();
-            w.key("httpUrl").value(httpUrl);
-            w.endObject();
             w.endObject();
 
         } catch(JSONException je) {
