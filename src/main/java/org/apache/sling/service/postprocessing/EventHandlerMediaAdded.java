@@ -95,6 +95,7 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
                 // Try both {..}/mediaFile and {..}/mediaFile/jcr:content  
                 String jcrContentNodePath = (session.getRootNode().hasNode(jcrContentNodePathLong)) ? jcrContentNodePathLong : jcrContentNodePathShort;
                 Node dataNode = session.getRootNode().getNode(jcrContentNodePath);
+
                 Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
                 String mimeType = mimeTypeProperty.getValue().getString();
                 if ("video/mp4".equals(mimeType) || "video/mpeg4".equals(mimeType) || "video/x-flv".equals(mimeType)) {
@@ -115,8 +116,11 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
                     logger.log(LogService.LOG_INFO, "SnapshotPath set: " + snapshotPath);
 
 
+                    if ( "nt:file".equals(dataNode.getPrimaryNodeType().getName() ) ) {
+                        dataNode = dataNode.getParent();
+                    }
                     // 4. Persist all properties to a JCR node
-                    persistMediaProperties(props, dataNode);
+                    persistMediaProperties(props, dataNode.getParent());
 
                     // 5. Remove mediaFile node
                     dataNode.remove();
@@ -171,7 +175,8 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
 
     // Persist all video properties to /content/channel/{channelName}/ondemand/{contentName}/properties
     protected void persistMediaProperties(MediaProperties props, Node fileNode) throws Exception {
-        Node mediaNode = fileNode.getParent();
+        Node mediaNode = fileNode;
+
         mediaNode.setProperty("snapshotPath", props.getSnapshotPath());
         mediaNode.setProperty("duration", props.getDuration());
         
