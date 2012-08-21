@@ -116,7 +116,7 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
                     logger.log(LogService.LOG_INFO, "SnapshotPath set: " + snapshotPath);
 
 
-                    if ( "nt:file".equals(dataNode.getPrimaryNodeType().getName() ) ) {
+                    if ( "nt:file".equals(dataNode.getParent().getPrimaryNodeType().getName()) ) {
                         dataNode = dataNode.getParent();
                     }
                     // 4. Persist all properties to a JCR node
