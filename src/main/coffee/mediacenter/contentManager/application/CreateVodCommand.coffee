@@ -1,22 +1,39 @@
 class window.CreateVodCommand extends AbstractSaveVodCommand
     _xhr: null
+    _keepSessionAliveInterval : null
+    _lastSessionPing : null
 
     _getActiveUploads: ->
         ContentManagerContext.getInstance().getActiveUploads()
 
-    constructor: ( vodModel ) ->
+    constructor: ( vodModel, keepAliveInterval = 300 * 1000 ) ->
         super(vodModel)
+        @_keepSessionAliveInterval = keepAliveInterval
         vodModel.setUploadCmd( this )
 
     uploadStartedHandler: (event) =>
         console?.log ("Upload started #{@vodModel.get('progress')}")
         @vodModel.set({progress:0})
         @_getActiveUploads().add( @vodModel )
+        @_lastSessionPing = new Date().getTime()
 
     uploadProgressHandler: (event) =>
         console?.log("Upload progress lengthComputable=#{event.lengthComputable}, event.loaded=#{event.loaded}, event.total= #{event.total}")
         prg = (event.loaded / event.total) * 100
         @vodModel.set({progress:prg})
+        @_keepSessionAlive()
+
+    _keepSessionAlive: ->
+        now = new Date().getTime()
+        return if ( now - @_lastSessionPing < @_keepSessionAliveInterval)
+        @_pingServer()
+
+    _pingServer: ->
+        req = new XMLHttpRequest()
+        req.open("GET","/system/sling/info.sessionInfo.json", true )
+        req.send({":operation":"nop"})
+        @_lastSessionPing = new Date().getTime()
+
 
     # After one of error, abort, or load has been
     uploadLoadedHandler: (event) =>

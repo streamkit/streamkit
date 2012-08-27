@@ -1,16 +1,16 @@
-TestCase("CreateVodCommandTest", {
+AsyncTestCase("CreateVodCommandTest", {
     cmd: null
     model: null
-#    server : null
+    server : null
 
     setUp: ->
         @model = new VodModel()
         @cmd = new CreateVodCommand( @model )
         ContentManagerContext.getInstance().init()
-#        @server = sinon.fakeServer.create()
+        @server = sinon.fakeServer.create()
 
-#    tearDown: ->
-#        @server.restore()
+    tearDown: ->
+        @server.restore()
 
     getActiveUploads: ->
         ContentManagerContext.getInstance().getActiveUploads()
@@ -21,6 +21,38 @@ TestCase("CreateVodCommandTest", {
     testUploadProgressAtStart: ->
         @cmd.uploadStartedHandler( null )
         assertEquals(0, @model.get("progress") )
+
+    testSessionIsAliveDuringUpload: ( queue ) ->
+        timeoutCount = 0
+
+        @cmd = new CreateVodCommand( @model, 1000 )
+        assertNull("Initially there should be no ping to keep session alive",  @cmd._lastSessionPing )
+
+        startTime = new Date()
+        pingTime = null
+
+        fakeResponse = (xhr, id) ->
+            console?.log "sending fake ping response to the client"
+            xhr.respond( 200, { "Content-Type": "application/json" }, '[{ "Message": "Null Operation Status: 200" }]' )
+        @server.respondWith("GET", "/system/sling/info.sessionInfo.json", fakeResponse )
+
+        @cmd.uploadStartedHandler( null )
+        assertNotNull("Last ping should be considered the command to start uploading", @cmd._lastSessionPing )
+        assertTrue( @cmd._lastSessionPing - startTime.getTime() < 1000 )
+
+        queue.call("Simulate progress", (callbacks) ->
+            myCallback = callbacks.add( -> timeoutCount++ )
+            @cmd.uploadProgressHandler({loaded:10, total:100})
+            assertTrue( @cmd._lastSessionPing - startTime.getTime() < 1000 )
+            setTimeout(myCallback, 1500) )
+
+        queue.call("Verify session has been kept alive", ->
+            now = new Date().getTime()
+            @cmd.uploadProgressHandler({loaded:50, total:100})
+            assertFalse("_lastSessionPing should have been updated.",  @cmd._lastSessionPing - startTime.getTime() < 1000 )
+            assertTrue( @cmd._lastSessionPing - now < 1000 )
+            )
+
 
     testUploadProgressHandler:->
         @cmd.uploadProgressHandler({loaded:50, total:100})
