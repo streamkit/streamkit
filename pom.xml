@@ -11,7 +11,7 @@
     <groupId>org.mediacenter.service</groupId>
     <artifactId>notifications</artifactId>
     <packaging>bundle</packaging>
-    <version>1.7</version>
+    <version>1.8-SNAPSHOT</version>
 
     <name>Notifications</name>
     <description>
