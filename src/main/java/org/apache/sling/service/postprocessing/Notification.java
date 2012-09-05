@@ -1,5 +1,6 @@
 package org.apache.sling.service.postprocessing;
 
+import org.apache.sling.service.postprocessing.exception.PostprocessingException;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.sling.service.postprocessing.exception.PostprocessingException;
 
 /**
  * @author Cosmin Stanciu
@@ -97,7 +97,7 @@ public class Notification {
     private String getChannelEmail() {
 
         // Extract jcr channel path
-        Pattern pChannel = Pattern.compile("(content/channel/[0-9a-zA-Z- ]*)", Pattern.CASE_INSENSITIVE);
+        Pattern pChannel = Pattern.compile("(content/channel/[0-9a-zA-Z-_ ]*)", Pattern.CASE_INSENSITIVE);
         Matcher mChannel = pChannel.matcher(propPath);
         String jcrChannelPath = "";
         if (mChannel.find()) {
