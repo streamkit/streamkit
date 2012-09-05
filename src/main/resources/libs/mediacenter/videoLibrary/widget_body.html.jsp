@@ -163,7 +163,8 @@
 <!-- templates -->
 
 <script id="videoItem" type="text/template">
-    <a href="{{path}}.player.html">
+    <!-- TODO: the /menu is not too flexible, but it does the job for now -->
+    <a href="{{path}}.player.html/menu">
         <div>
             <img style="background-image:url({{element.snapshotUrl}});"/>
             <!-- using timeago plugin from http://timeago.yarp.com/ -->
