@@ -80,6 +80,10 @@ a:hover {
     z-index: 0;
 }
 
+.menu_off .video_player {
+    padding: 0px 0px 0px 0px;
+}
+
 .video_menu {
 
     position: absolute;

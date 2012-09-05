@@ -11,6 +11,10 @@
     height: 100%;
 }
 
+.menu_off .video_player {
+    padding: 0px 0px 0px 0px;
+}
+
 #embed {
     display: none;
     visibility: hidden;

@@ -43,14 +43,25 @@
     <![endif]-->
 
 </head>
-<body>
 
-    <!-- Player include -->
+<!-- Player include -->
     <%
         Object body_fplayer = request.getAttribute("body.player");
         Object menu_player = request.getAttribute("menu.player");
         Object body_options = request.getAttribute("body.options");
+
+        String body_class = "";
+        if ( menu_player == null ) {
+            body_class = "menu_off";
+        }
+        else {
+            body_class = "menu_on";
+        }
     %>
+
+<body class="<%=body_class%>">
+
+
         <% if ( body_fplayer != null ) { %>
             <% if ( body_options == null ) { %>
                 <sling:include path="<%=body_fplayer.toString()%>" />
