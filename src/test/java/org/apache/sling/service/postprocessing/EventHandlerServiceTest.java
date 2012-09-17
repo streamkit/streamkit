@@ -1,21 +1,12 @@
 package org.apache.sling.service.postprocessing;
 
-import static org.junit.Assert.assertEquals;
-
-
-import org.apache.sling.api.SlingConstants;
 import org.apache.sling.jackrabbit.AbstractJackrabbitTestCase;
 import org.apache.sling.service.postprocessing.dto.MediaProperties;
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.service.event.Event;
 
-import javax.jcr.Binary;
 import javax.jcr.Node;
-import java.io.FileInputStream;
 import java.net.URL;
-import java.util.Dictionary;
-import java.util.Hashtable;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -46,12 +37,12 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
 
     // @Test
     public void getChannel_channelName() {
-        assertEquals("adventist_at", ehs.getChannel(propPath));
+        // assertEquals("adventist_at", ehs.getChannel(propPath));
     }
 
     // @Test
     public void getFilePathDir_dirPath() {
-        assertEquals("/content/channel/adventist_at/ondemand", ehs.getVideoDirPath(propPath));
+        // assertEquals("/content/channel/adventist_at/ondemand", ehs.getVideoDirPath(propPath));
     }
 
     // @Test
@@ -77,7 +68,7 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
         props.setHeight(height);
 
 
-        ehs.persistMediaProperties(props, mediaFile);
+        // ehs.persistMediaProperties(props, mediaFile);
 
         session.save();
 

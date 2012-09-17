@@ -1,5 +1,6 @@
 package org.apache.sling.service.postprocessing;
 
+import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.service.postprocessing.exception.PostprocessingException;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -19,10 +20,10 @@ import java.util.regex.Pattern;
  *
  * Noticiation to be sent to channel owner
  */
-public class Notification {
+public class Notification  {
     
     private EventAdmin eventAdmin;
-    private Session session;
+    private SlingRepository repository;
     private Exception e;
     private String propPath;
     
@@ -31,15 +32,15 @@ public class Notification {
 
     private final static Logger log = LoggerFactory.getLogger(Notification.class);
     
-    public Notification(EventAdmin eventAdmin, Session session, Exception e, String propPath) {
+    public Notification(EventAdmin eventAdmin, SlingRepository repository, Exception e, String propPath) {
         this.eventAdmin = eventAdmin;
-        this.session = session;
+        this.repository = repository;
         this.e = e;
         this.propPath = propPath;
     }
     
     // Send notification to channel owner
-    protected void sendNotification() {
+    public void send() {
         log.info("Sending notification: " + propPath);
 
         Dictionary<String,String> properties = new Hashtable<String,String>();
@@ -54,7 +55,7 @@ public class Notification {
     private String getTitle() {
 
         // Extract resource name
-        Pattern pResourceName = Pattern.compile("content/channel/[0-9a-zA-Z- ]*/vod/[0-9]+/[0-9]+/([0-9a-zA-Z-_ ]+)", Pattern.CASE_INSENSITIVE);
+        Pattern pResourceName = Pattern.compile("content/channel/[0-9a-zA-Z-_ ]*/vod/[0-9]+/[0-9]+/([0-9a-zA-Z-_ ]+)", Pattern.CASE_INSENSITIVE);
         Matcher mResourceName = pResourceName.matcher(propPath);
         String resourceName = "";
         if (mResourceName.find()) {
@@ -104,13 +105,19 @@ public class Notification {
             jcrChannelPath = mChannel.group(1);
         }
 
-
+        Session session = null;
         try {
+            session = repository.loginAdministrative(null);
             Node channelNode = session.getRootNode().getNode(jcrChannelPath);
             String email = channelNode.getProperty("email").getValue().getString();
             return email;
         } catch (RepositoryException e1) {
             log.info("No channel email has been found on this JCR path: " + jcrChannelPath);
+        } finally {
+            if (session != null) {
+                session.logout();
+                session = null;
+            }
         }
         return null;
     }
