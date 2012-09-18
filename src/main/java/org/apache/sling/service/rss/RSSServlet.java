@@ -79,8 +79,8 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
         Iterator<Map<String, Object>> result = resolver.queryResources(statement, queryType);
 
 
-        resp.setContentType("application/rss+xml;charset=ISO-8859-1");
-        resp.setContentType("application/rss+xml");
+        resp.setContentType("text/rss+xml;charset=ISO-8859-1");
+        resp.setContentType("text/rss+xml");
 
 
         Node channelNode = session.getRootNode().getNode(resource.getPath().substring(1));
