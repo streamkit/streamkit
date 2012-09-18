@@ -106,12 +106,13 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
             String snapshotPath = null;
             boolean snapshotPropertyExists = contentNode.hasProperty("snapshotPath");
             if (snapshotPropertyExists) {
-                snapshotPath = "http://" + HTTP_SERVER_URL + "/" + contentNode.getProperty("snapshotPath").getValue().getString();
+                String serverURL = (HTTP_SERVER_URL.startsWith("http://")) ? HTTP_SERVER_URL : "http://" + HTTP_SERVER_URL;
+                snapshotPath = serverURL + "/" + contentNode.getProperty("snapshotPath").getValue().getString();
             }
             feed.setImage(snapshotPath);
 
             // Player-url
-            feed.setLink(req.getScheme() + "://" + req.getServerName() + path + ".player.html");
+            feed.setLink(req.getScheme() + "://" + req.getServerName() + path + ".player.html/menu");
 
             // Author
             feed.setAuthor(contentNode.getProperty("author").getValue().getString());
