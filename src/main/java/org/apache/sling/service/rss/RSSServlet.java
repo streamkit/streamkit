@@ -17,6 +17,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -78,14 +79,15 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
         Iterator<Map<String, Object>> result = resolver.queryResources(statement, queryType);
 
 
-        resp.setContentType("text/rss+xml;charset=UTF-8");
-        resp.setContentType("text/rss+xml");
+        resp.setContentType("application/rss+xml;charset=ISO-8859-1");
+        resp.setContentType("application/rss+xml");
 
 
         Node channelNode = session.getRootNode().getNode(resource.getPath().substring(1));
         String channelName = channelNode.getProperty("title").getValue().getString();
+        String rssURL = req.getRequestURL().toString();
 
-        Feed rssFeeder = new Feed(channelName, req.getRequestURL().toString(), "", "en", channelName, sdf.format(new Date()));
+        Feed rssFeeder = new Feed(channelName, rssURL, "", "en", channelName, sdf.format(new Date()));
 
         while(result.hasNext()) {
             FeedMessage feed = new FeedMessage();
@@ -112,7 +114,14 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
             feed.setImage(snapshotPath);
 
             // Player-url
-            feed.setLink(req.getScheme() + "://" + req.getServerName() + path + ".player.html/menu");
+
+            URI uri = new URI(
+                    req.getScheme(),
+                    req.getServerName(),
+                    path + ".player.html/menu",
+                    null);
+            String playerPath = uri.toASCIIString();
+            feed.setLink(playerPath);
 
             // Author
             feed.setAuthor(contentNode.getProperty("author").getValue().getString());
@@ -128,7 +137,7 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
         }
 
         // Now write the file
-        RSSFeedWriter writer = new RSSFeedWriter(rssFeeder, resp);
+        RSSFeedWriter writer = new RSSFeedWriter(rssFeeder, resp, rssURL);
         writer.write();
 
         } catch (Exception e) {

@@ -11,10 +11,12 @@ public class RSSFeedWriter {
 
     private Feed rssfeed;
     private SlingHttpServletResponse response;
+    private String rssURL;
 
-    public RSSFeedWriter(Feed rssfeed, SlingHttpServletResponse response) {
+    public RSSFeedWriter(Feed rssfeed, SlingHttpServletResponse response, String rssURL) {
         this.rssfeed = rssfeed;
         this.response = response;
+        this.rssURL = rssURL;
     }
 
     public void write() {
@@ -25,6 +27,8 @@ public class RSSFeedWriter {
             out = response.getWriter();
             out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
             out.println("<rss version=\"2.0\">");
+            // out.println("<atom:link href=\"" + rssURL + "\" rel=\"self\" type=\"application/rss+xml\" />");
+
 
             out.println("<channel>");
 
@@ -33,7 +37,7 @@ public class RSSFeedWriter {
             createNode(out, "description", rssfeed.getDescription());
             createNode(out, "language", rssfeed.getLanguage());
             createNode(out, "copyright", rssfeed.getCopyright());
-            createNode(out, "pubdate", rssfeed.getPubDate());
+            createNode(out, "pubDate", rssfeed.getPubDate());
 
 
             for (FeedMessage entry : rssfeed.getMessages()) {
@@ -43,9 +47,9 @@ public class RSSFeedWriter {
                     createNode(out, "description", entry.getDescription());
                     createNode(out, "link", entry.getLink());
                     createNode(out, "image", entry.getImage());
-                    createNode(out, "author", entry.getAuthor());
+                    // createNode(out, "author", entry.getAuthor());
                     createNode(out, "pubDate", entry.getPubDate());
-                    createNode(out, "guid", entry.getGuid());
+                    out.println("<guid isPermaLink=\"false\">" + entry.getGuid() + "</guid>");
 
                 out.println("</item>");
             }
