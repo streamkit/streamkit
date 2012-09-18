@@ -2,13 +2,15 @@ package org.apache.sling.service.rss;
 
 public class FeedMessage {
 
-    String title;
-    String description;
-    String link;
-    String author;
-    String image;
-    String pubDate;
-    String guid;
+    private String title;
+    private String description;
+    private String link;
+    private String author;
+    private String image;
+    private String pubDate;
+    private String guid;
+    
+    private String tags;
     
 
     public String getTitle() {
@@ -65,6 +67,14 @@ public class FeedMessage {
 
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     @Override

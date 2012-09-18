@@ -79,8 +79,8 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
         Iterator<Map<String, Object>> result = resolver.queryResources(statement, queryType);
 
 
-        resp.setContentType("application/rss+xml;charset=ISO-8859-1");
-        resp.setContentType("application/rss+xml");
+        resp.setContentType("text/rss+xml;charset=ISO-8859-1");
+        resp.setContentType("text/rss+xml");
 
 
         Node channelNode = session.getRootNode().getNode(resource.getPath().substring(1));
@@ -114,7 +114,6 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
             feed.setImage(snapshotPath);
 
             // Player-url
-
             URI uri = new URI(
                     req.getScheme(),
                     req.getServerName(),
@@ -128,6 +127,9 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
 
             //Description
             feed.setDescription(contentNode.getProperty("description").getValue().getString());
+
+            // Tags
+            feed.setTags(contentNode.getProperty("tags").getValue().getString());
 
             // Created
             Calendar date = contentNode.getProperty("jcr:created").getDate();

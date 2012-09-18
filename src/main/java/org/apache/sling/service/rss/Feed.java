@@ -11,6 +11,7 @@ public class Feed {
     final String language;
     final String copyright;
     final String pubDate;
+    
     final List<FeedMessage> entries = new ArrayList<FeedMessage>();
 
     public Feed(String title, String link, String description, String language,
@@ -51,6 +52,7 @@ public class Feed {
         return pubDate;
     }
 
+    
     @Override
     public String toString() {
         return "Feed [copyright=" + copyright + ", description=" + description

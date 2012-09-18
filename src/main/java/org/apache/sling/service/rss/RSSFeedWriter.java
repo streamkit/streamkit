@@ -43,13 +43,17 @@ public class RSSFeedWriter {
             for (FeedMessage entry : rssfeed.getMessages()) {
                 out.println("<item>");
 
+                    createNode(out, "id", entry.getGuid());
                     createNode(out, "title", entry.getTitle());
                     createNode(out, "description", entry.getDescription());
                     createNode(out, "link", entry.getLink());
-                    createNode(out, "image", entry.getImage());
-                    // createNode(out, "author", entry.getAuthor());
                     createNode(out, "pubDate", entry.getPubDate());
-                    out.println("<guid isPermaLink=\"false\">" + entry.getGuid() + "</guid>");
+                    out.println("<guid isPermaLink=\"true\">" + entry.getLink() + "</guid>");
+                    out.println("<media:player url=\"" + entry.getLink() + "\" height=\"580\" width=\"640\" />");
+                    out.println("<media:thumbnail url=\"" + entry.getImage() + "\" />");
+                    out.println("<media:credit role=\"author\">" + entry.getAuthor() + "\"</media:credit>");
+                    createNode(out, "media:keywords", entry.getTags());
+                    createNode(out, "media:description", entry.getDescription());
 
                 out.println("</item>");
             }
