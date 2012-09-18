@@ -129,7 +129,8 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
             feed.setDescription(contentNode.getProperty("description").getValue().getString());
 
             // Tags
-            feed.setTags(contentNode.getProperty("tags").getValue().getString());
+            boolean tagsPropertyExists = contentNode.hasProperty("tags");
+            feed.setTags((tagsPropertyExists) ? contentNode.getProperty("tags").getValue().getString() : "");
 
             // Created
             Calendar date = contentNode.getProperty("jcr:created").getDate();

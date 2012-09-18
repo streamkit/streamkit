@@ -26,7 +26,7 @@ public class RSSFeedWriter {
         try {
             out = response.getWriter();
             out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
-            out.println("<rss version=\"2.0\">");
+            out.println("<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\">");
             // out.println("<atom:link href=\"" + rssURL + "\" rel=\"self\" type=\"application/rss+xml\" />");
 
 
@@ -51,7 +51,7 @@ public class RSSFeedWriter {
                     out.println("<guid isPermaLink=\"true\">" + entry.getLink() + "</guid>");
                     out.println("<media:player url=\"" + entry.getLink() + "\" height=\"580\" width=\"640\" />");
                     out.println("<media:thumbnail url=\"" + entry.getImage() + "\" />");
-                    out.println("<media:credit role=\"author\">" + entry.getAuthor() + "\"</media:credit>");
+                    out.println("<media:credit role=\"author\">" + entry.getAuthor() + "</media:credit>");
                     createNode(out, "media:keywords", entry.getTags());
                     createNode(out, "media:description", entry.getDescription());
 
