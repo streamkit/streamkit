@@ -26,9 +26,8 @@ public class RSSFeedWriter {
         try {
             out = response.getWriter();
             out.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
-            out.println("<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\">");
-            // out.println("<atom:link href=\"" + rssURL + "\" rel=\"self\" type=\"application/rss+xml\" />");
-
+            out.println("<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\" xmlns:atom=\"http://www.w3.org/2005/Atom\" " +
+                    "xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">");
 
             out.println("<channel>");
 
@@ -39,16 +38,17 @@ public class RSSFeedWriter {
             createNode(out, "copyright", rssfeed.getCopyright());
             createNode(out, "pubDate", rssfeed.getPubDate());
 
+            out.println("<atom:link href=\"" + rssURL + "\" rel=\"self\" type=\"application/rss+xml\" />");
 
             for (FeedMessage entry : rssfeed.getMessages()) {
                 out.println("<item>");
 
-                    createNode(out, "id", entry.getGuid());
                     createNode(out, "title", entry.getTitle());
-                    createNode(out, "description", entry.getDescription());
+                    createNode(out, "description", entry.getAuthor() + ", " + entry.getDescription());
+                    createNode(out, "content:encoded", "<![CDATA[" + entry.getImage() + "]]>");
                     createNode(out, "link", entry.getLink());
                     createNode(out, "pubDate", entry.getPubDate());
-                    out.println("<guid isPermaLink=\"true\">" + entry.getLink() + "</guid>");
+                    out.println("<guid isPermaLink=\"false\">" + entry.getGuid() + "</guid>");
                     out.println("<media:player url=\"" + entry.getLink() + "\" height=\"580\" width=\"640\" />");
                     out.println("<media:thumbnail url=\"" + entry.getImage() + "\" />");
                     out.println("<media:credit role=\"author\">" + entry.getAuthor() + "</media:credit>");

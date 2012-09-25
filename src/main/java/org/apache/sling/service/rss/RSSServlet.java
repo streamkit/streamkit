@@ -89,7 +89,10 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
 
         Feed rssFeeder = new Feed(channelName, rssURL, "", "en", channelName, sdf.format(new Date()));
 
+        int count = 1;
         while(result.hasNext()) {
+            if (count > 20) break;
+
             FeedMessage feed = new FeedMessage();
             Map<String, Object> row = result.next();
 
@@ -137,8 +140,9 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
             feed.setPubDate(sdf.format(date.getTime()));
 
             rssFeeder.getMessages().add(feed);
+            count ++;
         }
-
+            
         // Now write the file
         RSSFeedWriter writer = new RSSFeedWriter(rssFeeder, resp, rssURL);
         writer.write();
