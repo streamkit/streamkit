@@ -61,10 +61,8 @@ public class FFmpegProcessorThread implements Runnable {
 
                 logger.log(LogService.LOG_INFO, "Reading file jcr");
 
-                InputStream fileInputStrem = dataNode.getProperty("jcr:data").getBinary().getStream();
-
                 // 1. Copy the file stored to repository to a physical location on disc
-                outputFile(fileInputStrem, absoluteVideoDirPath, absoluteVideoPath);
+                outputFile(dataNode, absoluteVideoDirPath, absoluteVideoPath);
                 logger.log(LogService.LOG_INFO, "File copied to path: " + absoluteVideoPath);
 
                 // 2. Read all video properties using FFmpeg
@@ -157,7 +155,7 @@ public class FFmpegProcessorThread implements Runnable {
     }
 
     // Create the file on hard disk from the inputStream received from JCR
-    private void outputFile (InputStream inputStream, String absoluteDirPath, String absoluteFilePath) throws IOException {
+    private void outputFile (Node dataNode, String absoluteDirPath, String absoluteFilePath) throws IOException {
         //create the directory where the file will be saved
         File dir = new File(absoluteDirPath);
         if (!dir.exists()) {
@@ -170,10 +168,21 @@ public class FFmpegProcessorThread implements Runnable {
         OutputStream out=new FileOutputStream(f);
         byte buf[]=new byte[2048];
         int len;
-        while((len=inputStream.read(buf)) > 0)
-            out.write(buf, 0, len);
-        out.close();
-        inputStream.close();
+        InputStream fileInputStream = null;
+        try {
+            fileInputStream = dataNode.getProperty("jcr:data").getBinary().getStream();
+            while((len=fileInputStream.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.flush();
+        } catch (Exception ex) {
+            logger.log(LogService.LOG_ERROR, "Error on saving file: " + ex.getLocalizedMessage());
+        } finally {
+            out.close();
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+        }
     }
 
     protected String getVideoDirPath(String propPath) {

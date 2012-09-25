@@ -147,30 +147,5 @@ public class FFmpegService {
         }
 	}
 
-    // Wowza Media Server can't play videos encoded with FMLE, .p4v files
-    // The solution is to cut the first frame of the video file
-    public void cutFirstFrame(String mediaFilePath) throws PostprocessingException {
-        try {
-            // ffmpeg -ss 1 -i orig.f4v -vcodec copy -acodec copy out.mp4
-            File sourceFile = new File(mediaFilePath);
-            String newTargetPath = mediaFilePath.replace(".mp4", "_minusFrame1.mp4");
-            File targetFile = new File(newTargetPath);
-            
-            EncodingAttributes attrs = new EncodingAttributes();
-            VideoAttributes video = new VideoAttributes();
-            AudioAttributes audio = new AudioAttributes();
-            attrs.setOffset(1f);
-            video.setCodec("copy");
-            audio.setCodec("copy");
-            attrs.setVideoAttributes(video);
-            attrs.setAudioAttributes(audio);
-            encoder.encodeCopy(sourceFile, targetFile, attrs);
 
-            targetFile.renameTo(sourceFile);
-
-        } catch (EncoderException e) {
-            throw new PostprocessingException(PostprocessingException.GENERAL,
-                    "An error occurred when trying cut the first frame from video:  " + e.getLocalizedMessage());
-        }
-    }
 }
