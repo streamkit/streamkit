@@ -183,7 +183,7 @@ public class RSSServlet extends SlingSafeMethodsServlet  {
      *
      */
     protected String getStatement() {
-        return "//(@title)[sling:resourceType='mediacenter:vod']order by @jcr:created descending";
+        return "//(@title)[sling:resourceType='mediacenter:vod' and @active='true']order by @jcr:created descending";
         // &property=title&property=created&property=jcr:created&property=active&rows=15&offset=45
     }
 
