@@ -59,8 +59,8 @@ class window.CreateVodCommand extends AbstractSaveVodCommand
         # spec: http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html#event-xhr-progress
         # browser support: http://caniuse.com/#search=XmlHttpRequest
         @_xhr = new XMLHttpRequest()
-
-        uploadData = @convertToFormData( @createFormData() )
+        uploadData = new FormData()
+        uploadData.append(key,value) for key,value of @createFormData()
 
         uploadData.append("mediaFile", file, file.name)
 

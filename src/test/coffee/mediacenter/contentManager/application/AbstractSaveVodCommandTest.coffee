@@ -42,23 +42,12 @@ TestCase("AbstractSaveVodCommandTest", {
         assertUndefined( formData.isValid )
         assertUndefined( formData.progress )
 
-#    testRequestHasCreateModifyInfo: ->
-#        formData = @cmd.createFormData()
-#        assertNotNull( formData['jcr:mixinTypes'] )
-#        assertEquals( 3, formData['jcr:mixinTypes'].length )
-#
-#
-#        exists = true
-#        for mixin in formData['jcr:mixinTypes']
-#            if mixin not in ['mix:shareable','mix:created','mix:lastModified']
-#                exists = false
-#                break
-#        assertTrue( "the new node doesn't have the correct mixin types", exists )
-
-#        assertEquals(formData["jcr:created"], "")
-#        assertEquals(formData["jcr:createdBy"], "")
-#        assertEquals(formData["jcr:lastModified"], "")
-#        assertEquals(formData["jcr:lastModifiedBy"], "")
+    testRequestHasCreateModifyInfo: ->
+        formData = @cmd.createFormData()
+        assertEquals(formData["jcr:created"], "")
+        assertEquals(formData["jcr:createdBy"], "")
+        assertEquals(formData["jcr:lastModified"], "")
+        assertEquals(formData["jcr:lastModifiedBy"], "")
 
 
 })
