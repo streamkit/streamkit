@@ -15,10 +15,19 @@
         <form method="POST" id="vodForm" enctype="multipart/form-data" action="#" class="form-horizontal">
             <fieldset>
                 <%--<legend>Vod Content</legend>--%>
+
+                <div class="control-group">
+                    <label class="control-label" for="mediaFile">Media file:<sup title="This field is mandatory.">*</sup></label>
+                    <div class="controls">
+                        <input type="file" name="mediaFile" id="mediaFile" accept="video/mp4" class="input-file"/>
+                    </div>
+                </div>
+
                 <div class="control-group">
                     <label class="control-label" for="title">Title:<sup title="This field is mandatory.">*</sup></label>
                     <div class="controls">
                         <input class="input-xlarge" type="text" name="title" id="title"
+                               data-value="model.title"
                                required="true"
                                size="30" aria-required="true" pattern="[a-zA-Z_0-9 -]{4,}"
                                title="Title must have at least 4 letters" />
@@ -28,6 +37,7 @@
                     <label class="control-label" for="description">Description:<sup title="This field is mandatory.">*</sup></label>
                     <div class="controls">
                        <textarea class="input-xlarge" rows="3" cols="30" id="description" name="description"
+                                 data-value="model.description"
                                  pattern="[a-zA-Z_0-9 -]{5,}"
                                  required="true"
                                  title="Description must have at least 5 characters"></textarea>
@@ -37,14 +47,19 @@
                 <div class="control-group">
                     <label class="control-label" for="author">Author:<sup title="This field is mandatory.">*</sup></label>
                     <div class="controls">
-                        <input class="input-xlarge" type="text" id="author" name="author" size="30" pattern="[a-zA-Z_0-9 ]{5,}" title="Title must have at least 5 characters" />
+                        <input class="input-xlarge" type="text" id="author" name="author"
+                               data-value="model.author"
+                               size="30" pattern="[a-zA-Z_0-9 ]{5,}"
+                               title="Title must have at least 5 characters" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label" for="active">Active:</label>
                     <div class="controls">
-                        <input type="checkbox" name="active" id="active" />
+                        <input type="checkbox" name="active" id="active"
+                                data-checked="model.active"/>
+                        <%--<input type="hidden" name="active@TypeHint" value="Boolean" />--%>
                     </div>
                 </div>
 
@@ -52,18 +67,27 @@
                     <label class="control-label" for="active">Tags:</label>
                     <div class="controls">
                         <input class="input-xlarge" type="text" name="tags" id="tags"
+                               data-value="model.tags"
                                required="true"
                                aria-required="true"
                                title="Title must have at least 4 letters" />
                     </div>
                 </div>
 
-                <div class="control-group">
+-                <!-- TBD
+                 <div class="control-group">
+                    <label class="control-label" for="active">Album:</label>
                     <label class="control-label" for="mediaFile">Media file:<sup title="This field is mandatory.">*</sup></label>
-                    <div class="controls">
+                     <div class="controls">
+                        <input class="input-xlarge" type="text" name="album" id="album"
+                               required="false"
+                               aria-required="false"
+                               title="An album must have at least 3 letters"
+                               pattern="[a-zA-Z_0-9 -]{3,}" />
                         <input type="file" name="mediaFile" id="mediaFile" accept="video/mp4" class="input-file"/>
-                    </div>
-                </div>
+                     </div>
+                 </div>
+-                -->
 
                 <div class="actions" style="display:none">
                     <button id="submitBtn" type="submit" style="display:none" class="btn primary">Process</button>

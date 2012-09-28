@@ -6,10 +6,11 @@ TestCase("UploadControlBarTest",{
     setUp: ->
         @vodModel = new VodModel({title:"video", progress: 25})
         templateText = """
-                <div id="uploadTitle" class="uploadName" data-bind="text title"></div>
+                <div id="uploadTitle" class="uploadName" data-text="model.title"></div>
                 <ul data-component="MessageBox"/>
                 <progress id="uploadProgressBar" class="uploadProgressBar"
-                            data-bind="value progress"
+                            data-value="model.progress"
+                            data-text="model.progress"
                             min="0" max="100" value="0"
                             >0% complete</progress>
                     """

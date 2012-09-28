@@ -1,5 +1,6 @@
 class window.EditVodForm extends Backbone.View
     model : null #new VodModel()
+    _viewBinding : null # Rivets.View instance
     template : null
     lastValidationError: ""
 
@@ -41,7 +42,8 @@ class window.EditVodForm extends Backbone.View
 
     setupBinding: =>
         console?.log "setting up Binding for EditVodForm"
-        Backbone.ModelBinding.bind(this);
+#        Backbone.ModelBinding.bind(this);
+        @_viewBinding = rivets.bind($(@el), {model: @model});
 
     events:
         "submit" : "form_submitHandler"
@@ -106,7 +108,8 @@ class window.EditVodForm extends Backbone.View
           progressBar.textContent = progressBar.value # Fallback for unsupported browsers.
 
     remove: ->
-        Backbone.ModelBinding.unbind(this)
+#        Backbone.ModelBinding.unbind(this)
+        @_viewBinding.unbind()
         Backbone.Validation.unbind(this)
         $(@el).unbind()
         @model.getMessages().unbind("add", @messagesChangedHandler)
@@ -117,9 +120,10 @@ class window.EditVodForm extends Backbone.View
 #        $(@el).remove()
 
     modelValidHandler: (view, attr) ->
+        return if attr.indexOf(":") > 0
         view.$('#' + attr).removeClass('invalid')
         view.$('#' + attr).removeAttr('data-error')
-        inputEl = this.document.getElementById(attr)
+        inputEl = view.$('#' + attr)[0]
         if ( !inputEl )
             return null
         inputEl.setCustomValidity?('')
@@ -128,9 +132,10 @@ class window.EditVodForm extends Backbone.View
         return null
 
     modelInvalidHandler: (view, attr, error) ->
+        return if attr.indexOf(":") > 0
         view.$('#' + attr).addClass('invalid')
         view.$('#' + attr).attr('data-error', error)
-        inputEl = this.document.getElementById(attr)
+        inputEl = view.$('#' + attr)[0]
         inputEl.setCustomValidity?(error)
         inputEl.title = error
         view.lastValidationError = error

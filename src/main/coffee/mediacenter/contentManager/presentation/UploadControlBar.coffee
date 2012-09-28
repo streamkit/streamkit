@@ -4,6 +4,7 @@
  ###
 class window.UploadControlBar extends Backbone.View
     model: null # new VodModel()
+    _viewBinding : null # Rivets.View
     template: null
     messageBox : null # MessageBox
     closeBtn : null
@@ -28,7 +29,9 @@ class window.UploadControlBar extends Backbone.View
         @closeBtn = @el.querySelector(".closeButton")
         $(@closeBtn).bind("click", @closeBtn_clickHandler) if @closeBtn != null
 
-        Backbone.ModelBinding.bind(this)
+        @_viewBinding = rivets.bind($(@el), {model: @model})
+
+#        Backbone.ModelBinding.bind(this)
 
     renderMessageBox: =>
         @messageBox?.remove()
@@ -40,7 +43,8 @@ class window.UploadControlBar extends Backbone.View
 
     remove: ->
         console?.log("removing ControlBar for Model #{@model.cid}")
-        Backbone.ModelBinding.unbind(this)
+#        Backbone.ModelBinding.unbind(this)
+        @_viewBinding.unbind()
         @messageBox?.remove()
         $(@closeBtn).unbind() if @closeBtn != null
         $(@el).remove()

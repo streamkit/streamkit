@@ -133,7 +133,7 @@
     <div class="modal-header">
         <a href="#" class="close closeButton">x</a>
 
-        <div id="uploadTitle" class="uploadTitle" data-bind="text title"></div>
+        <div id="uploadTitle" class="uploadTitle" data-text="model.title"></div>
     </div>
     <div class="modal-footer">
         <ul data-component="MessageBox"
@@ -141,11 +141,11 @@
             <!-- placeholder to show success/error messages after upload -->
         </ul>
         <progress id="uploadProgressBar" class="uploadProgressBar"
-                  data-bind="value progress; text progress"
+                  data-value="model.progress" data-text="model.progress"
                   min="0" max="100" value="0"/>
 
         <!-- TODO: <div class="uploadSpeed">Upload speed: uploadKBs KiB/s </div> -->
-        <div data-bind="text progress">0%</div>
+        <div data-text="model.progress">0%</div>
     </div>
 </script>
 

@@ -3,6 +3,11 @@ package org.mediacenter.content.post.processor;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
+
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.commons.osgi.OsgiUtil;
 import org.apache.sling.servlets.post.Modification;
@@ -35,5 +40,16 @@ public class CreateVodContentProcessor extends AbstractPostProcessor implements 
     @Override
     protected void doProcess(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
         logger.info("doProcess{}", request.getResource().getResourceType());
+
+        Session session = request.getResourceResolver().adaptTo(Session.class);
+
+        Node n = session.getNode( request.getResource().getPath() );
+        NodeType[] mixins = n.getMixinNodeTypes();
+
+        n.addMixin("mix:shareable");
+//        n.addMixin("mix:created");
+//        n.addMixin("mix:lastModified");
+        // TODO: add ACL for this node according to "active" property
     }
+
 }

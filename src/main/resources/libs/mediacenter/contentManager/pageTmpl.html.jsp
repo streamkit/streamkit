@@ -11,10 +11,11 @@
     <script type="text/javascript" src="/system/sling.js"></script>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery-1.7.1.js"></script>
     <%--<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.js"></script>--%>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/underscore-1.2.1.js"></script>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone-min.js"></script>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone.modelbinding.js"></script>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone.validation.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/underscore-1.4.0.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone-0.9.2.js"></script>
+    <%--<script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone.modelbinding.js"></script>--%>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/rivets/rivets-0.3.10.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/backbone/backbone.validation-0.6.2.js"></script>
 
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/mediacenter/commons-${commons.version}.js"></script>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/mediacenter/content_management-${project.version}.js"></script>

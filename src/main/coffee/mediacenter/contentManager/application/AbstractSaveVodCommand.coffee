@@ -12,6 +12,7 @@ class window.AbstractSaveVodCommand
         formData['jcr:createdBy'] = "" # Sling should auto-fill this value
         formData['jcr:lastModified'] = "" # Sling should auto-fill this value
         formData['jcr:lastModifiedBy'] = "" # Sling should auto-fill this value
+        formData['active@TypeHint'] = 'Boolean'
         delete formData.isValid
         delete formData.messages
         delete formData.progress
