@@ -3,6 +3,8 @@ package org.mediacenter.content.post.processor;
 import java.util.List;
 
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.NonExistingResource;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.osgi.OsgiUtil;
 import org.apache.sling.servlets.post.Modification;
 import org.apache.sling.servlets.post.SlingPostProcessor;
@@ -33,7 +35,16 @@ public class AbstractPostProcessor implements SlingPostProcessor {
 
     public void process(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
         // run only if resourceType and operation match
-        if ( canProcessResourceType( request.getResource().getResourceType() ) &&
+
+        String resourceType = "";
+        if ( request.getResource().getResourceType() != Resource.RESOURCE_TYPE_NON_EXISTING ) {
+            resourceType = request.getResource().getResourceType();
+        } else {
+            resourceType = request.getParameter("sling:resourceType");
+        }
+
+
+        if ( canProcessResourceType( resourceType ) &&
                 canProcessOperation(changes.get(0).getType().name())) {
             doProcess(request, changes);
         }

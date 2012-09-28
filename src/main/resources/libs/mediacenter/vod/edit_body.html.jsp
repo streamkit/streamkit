@@ -14,7 +14,14 @@
 
         <form method="POST" id="vodForm" enctype="multipart/form-data" action="#" class="form-horizontal">
             <fieldset>
-                <%--<legend>Vod Content</legend>--%>
+
+                <div class="control-group">
+                    <label class="control-label" for="mediaFile">Media file:<sup title="This field is mandatory.">*</sup></label>
+                    <div class="controls">
+                        <input type="file" name="mediaFile" id="mediaFile" accept="video/mp4" class="input-file"/>
+                    </div>
+                </div>
+
                 <div class="control-group">
                     <label class="control-label" for="title">Title:<sup title="This field is mandatory.">*</sup></label>
                     <div class="controls">
@@ -54,16 +61,22 @@
                         <input class="input-xlarge" type="text" name="tags" id="tags"
                                required="true"
                                aria-required="true"
-                               title="Title must have at least 4 letters" />
+                               title="A tag must have at leats 4 letters" />
                     </div>
                 </div>
 
+                <!-- TBD
                 <div class="control-group">
-                    <label class="control-label" for="mediaFile">Media file:<sup title="This field is mandatory.">*</sup></label>
+                    <label class="control-label" for="active">Album:</label>
                     <div class="controls">
-                        <input type="file" name="mediaFile" id="mediaFile" accept="video/mp4" class="input-file"/>
+                        <input class="input-xlarge" type="text" name="album" id="album"
+                               required="false"
+                               aria-required="false"
+                               title="An album must have at least 3 letters"
+                               pattern="[a-zA-Z_0-9 -]{3,}" />
                     </div>
                 </div>
+                -->
 
                 <div class="actions" style="display:none">
                     <button id="submitBtn" type="submit" style="display:none" class="btn primary">Process</button>
