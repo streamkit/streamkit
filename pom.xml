@@ -351,7 +351,6 @@
                         <version>2.5</version>
                         <dependencies>
                             <!-- dependencies added for Jenkins build -->
-                            <!--
                             <dependency>
                                 <groupId>log4j</groupId>
                                 <artifactId>log4j</artifactId>
@@ -361,11 +360,6 @@
                                 <groupId>asm</groupId>
                                 <artifactId>asm</artifactId>
                                 <version>3.0</version>
-                            </dependency> -->
-                            <dependency>
-                                <groupId>net.sourceforge.cobertura</groupId>
-                                <artifactId>cobertura</artifactId>
-                                <version>1.9.4.1</version>
                             </dependency>
                         </dependencies>
                         <configuration>
