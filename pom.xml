@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -23,6 +24,50 @@
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/content_management.git</git.repo>
         <git.subtree>bundles/content_management</git.subtree>
         <commons.version>1.10</commons.version>
+
+        <!-- Set this to run the server on a specific port
+        <http.port></http.port>
+         -->
+
+        <!--
+        To keep the instance under test running and run individual tests
+        against it, use:
+
+            mvn clean verify -DkeepJarRunning=true -Dhttp.port=8080
+
+        optionally using jar.executor.vm.options to enable remote debugging,
+        and in another console:
+
+            mvn -o verify -Dtests.to.run=**/**Test.java -Dtest.server.url=http://localhost:8080
+
+        optionally using -Dmaven.surefire.debug to enable debugging.
+        -->
+
+        <!-- Set this to run tests against an existing server instance -->
+        <keepJarRunning>false</keepJarRunning>
+
+        <!-- URL of a server against which to run tests -->
+        <test.server.url/>
+
+        <!-- Set this to run tests against a specific hostname, if test.server.url is not set-->
+        <test.server.hostname/>
+
+        <!-- Options for the VM that executes our runnable jar -->
+        <jar.executor.vm.options>-Xmx512m</jar.executor.vm.options>
+
+        <!-- Change this to use longer or shorter timeouts for testing -->
+        <sling.testing.timeout.multiplier>1.0</sling.testing.timeout.multiplier>
+
+        <!-- Set this to run the executable jar in a specified filesystem folder -->
+        <jar.executor.work.folder/>
+
+        <!-- Options for the jar to execute. $JAREXEC_SERVER_PORT$ is replaced by the
+            selected port number -->
+        <jar.executor.jar.options>-p $JAREXEC_SERVER_PORT$</jar.executor.jar.options>
+
+        <!-- Change this to run selected tests only -->
+        <tests.to.run>**/**Test.java</tests.to.run>
+        <!--<tests.to.run>src/integration-test/**/**</tests.to.run>-->
     </properties>
 
     <scm>
@@ -37,6 +82,355 @@
             <properties>
                 <commons.version>1.11-SNAPSHOT</commons.version>
             </properties>
+        </profile>
+
+        <profile>
+            <id>integration-tests</id>
+            <!--
+             The integration-tests profile has been inspired by the
+             org.apache.sling.testing.samples.integrationtests
+            -->
+            <dependencies>
+
+                <!-- Apache Sling server instance to run the integration tests with -->
+                <dependency>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.launchpad</artifactId>
+                    <classifier>standalone</classifier>
+                    <version>6</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.testing.tools</artifactId>
+                    <!-- version to be replaced with an official release version when that happens -->
+                    <version>1.0.5.build02Oct2012</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- sling testing tools bundles requires httpclient -->
+                <dependency>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient-osgi</artifactId>
+                    <version>4.1.2</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore-osgi</artifactId>
+                    <version>4.1.2</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- Additional bundles needed by the Sling instance under test -->
+                <dependency>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.junit.core</artifactId>
+                    <version>1.0.6</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.jcr.jackrabbit.accessmanager</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- Cobertura OSGI bundle used to compute code coverage during integration tests -->
+                <dependency>
+                    <groupId>net.sourceforge.cobertura</groupId>
+                    <artifactId>cobertura</artifactId>
+                    <version>1.9.4.1</version>
+                    <classifier>osgi</classifier>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>2.2</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <!-- sling folder is the workdir of the executable jar that we test -->
+                                        <include>sling</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-runnable-jar</id>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <includeArtifactIds>org.apache.sling.launchpad</includeArtifactIds>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>false</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!--
+                                    Consider all dependencies as candidates to be installed
+                                    as additional bundles. We use system properties to define
+                                    which bundles to install in which order.
+                                -->
+                                <id>copy-additional-bundles</id>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/sling/additional-bundles
+                                    </outputDirectory>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>false</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <!-- Find free ports to run our server -->
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>reserve-server-port</id>
+                                <goals>
+                                    <goal>reserve-network-port</goal>
+                                </goals>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <portNames>
+                                        <portName>http.port</portName>
+                                    </portNames>
+                                </configuration>
+                            </execution>
+
+                            <!-- include integration tests folder when compiling tests -->
+                            <execution>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/integration-test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                    <!-- make the current bundle available to integration tests -->
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.5</version>
+                        <executions>
+                            <execution>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/sling/additional-bundles
+                                    </outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>${project.artifactId}-${project.version}.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- execute the integration tests with failsafe plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.12.4</version>
+                        <dependencies>
+                            <!-- for a complete list of providers you can check
+                                http://maven.apache.org/plugins/maven-failsafe-plugin/examples/providers.html -->
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit4</artifactId>
+                                <version>2.12.4</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <!-- execute only groups marked with IntegrationTest -->
+                            <groups>org.mediacenter.testing.IntegrationTest</groups>
+
+                            <!-- show IT results together with the unit tests results -->
+                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+
+                            <debugForkedProcess>${maven.surefire.debug}</debugForkedProcess>
+                            <includes>
+                                <include>${tests.to.run}</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <test.server.url>${test.server.url}</test.server.url>
+                                <test.server.hostname>${test.server.hostname}</test.server.hostname>
+                                <jar.executor.server.port>${http.port}</jar.executor.server.port>
+                                <jar.executor.vm.options>${jar.executor.vm.options}</jar.executor.vm.options>
+                                <jar.executor.jar.folder>${project.basedir}/target/dependency</jar.executor.jar.folder>
+                                <jar.executor.jar.name.regexp>org.apache.sling.launchpad.*jar$
+                                </jar.executor.jar.name.regexp>
+                                <jar.executor.work.folder>${jar.executor.work.folder}</jar.executor.work.folder>
+                                <jar.executor.jar.options>${jar.executor.jar.options}</jar.executor.jar.options>
+                                <additional.bundles.path>${project.basedir}/target/sling/additional-bundles
+                                </additional.bundles.path>
+                                <keepJarRunning>${keepJarRunning}</keepJarRunning>
+                                <server.ready.timeout.seconds>60</server.ready.timeout.seconds>
+                                <sling.testing.timeout.multiplier>${sling.testing.timeout.multiplier}
+                                </sling.testing.timeout.multiplier>
+                                <server.ready.path.1>/:script src="system/sling.js"</server.ready.path.1>
+                                <server.ready.path.2>/.explorer.html:href="/libs/sling/explorer/css/explorer.css"
+                                </server.ready.path.2>
+                                <server.ready.path.3>/sling-test/sling/sling-test.html:Sling client library tests
+                                </server.ready.path.3>
+                                <start.bundles.timeout.seconds>30</start.bundles.timeout.seconds>
+                                <bundle.install.timeout.seconds>20</bundle.install.timeout.seconds>
+
+                                <!--
+                                    Define additional bundles to install by specifying the beginning of their artifact name.
+                                    The bundles are installed in lexical order of these property names.
+                                    All bundles must be listed as dependencies in this pom, or they won't be installed.
+                                -->
+                                <sling.additional.bundle.1>org.apache.sling.junit.core</sling.additional.bundle.1>
+                                <sling.additional.bundle.2>org.apache.sling.testing.tools</sling.additional.bundle.2>
+                                <sling.additional.bundle.3>org.apache.sling.junit.remote</sling.additional.bundle.3>
+                                <sling.additional.bundle.4>httpclient-osgi</sling.additional.bundle.4>
+                                <sling.additional.bundle.5>httpcore-osgi</sling.additional.bundle.5>
+                                <sling.additional.bundle.6>org.apache.sling.jcr.jackrabbit.accessmanager
+                                </sling.additional.bundle.6>
+                                <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
+                                <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
+                                <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
+
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+
+                    <!-- cobertura hook to calculate code coverage -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-it-maven-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <formats>
+                                <format>xml</format>
+                            </formats>
+                            <check>
+                                <haltOnFailure>false</haltOnFailure>
+                            </check>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>cobertura-clean</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>cobertura-instrument</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>instrument</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>cobertura-check-only</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- generate the code coverage report after integration tests through the ant task -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.cobertura</groupId>
+                                <artifactId>cobertura</artifactId>
+                                <version>1.9.4.1</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>post-integration-test</phase>
+                                <id>cobertura-report</id>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef classpathref="maven.runtime.classpath"
+                                                 resource="tasks.properties"/>
+                                        <mkdir dir="${project.build.directory}/site/cobertura"/>
+                                        <cobertura-report format="xml"
+                                                          datafile="${project.build.directory}/cobertura/cobertura.ser"
+                                                          destdir="${project.build.directory}/site/cobertura">
+                                        </cobertura-report>
+                                        <cobertura-report format="html"
+                                                          datafile="${project.build.directory}/cobertura/cobertura.ser"
+                                                          destdir="${project.build.directory}/site/cobertura">
+                                        </cobertura-report>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>cobertura-it-maven-plugin-maven2-release</id>
+                    <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
     </profiles>
 
@@ -176,7 +570,8 @@
                         </goals>
                         <configuration>
                             <coffeeDir>src/main/coffee</coffeeDir>
-                            <coffeeOutputDirectory>${project.build.directory}/coffee/js/mediacenter</coffeeOutputDirectory>
+                            <coffeeOutputDirectory>${project.build.directory}/coffee/js/mediacenter
+                            </coffeeOutputDirectory>
                             <compileIndividualFiles>true</compileIndividualFiles>
                             <bare>false</bare>
 
@@ -232,7 +627,7 @@
                     <verbose>true</verbose>
                     <skipTests>${maven.test.skip}</skipTests>
                     <!-- You might need to adjust this depending on your OS.  On Mac,
-                         this will launch your default browser -DbrowserPath=/usr/bin/firefox -->
+                        this will launch your default browser -DbrowserPath=/usr/bin/firefox -->
                     <browser>${browserPath}</browser>
                     <testOutput>${project.build.directory}/surefire-reports</testOutput>
                     <port>9801</port>
@@ -246,6 +641,23 @@
                         <phase>test-compile</phase>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- ignore integration tests groups -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.12.4</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <excludedGroups>org.mediacenter.testing.IntegrationTest</excludedGroups>
+                </configuration>
             </plugin>
 
         </plugins>
@@ -277,12 +689,6 @@
         <dependency>
             <groupId>javax.jcr</groupId>
             <artifactId>jcr</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>org.apache.sling.servlets.post</artifactId>
-            <version>2.1.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -335,17 +741,18 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <!-- this one is needed by integration tests, by SlingTestBase -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.event</artifactId>
             <scope>provided</scope>
             <version>2.4.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.annotations</artifactId>
         </dependency>
 
         <!-- JS Test
@@ -365,4 +772,5 @@
         </dependency>
 
     </dependencies>
+
 </project>
