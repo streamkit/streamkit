@@ -22,33 +22,12 @@ import org.mediacenter.testing.IntegrationTest;
  * To change this template use File | Settings | File Templates.
  */
 @Category(IntegrationTest.class)
-public class VodManagerAccessTest extends SlingTestBase {
-    final String demoChannelPath = "/content/channel/demo";
-
-    @Before
-    public void setupDemoChannel() throws Exception {
-        final SlingClient slingClient = new SlingClient(getServerBaseUrl(), ADMIN, ADMIN);
-        try {
-            slingClient.createNode(demoChannelPath, "sling:resourceType", "mediacenter:channel");
-        }
-        catch (Exception e) {
-            fail("Exception while setting up DEMO channel: " + e);
-        }
-    }
-
-    @After
-    public void deleteDemoChannel() {
-        final SlingClient slingClient = new SlingClient(getServerBaseUrl(), ADMIN, ADMIN);
-        try {
-            slingClient.delete(demoChannelPath);
-        }
-        catch (Exception e) {
-            fail("Exception while setting up DEMO channel: " + e);
-        }
-    }
+public class VodManagerAccessTest extends VodManagerIntegrationTestBase
+{
 
     @Test
-    public void testAccessToVodManager() throws Exception {
+    public void testAccessToVodManager() throws Exception
+    {
         getRequestExecutor().execute(
                 getRequestBuilder().buildGetRequest(demoChannelPath + ".json")
         ).assertStatus(200);
@@ -56,13 +35,13 @@ public class VodManagerAccessTest extends SlingTestBase {
         getRequestExecutor().execute(
                 getRequestBuilder()
                         .buildGetRequest(demoChannelPath + ".vodManager.html")
-                        .withCredentials("wrong","wrong")
+                        .withCredentials("wrong", "wrong")
         ).assertStatus(401); // UNAUTHORIZED
 
         getRequestExecutor().execute(
                 getRequestBuilder()
                         .buildGetRequest(demoChannelPath + ".vodManager.html")
-                        .withCredentials("admin","admin")
+                        .withCredentials("admin", "admin")
         ).assertStatus(200); // AUTHORIZED
 
     }
