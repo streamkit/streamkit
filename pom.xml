@@ -53,6 +53,7 @@
         <test.server.hostname/>
 
         <!-- Options for the VM that executes our runnable jar -->
+        <!--<jar.executor.vm.options>-Xmx512m -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=9001,server=y,suspend=y</jar.executor.vm.options>-->
         <jar.executor.vm.options>-Xmx512m</jar.executor.vm.options>
 
         <!-- Change this to use longer or shorter timeouts for testing -->
@@ -140,6 +141,8 @@
                     <artifactId>cobertura</artifactId>
                     <version>1.9.4.1</version>
                     <classifier>osgi</classifier>
+                    <!--<version>1.9.4-osgi-SNAPSHOT</version>-->
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
 
@@ -350,7 +353,6 @@
                         <artifactId>cobertura-it-maven-plugin</artifactId>
                         <version>2.5</version>
                         <dependencies>
-                            <!-- dependencies added for Jenkins build -->
                             <dependency>
                                 <groupId>oro</groupId>
                                 <artifactId>oro</artifactId>
@@ -427,26 +429,34 @@
                         </dependencies>
                         <executions>
                             <execution>
-                                <phase>post-integration-test</phase>
+                                <!--<phase>post-integration-test</phase>-->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>verify</phase>
+
                                 <id>cobertura-report</id>
                                 <configuration>
                                     <tasks>
                                         <taskdef classpathref="maven.runtime.classpath"
                                                  resource="tasks.properties"/>
                                         <mkdir dir="${project.build.directory}/site/cobertura"/>
+
                                         <cobertura-report format="xml"
                                                           datafile="${project.build.directory}/cobertura/cobertura.ser"
                                                           destdir="${project.build.directory}/site/cobertura">
                                         </cobertura-report>
+
                                         <cobertura-report format="html"
                                                           datafile="${project.build.directory}/cobertura/cobertura.ser"
                                                           destdir="${project.build.directory}/site/cobertura">
+                                            <fileset dir="${build.sourceDirectory}">
+                                                <include name="**/*.java"/>
+                                            </fileset>
                                         </cobertura-report>
                                     </tasks>
                                 </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+
                             </execution>
                         </executions>
                     </plugin>
@@ -659,8 +669,6 @@
                 <configuration>
                     <verbose>true</verbose>
                     <skipTests>${maven.test.skip}</skipTests>
-                    <!-- You might need to adjust this depending on your OS.  On Mac,
-                        this will launch your default browser -DbrowserPath=/usr/bin/firefox -->
                     <browser>${browserPath}</browser>
                     <testOutput>${project.build.directory}/surefire-reports</testOutput>
                     <port>9801</port>
@@ -675,6 +683,7 @@
                     </execution>
                 </executions>
             </plugin>
+
 
             <!-- ignore integration tests groups -->
             <plugin>
