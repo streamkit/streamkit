@@ -58,6 +58,24 @@ public class AbstractPostProcessorTest extends TestCase
         assertEquals(false, canProcessResourceType.invoke(processor, "my:resourceType_333"));
     }
 
+    public void testResourceTypeWithNullValue() throws Exception {
+        MockComponentContext ctx = new MockComponentContext();
+        Dictionary d = new Hashtable<String, Object>();
+        String types[] = {"my:resourceType1", "my:resourceType2"};
+        d.put( "sling.servlet.resourceTypes", types );
+        ctx.setProperties( d );
+
+        Method activateOP = getMethod("activate", ComponentContext.class);
+        activateOP.invoke( processor, ctx );
+
+        Object nullObj = null;
+        assertEquals(false, canProcessResourceType.invoke(processor, nullObj));
+        assertEquals(false, canProcessResourceType.invoke(processor, "AAA"));
+        assertEquals(true, canProcessResourceType.invoke(processor, "my:resourceType1"));
+        assertEquals(true, canProcessResourceType.invoke(processor, "my:resourceType2"));
+        assertEquals(false, canProcessResourceType.invoke(processor, "my:resourceType_333"));
+    }
+
 
     private Method getMethod(String name, Class... parameterTypes) {
         try {

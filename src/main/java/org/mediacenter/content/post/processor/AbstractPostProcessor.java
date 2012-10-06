@@ -1,6 +1,7 @@
 package org.mediacenter.content.post.processor;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -38,6 +39,7 @@ public class AbstractPostProcessor implements SlingPostProcessor {
         if ( request.getResource().getResourceType() != Resource.RESOURCE_TYPE_NON_EXISTING ) {
             resourceType = request.getResource().getResourceType();
         } else {
+            // during CREATE, resourceType is retrieved differently
             resourceType = request.getParameter("sling:resourceType");
         }
 
@@ -52,6 +54,10 @@ public class AbstractPostProcessor implements SlingPostProcessor {
     protected void doProcess(SlingHttpServletRequest request, List<Modification> changes) throws Exception{}
 
     private Boolean canProcessResourceType( String resourceType ) {
+        if ( resourceType == null ) {
+            resourceType = UUID.randomUUID().toString();
+        }
+
         if ( resourceTypes == null ) {
             return true;
         }
