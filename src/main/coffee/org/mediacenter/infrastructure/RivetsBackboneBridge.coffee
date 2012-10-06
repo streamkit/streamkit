@@ -1,7 +1,7 @@
  ###
  Utility to configure rivets binding library for Backbone binding
   ###
- rivets.configure({
+ rivets?.configure({
           adapter: {
             subscribe: (obj, keypath, callback) ->
               obj.bind('change:' + keypath, callback)
