@@ -132,17 +132,15 @@
         <h3>Embed Video</h3>
     </div>
     <div class="modal-body">
+        <%
+            String embedURL = request.getRequestURL().toString().replaceAll("fplayer", "player").replaceAll("iplayer", "player");
+        %>
         <h4>Select, copy and paste the code below</h4>
 
         <textarea rows="3" name="code" id="code" style="height: 150px; width: 100%">
-            <%
-                String embedURL = request.getRequestURL().toString().replaceAll("fplayer", "player").replaceAll("iplayer", "player");
-            %>
-            <iframe src="<%=embedURL%>"
-                    scrolling="no" frameborder="0" vspace="0" hspace="0" marginwidth="0" marginheight="0"
-                    height="430" width="640">
-                <%=resource.getName()%>
-            </iframe>
+<iframe src="<%=embedURL%>" scrolling="no" frameborder="0" vspace="0" hspace="0" marginwidth="0" marginheight="0" height="430" width="640">
+    <%=resource.getName()%>
+</iframe>
         </textarea>
     </div>
 </div>

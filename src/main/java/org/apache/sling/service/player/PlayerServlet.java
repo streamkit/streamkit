@@ -148,6 +148,11 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             PropertyIterator itResourceNodeProperties = resourceNode.getProperties();
             while(itResourceNodeProperties.hasNext()) {
                 javax.jcr.Property property = itResourceNodeProperties.nextProperty();
+
+                if ( property.isMultiple() ) { // fix for mix:shareable
+                    continue;
+                }
+
                 String propertyName = property.getName();
                 String propertyValue = property.getValue().getString();
                 if ("snapshotPath".equals(propertyName)) {
