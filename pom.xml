@@ -15,14 +15,13 @@
     See the License for the specific language governing permissions
     and limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.mediacenter</groupId>
     <artifactId>media-center-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9</version>
 
     <name>Media Center Bundles Parent</name>
     <description>The parent project for Media Center Bundles</description>
@@ -343,10 +342,10 @@
                 <keepJarRunning>false</keepJarRunning>
 
                 <!-- URL of a server against which to run tests -->
-                <test.server.url/>
+                <test.server.url />
 
                 <!-- Set this to run tests against a specific hostname, if test.server.url is not set-->
-                <test.server.hostname/>
+                <test.server.hostname />
 
                 <!-- Options for the VM that executes our runnable jar -->
                 <!-- TO DEBUG THE SLING INSTANCE UNDER TESTS, OR THE BUNDLES UNDER TEST UNCOMMENT THE NEXT LINE -->
@@ -357,7 +356,7 @@
                 <sling.testing.timeout.multiplier>1.0</sling.testing.timeout.multiplier>
 
                 <!-- Set this to run the executable jar in a specified filesystem folder -->
-                <jar.executor.work.folder/>
+                <jar.executor.work.folder />
 
                 <!-- Options for the jar to execute. $JAREXEC_SERVER_PORT$ is replaced by the
              selected port number -->
@@ -720,20 +719,15 @@
                                 <id>cobertura-report</id>
                                 <configuration>
                                     <tasks>
-                                        <taskdef classpathref="maven.runtime.classpath"
-                                                 resource="tasks.properties"/>
-                                        <mkdir dir="${project.build.directory}/site/cobertura"/>
+                                        <taskdef classpathref="maven.runtime.classpath" resource="tasks.properties" />
+                                        <mkdir dir="${project.build.directory}/site/cobertura" />
 
-                                        <cobertura-report format="xml"
-                                                          datafile="${project.build.directory}/cobertura/cobertura.ser"
-                                                          destdir="${project.build.directory}/site/cobertura">
+                                        <cobertura-report format="xml" datafile="${project.build.directory}/cobertura/cobertura.ser" destdir="${project.build.directory}/site/cobertura">
                                         </cobertura-report>
 
-                                        <cobertura-report format="html"
-                                                          datafile="${project.build.directory}/cobertura/cobertura.ser"
-                                                          destdir="${project.build.directory}/site/cobertura">
+                                        <cobertura-report format="html" datafile="${project.build.directory}/cobertura/cobertura.ser" destdir="${project.build.directory}/site/cobertura">
                                             <fileset dir="${build.sourceDirectory}">
-                                                <include name="**/*.java"/>
+                                                <include name="**/*.java" />
                                             </fileset>
                                         </cobertura-report>
                                     </tasks>
