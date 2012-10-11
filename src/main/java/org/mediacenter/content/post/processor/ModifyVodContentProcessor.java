@@ -1,27 +1,22 @@
 package org.mediacenter.content.post.processor;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
-
-import org.apache.jackrabbit.api.security.principal.PrincipalManager;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.request.RequestParameter;
-import org.apache.sling.commons.osgi.OsgiUtil;
-import org.apache.sling.jcr.base.util.AccessControlUtil;
-import org.apache.sling.servlets.post.Modification;
-import org.apache.sling.servlets.post.SlingPostProcessor;
-
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
+import org.apache.jackrabbit.api.security.principal.PrincipalManager;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.request.RequestParameter;
+import org.apache.sling.jcr.base.util.AccessControlUtil;
+import org.apache.sling.servlets.post.Modification;
+import org.apache.sling.servlets.post.SlingPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +26,15 @@ import org.slf4j.LoggerFactory;
  */
 
 @Component(immediate = true, metatype = false,
-        name = "org.mediacenter.content.post.processor.CreateVodContentProcessor")
+        name = "org.mediacenter.content.post.processor.ModifyVodContentProcessor")
 @Service(SlingPostProcessor.class)
 @Properties({
         @Property(name = "service.description",
-                value = "Mediacenter - CreateVod post processor"),
+                value = "Mediacenter - ModifyVod post processor"),
         @Property(name = "sling.servlet.resourceTypes", value = { "mediacenter:vod" }),
-        @Property(name = "sling.post.processor", value = "CREATE")
+        @Property(name = "sling.post.processor", value = "MODIFY")
 })
-public class CreateVodContentProcessor extends EditVodProcessorBase implements SlingPostProcessor
+public class ModifyVodContentProcessor extends AbstractPostProcessor implements SlingPostProcessor
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

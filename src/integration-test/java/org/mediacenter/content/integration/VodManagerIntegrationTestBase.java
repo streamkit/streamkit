@@ -29,7 +29,7 @@ public class VodManagerIntegrationTestBase extends SlingTestBase
             slingClient.delete(demoChannelPath);
         }
         catch (Exception e) {
-            fail("Exception while setting up DEMO channel: " + e);
+            fail("Exception while cleaning up DEMO channel: " + e);
         }
     }
 }

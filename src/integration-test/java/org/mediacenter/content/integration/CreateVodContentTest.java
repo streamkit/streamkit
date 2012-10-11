@@ -1,5 +1,7 @@
 package org.mediacenter.content.integration;
 
+import java.lang.Exception;
+
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -9,19 +11,12 @@ import org.junit.experimental.categories.Category;
 import org.mediacenter.testing.IntegrationTest;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ddascal
- * Date: 10/3/12
- * Time: 8:48 AM
- * To change this template use File | Settings | File Templates.
  */
 @Category(IntegrationTest.class)
 public class CreateVodContentTest extends VodManagerIntegrationTestBase
 {
     @Test
     public void testNewContentIsShareable() throws Exception {
-
-
         final MultipartEntity entity = new MultipartEntity();
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
@@ -36,10 +31,64 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
 
         getRequestExecutor().execute(
                 getRequestBuilder().buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video.json")
-                .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
         ).assertContentContains("mix:shareable");
-
-
     }
+
+    @Test
+    public void testNewContent_PrivatePermissions() throws Exception {
+        final MultipartEntity entity = new MultipartEntity();
+        // Add Sling POST options
+        entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
+        entity.addPart("description", new StringBody("test not public"));
+        entity.addPart("active", new StringBody("false"));
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildPostRequest(demoChannelPath + "/vod/2012/9/1/test_video_private")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+                        .withEntity(entity)
+        ).assertStatus(201);
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_private.json")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+        ).assertContentContains("rep:AccessControllable");
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_private.json")
+        ).assertStatus(404); // private content should not be visible
+    }
+
+
+    @Test
+    public void testNewContent_PublicPermissions() throws Exception {
+        final MultipartEntity entity = new MultipartEntity();
+        // Add Sling POST options
+        entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
+        entity.addPart("description", new StringBody("test not public"));
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildPostRequest(demoChannelPath + "/vod/2012/9/1/test_video_public")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+                        .withEntity(entity)
+        ).assertStatus(201);
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_public.json")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+        ).assertContentContains("rep:AccessControllable");
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_public.json")
+        ).assertStatus(200); // public content should be accessible
+    }
+
+
 
 }
