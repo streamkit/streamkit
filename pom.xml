@@ -167,7 +167,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
             <plugin>
                 <groupId>com.theoryinpractise</groupId>
                 <artifactId>coffee-maven-plugin</artifactId>
@@ -250,7 +249,7 @@
                         <phase>test-compile</phase>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
 
         </plugins>
 
