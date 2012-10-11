@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
         @Property(name = "sling.servlet.resourceTypes", value = { "mediacenter:vod" }),
         @Property(name = "sling.post.processor", value = "MODIFY")
 })
-public class ModifyVodContentProcessor extends AbstractPostProcessor implements SlingPostProcessor
+public class ModifyVodContentProcessor extends EditVodProcessorBase implements SlingPostProcessor
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

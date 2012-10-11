@@ -52,7 +52,7 @@ public class EditVodProcessorBase extends AbstractPostProcessor implements Sling
 
 
         RequestParameter privacyFlag = request.getRequestParameter("active");
-        if ("false".equals(privacyFlag.getString())) {
+        if ( privacyFlag != null && "false".equals(privacyFlag.getString())) {
             // rep:principalName=anonymous, new String[] {"jcr:read"}
 
             grantedPrivilegeNames = null;

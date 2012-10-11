@@ -6,7 +6,7 @@
     <parent>
         <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.9</version>
+        <version>1.10</version>
         <!--<relativePath>../parent/pom.xml</relativePath>-->
     </parent>
 
@@ -24,6 +24,10 @@
         <git.repo>git@git.crestin.tv:repos/media_center_bundles/content_management.git</git.repo>
         <git.subtree>bundles/content_management</git.subtree>
         <commons.version>1.10</commons.version>
+        <!-- hook to specify a different Sling version for testing -->
+        <!--<sling.version>6</sling.version>-->
+        <!-- hook to enable debuging during integration tests -->
+        <!--<jar.executor.vm.options>-Xmx512m -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=9002,server=y,suspend=y</jar.executor.vm.options>-->
     </properties>
 
     <scm>
@@ -163,7 +167,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+<!--
             <plugin>
                 <groupId>com.theoryinpractise</groupId>
                 <artifactId>coffee-maven-plugin</artifactId>
@@ -246,7 +250,7 @@
                         <phase>test-compile</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
         </plugins>
 

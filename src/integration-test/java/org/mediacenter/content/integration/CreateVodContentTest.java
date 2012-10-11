@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mediacenter.testing.IntegrationTest;
 
+import static org.junit.Assert.assertFalse;
+
 /**
  */
 @Category(IntegrationTest.class)
@@ -80,13 +82,15 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
         getRequestExecutor().execute(
                 getRequestBuilder()
                         .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_public.json")
-                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
-        ).assertContentContains("rep:AccessControllable");
+        ).assertStatus(200); // public content should be accessible
 
-        getRequestExecutor().execute(
+        String content = getRequestExecutor().execute(
                 getRequestBuilder()
                         .buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video_public.json")
-        ).assertStatus(200); // public content should be accessible
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+        ).getContent();
+
+        assertFalse("Content should not have ACL", content.contains("rep:AccessControllable"));
     }
 
 
