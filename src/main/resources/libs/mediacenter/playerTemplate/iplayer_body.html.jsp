@@ -17,7 +17,7 @@
         var mediaPath = jsonObj.mediaPaths[0].mediaPath;
         var downloadPath = jsonObj.mediaPaths[0].downloadPath;
 
-        var absoluteMediaPath = "http://" + streamUrl + mediaPath + "/playlist.m3u8";
+        var absoluteMediaPath = streamUrl + mediaPath + "/playlist.m3u8";
         var absoluteSnapshotPath = snapshotPath;
         var absoluteMediaDownloadPath = downloadPath;
 
