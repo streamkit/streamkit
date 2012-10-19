@@ -28,8 +28,12 @@
         }
     </script>
 
-    <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-modal.js"></script>
-    <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
+    <%--<script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-modal.js"></script>--%>
+    <%--<link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">--%>
+
+    <script src="<%= request.getContextPath() %>/assets/bootstrap/bootstrap-modal-1.4.0.js"></script>
+    <link href="<%= request.getContextPath() %>/assets/bootstrap/bootstrap-1.4.0.css" rel="stylesheet">
+
     <link href="<%= request.getContextPath() %>/assets/vod/css/public_player.css" media="screen" rel="stylesheet">
 
     <script type="text/javascript" src="<%= request.getContextPath() %>/system/sling.js"></script>
