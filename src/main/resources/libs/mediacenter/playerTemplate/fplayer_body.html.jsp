@@ -6,6 +6,8 @@
 
 
 <!-- TODO:// The download link should be generated on page init together with the entire content -->
+<script type="text/javascript" src="http://watt.at/clientStrobe/lib/swfobject.js"></script>
+<script type="text/javascript" src="http://watt.at/clientStrobe/lib/ParsedQueryString.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -33,16 +35,57 @@
         // Add menu download link value
         $("#download").attr("href", absoluteMediaDownloadPath);
 
-        var videoPlayerContainer = $("#video_player");
-        videoPlayerContainer.html("<object width='100%' height='100%'>" +
-                "<param name='movie' value='http://fpdownload.adobe.com/strobe/FlashMediaPlayback_101.swf'></param>" +
-                "<param name='flashvars' value='src=" + absoluteMediaPath + "&autoPlay=" + autoPlay + "&poster=" + absoluteSnapshotPath + "'>" +
-                "</param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'>" +
-                "</param><embed src='http://fpdownload.adobe.com/strobe/FlashMediaPlayback_101.swf' " +
-                "type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' " +
-                "width='100%' height='100%' flashvars='src=" + absoluteMediaPath + "&autoPlay=" + autoPlay + "&poster=" + absoluteSnapshotPath + "'>" +
-                "</embed></object>");
+        // Embed OSMF player
+        var playerAbsoluteURL = "http://watt.at/clientStrobe";
+        var pqs = new ParsedQueryString();
+        var parameterNames = pqs.params(false);
+        // Note that the buffer parameters below increase the OSMF defaults by 10 seconds
+        var parameters = {
+            src: absoluteMediaPath,
+            autoPlay: autoPlay,
+            poster: absoluteSnapshotPath,
+            verbose: true,
+            controlBarAutoHide: "true",
+            controlBarPosition: "bottom"
+        };
 
+        for (var i = 0; i < parameterNames.length; i++) {
+            var parameterName = parameterNames[i];
+            parameters[parameterName] = pqs.param(parameterName) ||
+            parameters[parameterName];
+        }
+
+        // Escape the ampersands so any URL params pass through OSMF into Wowza
+        s = parameters['src'];
+        s = escape(s);
+        parameters['src'] = s;
+
+        var wmodeValue = "direct";
+        var wmodeOptions = ["direct", "opaque", "transparent", "window"];
+        if (parameters.hasOwnProperty("wmode")) {
+            if (wmodeOptions.indexOf(parameters.wmode) >= 0) {
+                wmodeValue = parameters.wmode;
+            }
+            delete parameters.wmode;
+        }
+
+        // Embed the player SWF:
+        swfobject.embedSWF(
+                playerAbsoluteURL + "/StrobeMediaPlayback.swf"
+                , "StrobeMediaPlayback"
+                , "100%"
+                , "100%"
+                , "10.3.0"
+                , playerAbsoluteURL + "/expressInstall.swf"
+                , parameters
+                , {
+                    allowFullScreen: "true",
+                    wmode: wmodeValue
+                }
+                , {
+                    name: "StrobeMediaPlayback"
+                }
+        );
 
         function ajaxCall(url) {
             var ajaxValue = $.ajax ({
@@ -60,9 +103,8 @@
     });
 </script>
 
-
-
-<div id="video_player" class="video_player" >Your browser does not support HTML5 video tags.</div>
-
+ <div id="video_player" class="video_player">
+    <div id="StrobeMediaPlayback" style="background-color: #FFFFFF">In order to view this content you need the latest version of Adobe Flash Player. <a href="http://get.adobe.com/flashplayer/" target="_blank">Please click here to download.</a></div>
+ </div>
 
 
