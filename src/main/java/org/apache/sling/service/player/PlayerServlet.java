@@ -124,22 +124,47 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
             }
 
 
+            // Display mediaPath property array
+            w.key("mediaPaths");
+            w.array();
 
-
-            String nodeMediaPath = null;
             NodeIterator itResourceNodes = resourceNode.getNodes();
             while (itResourceNodes.hasNext()) {
                 Node mediaPathNode = itResourceNodes.nextNode();
-                nodeMediaPath = mediaPathNode.getProperty("mediaPath").getValue().getString();
+                PropertyIterator itMediaPathProperties = mediaPathNode.getProperties();
+                w.object();
+                while (itMediaPathProperties.hasNext()) {
+                    javax.jcr.Property p = itMediaPathProperties.nextProperty();
 
+                    // fix for CMS-48
+                    if ("jcr:data".equals(p.getName()) ) {
+                        continue;
+                    }
+
+                    String value = p.getValue().getString();
+
+                    // Build absolute path to Wowza media files
+                    if ("mediaPath".equals(p.getName())) {
+                        String mediaHttpUrl = httpUrl.replace("http://", "http/");
+                        // Media path should be with prefix for VOD and only the streamname for LIVE
+                        String mediaPath = (isVodResource) ? mediaHttpUrl + "/" + value : value;
+                        w.key(p.getName()).value(mediaPath);
+
+                        // Build absolute download path to media file
+                        String downloadPath = httpUrl + "/" + value;
+                        w.key("downloadPath").value(downloadPath);
+
+                        if (cdnService != null) {
+                            w.key("connectionCounts").value(cdnService.connectionCounts(value));
+                        }
+                        continue;
+                    }
+
+                    w.key(p.getName()).value(value);
+                }
+                w.endObject();
             }
-
-            String downloadPath = httpUrl + nodeMediaPath;
-            w.key("downloadPath").value(downloadPath);
-
-            if (cdnService != null) {
-                w.key("connectionCounts").value(cdnService.connectionCounts(nodeMediaPath));
-            }
+            w.endArray();
 
             w.endObject();
 
@@ -150,4 +175,3 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
         }
     }
 }
-
