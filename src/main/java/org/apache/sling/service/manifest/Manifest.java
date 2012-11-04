@@ -237,7 +237,7 @@ public class Manifest {
             String nodeMediaPath = mediaPathNode.getProperty("mediaPath").getValue().getString();
             String mediaHttpUrl = httpUrl.replace("http://", "http/");
             // Media path should be with prefix for VOD and only the streamname for LIVE
-            String mediaPath = (isVodResource) ? "mp4:" + mediaHttpUrl + nodeMediaPath : nodeMediaPath;
+            String mediaPath = (isVodResource) ? "mp4:" + mediaHttpUrl + "/" + nodeMediaPath : nodeMediaPath;
             media.setMediaURL(mediaPath);
             
             // Get bitrate
