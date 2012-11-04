@@ -118,7 +118,7 @@ public class PlayerServlet extends SlingSafeMethodsServlet  {
                 String propertyName = property.getName();
                 String propertyValue = property.getValue().getString();
                 if ("snapshotPath".equals(propertyName)) {
-                    propertyValue = httpUrl + propertyValue;
+                    propertyValue = httpUrl + "/" +  propertyValue;
                 }
                 w.key(propertyName).value(propertyValue);
             }
