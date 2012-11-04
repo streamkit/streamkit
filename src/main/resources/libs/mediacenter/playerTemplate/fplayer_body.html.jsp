@@ -14,7 +14,7 @@
         // Read JSON with content information, parse it, and display the HMTL5 video tag
         var browserUrl = window.location.href;
         var jsonBrowserUrl = browserUrl.replace(".fplayer.html", ".player.json");
-        var manifest_f4m = browserUrl.replace(".fplayer.html", ".player.f4m");
+        var manifest_f4m = browserUrl.replace(".fplayer.html", ".player.f4m").replace(new RegExp("/menu" + '$'), "");
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
         var downloadPath = jsonObj.downloadPath;
@@ -50,7 +50,8 @@
             controlBarPosition: "bottom",
             streamType: streamType,
             initialBufferTime: 2,
-            expandedBufferTime: 7
+            expandedBufferTime: 7,
+            plugin_cdn: playerAbsoluteURL + "/StrobeCDNPlugin.swf"
         };
 
         for (var i = 0; i < parameterNames.length; i++) {
