@@ -14,22 +14,23 @@
         // Read JSON with content information, parse it, and display the HMTL5 video tag
         var browserUrl = window.location.href;
         var jsonBrowserUrl = browserUrl.replace(".fplayer.html", ".player.json");
+        var manifest_f4m = browserUrl.replace(".fplayer.html", ".player.f4m");
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
-        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
+        var downloadPath = jsonObj.downloadPath;
         var snapshotPath = jsonObj.snapshotPath;
         var duration = jsonObj.duration;
 
         var autoPlay = true;
+        var streamType = "live";
         if (duration !== undefined) {
             autoPlay = false;
+            streamType = "recorded";
         }
 
         var absoluteMediaDownloadPath = downloadPath;
 
-        var streamUrl = jsonObj.streamingServers[0].streamUrl;
-        var mediaPath = jsonObj.mediaPaths[0].mediaPath;
-        var absoluteMediaPath = streamUrl + mediaPath + "/manifest.f4m";
+
         var absoluteSnapshotPath = snapshotPath;
 
         // Add menu download link value
@@ -41,12 +42,15 @@
         var parameterNames = pqs.params(false);
         // Note that the buffer parameters below increase the OSMF defaults by 10 seconds
         var parameters = {
-            src: absoluteMediaPath,
+            src: manifest_f4m,
             autoPlay: autoPlay,
             poster: absoluteSnapshotPath,
             verbose: true,
             controlBarAutoHide: "true",
-            controlBarPosition: "bottom"
+            controlBarPosition: "bottom",
+            streamType: streamType,
+            initialBufferTime: 2,
+            expandedBufferTime: 7
         };
 
         for (var i = 0; i < parameterNames.length; i++) {

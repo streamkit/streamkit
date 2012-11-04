@@ -263,10 +263,12 @@
                         </Embed-Dependency>
                         -->
                         <Sling-Bundle-Resources>
-                            /assets;overwrite:=true;uninstall:=true
+                            /assets;overwrite:=true;uninstall:=true,
+                            /libs/mediacenter/fmle/fmle_profile.xml;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/fmle/fmle_profile.xml
                         </Sling-Bundle-Resources>
 
                         <Sling-Initial-Content>
+                            crossdomain.xml;overwrite:=true;uninstall:=true,
                             SLING-INF;overwrite:=false,
                             <!--SLING-CONTENT/content/player;overwrite:=true;uninstall:=true;path:=SLING-CONTENT/content/player,-->
                             /libs/mediacenter/playerTemplate;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
@@ -279,7 +281,7 @@
 
                             /libs/mediacenter/playerTemplate/fplayer_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
                             /libs/mediacenter/playerTemplate/iplayer_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
-                            /libs/mediacenter/playerTemplate/player_menu.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate
+                            /libs/mediacenter/playerTemplate/player_menu.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
                         </Sling-Initial-Content>
                         <Export-Package>org.apache.sling.cdn.service.interfaces</Export-Package>
                     </instructions>

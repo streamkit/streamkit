@@ -10,14 +10,13 @@
         // Read JSON with content information, parse it, and display the HMTL5 video tag
         var browserUrl = window.location.href;
         var jsonBrowserUrl = browserUrl.replace(".iplayer.html", ".player.json");
+        var manifest_m3u8 = browserUrl.replace(".iplayer.html", ".player.m3u8");
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
-        var streamUrl = jsonObj.streamingServers[0].streamUrl;
-        var snapshotPath = jsonObj.snapshotPath;
-        var mediaPath = jsonObj.mediaPaths[0].mediaPath;
-        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
 
-        var absoluteMediaPath = streamUrl + mediaPath + "/playlist.m3u8";
+        var snapshotPath = jsonObj.snapshotPath;
+        var downloadPath = jsonObj.downloadPath;
+
         var absoluteSnapshotPath = snapshotPath;
         var absoluteMediaDownloadPath = downloadPath;
 
@@ -26,7 +25,7 @@
         $("#download").attr("href", absoluteMediaDownloadPath);
 
         var videoPlayerContainer = $("#video_player");
-        videoPlayerContainer.html("<video id='video' width='100%' height='100%' poster='" + absoluteSnapshotPath + "' src='" + absoluteMediaPath + "' controls></video>");
+        videoPlayerContainer.html("<video id='video' width='100%' height='100%' poster='" + absoluteSnapshotPath + "' src='" + manifest_m3u8 + "' controls></video>");
 
         videoPlayerContainer.css("-webkit-transform-style", "preserve-3d");
         $("#video").css("-webkit-transform-style", "preserve-3d");
