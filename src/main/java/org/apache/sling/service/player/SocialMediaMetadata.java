@@ -17,9 +17,6 @@ public class SocialMediaMetadata {
         String f4m_manifest = requestPath.replace(".html", ".f4m");
 
         Node mediaNode = request.getResource().adaptTo(Node.class);
-        Node httpPathNode = mediaNode.getSession().getNode(HTTP_JCR_PATH);
-        String httpUrl = httpPathNode.getProperty("httpUrl").getString();
-
 
         String videoPath = "http://watt.at/clientStrobe/StrobeMediaPlayback.swf?" +
                 "plugin_cdn=http://watt.at/clientStrobe/StrobeCDNPlugin.swf" + "&" +
