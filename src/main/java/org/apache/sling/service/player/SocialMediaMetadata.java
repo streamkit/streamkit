@@ -3,6 +3,8 @@ package org.apache.sling.service.player;
 import org.apache.sling.api.SlingHttpServletRequest;
 
 import javax.jcr.Node;
+import javax.jcr.Repository;
+import javax.jcr.Session;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -38,7 +40,10 @@ public class SocialMediaMetadata {
         String absoluteSnapshotPath = "http://us.resiliencesystem.org/sites/default/files/u257/livestream.jpg";
         if (mediaNode.hasProperty("snapshotPath")) {
             String snapshot = mediaNode.getProperty("snapshotPath").getString();
-            Node httpPathNode = mediaNode.getSession().getRootNode().getNode(HTTP_JCR_PATH);
+
+            Repository repository = mediaNode.getSession().getRepository();
+            Session sessionAdmin = repository.login();
+            Node httpPathNode = sessionAdmin.getRootNode().getNode(HTTP_JCR_PATH);
             String httpUrl = httpPathNode.getProperty("httpUrl").getString();
 
             absoluteSnapshotPath = httpUrl + "/" + snapshot;
