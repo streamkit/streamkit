@@ -283,7 +283,10 @@
                             /libs/mediacenter/playerTemplate/iplayer_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
                             /libs/mediacenter/playerTemplate/player_menu.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
                         </Sling-Initial-Content>
-                        <Export-Package>org.apache.sling.cdn.service.interfaces</Export-Package>
+                        <Export-Package>
+                            org.apache.sling.cdn.service.interfaces,
+                            org.apache.sling.service.player
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
