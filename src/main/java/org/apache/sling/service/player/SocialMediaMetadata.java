@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SocialMediaMetadata {
     
-    private final static String HTTP_JCR_PATH = "/config/http/server";
+    private final static String HTTP_JCR_PATH = "config/http/server";
 
     public static final String getVideoPath(SlingHttpServletRequest request, HttpServletResponse response) throws Exception {
         String requestPath = request.getRequestURL().toString();
@@ -35,15 +35,14 @@ public class SocialMediaMetadata {
 
         Node mediaNode = request.getResource().adaptTo(Node.class);
 
-        String snapshot = "http://us.resiliencesystem.org/sites/default/files/u257/livestream.jpg";
+        String absoluteSnapshotPath = "http://us.resiliencesystem.org/sites/default/files/u257/livestream.jpg";
         if (mediaNode.hasProperty("snapshotPath")) {
-            snapshot = mediaNode.getProperty("snapshotPath").getString();
-        }
+            String snapshot = mediaNode.getProperty("snapshotPath").getString();
+            Node httpPathNode = mediaNode.getSession().getRootNode().getNode(HTTP_JCR_PATH);
+            String httpUrl = httpPathNode.getProperty("httpUrl").getString();
 
-        Node httpPathNode = mediaNode.getSession().getNode(HTTP_JCR_PATH);
-        String httpUrl = httpPathNode.getProperty("httpUrl").getString();
-        
-        String absoluteSnapshotPath = httpUrl + "/" + snapshot;
+            absoluteSnapshotPath = httpUrl + "/" + snapshot;
+        }
 
         return absoluteSnapshotPath;
     }
