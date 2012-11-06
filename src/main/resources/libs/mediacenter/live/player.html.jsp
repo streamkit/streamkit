@@ -5,7 +5,7 @@
 
 <%
     String getVideoPath = SocialMediaMetadata.getVideoPath(slingRequest, response);
-    String image = SocialMediaMetadata.getScreenshot(slingRequest, response);
+    String thumbanil = SocialMediaMetadata.getThumbnail(slingRequest, response);
     String title = SocialMediaMetadata.getTitle(slingRequest, response);
     String description = SocialMediaMetadata.getDescription(slingRequest, response);
 %>
@@ -22,7 +22,7 @@
     <meta property="og:video:type" content="application/x-shockwave-flash" />
     <meta property="og:title" content="<%=title%>" />
     <meta property="og:description" content="<%=description%>" />
-    <meta property="og:image" content="<%=image%>" />
+    <meta property="og:image" content="<%=thumbanil%>" />
     <meta property="og:video" content="<%=getVideoPath%>" />
 
     <script language="javascript" type="text/javascript">

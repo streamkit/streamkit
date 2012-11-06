@@ -18,18 +18,18 @@
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
         var downloadPath = jsonObj.downloadPath;
-        var snapshotPath = jsonObj.snapshotPath;
         var duration = jsonObj.duration;
 
+        var snapshotPath = "http://watt.at/clientStrobe/livebroadcast_starting_shortly.jpg";
         var autoPlay = true;
         var streamType = "live";
         if (duration !== undefined) {
             autoPlay = false;
             streamType = "recorded";
+            snapshotPath = jsonObj.snapshotPath;
         }
 
         var absoluteMediaDownloadPath = downloadPath;
-
 
         var absoluteSnapshotPath = snapshotPath;
 

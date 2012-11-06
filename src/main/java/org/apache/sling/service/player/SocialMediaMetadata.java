@@ -18,9 +18,13 @@ public class SocialMediaMetadata {
 
         Node mediaNode = request.getResource().adaptTo(Node.class);
 
+        String absoluteSnapshotPath = "";
+
+
         String videoPath = "http://watt.at/clientStrobe/StrobeMediaPlayback.swf?" +
                 "plugin_cdn=http://watt.at/clientStrobe/StrobeCDNPlugin.swf" + "&" +
                 "src=" + f4m_manifest + "&" +
+                "poster=" + getScreenshot(request, response) + "&" +
                 "autoPlay=true" + "&" +
                 "controlBarAutoHide=true" + "&" +
                 "controlBarPosition=bottom" + "&" +
@@ -30,12 +34,29 @@ public class SocialMediaMetadata {
 
         return videoPath;
     }
-    
-    public static final String getScreenshot(SlingHttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    public static final String getThumbnail(SlingHttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Node mediaNode = request.getResource().adaptTo(Node.class);
 
-        String absoluteSnapshotPath = "http://us.resiliencesystem.org/sites/default/files/u257/livestream.jpg";
+        String absoluteSnapshotPath = "http://watt.at/clientStrobe/livestream_thumbnail.jpg";
+        if (mediaNode.hasProperty("snapshotPath")) {
+            String snapshot = mediaNode.getProperty("snapshotPath").getString();
+
+            Node httpPathNode = mediaNode.getSession().getRootNode().getNode(HTTP_JCR_PATH);
+            String httpUrl = httpPathNode.getProperty("httpUrl").getString();
+
+            absoluteSnapshotPath = httpUrl + "/" + snapshot;
+        }
+
+        return absoluteSnapshotPath;
+    }
+
+    private static final String getScreenshot(SlingHttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        Node mediaNode = request.getResource().adaptTo(Node.class);
+
+        String absoluteSnapshotPath = "http://watt.at/clientStrobe/livebroadcast_starting_shortly.jpg";
         if (mediaNode.hasProperty("snapshotPath")) {
             String snapshot = mediaNode.getProperty("snapshotPath").getString();
 

@@ -3,13 +3,26 @@
 <%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0" %>
 <%-- Ensure the presence of the Sling objects --%>
 <sling:defineObjects/>
-
+<%
+    String embedURL = request.getRequestURL().toString().replaceAll("fplayer", "player").replaceAll("iplayer", "player");
+%>
 
 <!-- Menu buttons -->
 <div class="video_menu">
     <a id="library">Video Library</a>
     <a id="download" target="_black">Download Video</a>
     <a id="embed" data-controls-modal="modal-embed">Embed Video</a>
+
+    <div id="fb-root" style="display: none"></div>
+    <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1&appId=113796565354147";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+    <div class="fb-like" data-href="<%=embedURL%>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
 
     <!-- TODO: add a share/like button -->
     <%--<a id="contact" data-controls-modal="modal-contact">Contact</a>--%>
@@ -132,9 +145,7 @@
         <h3>Embed Video</h3>
     </div>
     <div class="modal-body">
-        <%
-            String embedURL = request.getRequestURL().toString().replaceAll("fplayer", "player").replaceAll("iplayer", "player");
-        %>
+
         <h4>Select, copy and paste the code below</h4>
 
         <textarea rows="3" name="code" id="code" style="height: 150px; width: 100%">

@@ -48,6 +48,8 @@
 //            videoPlayerContainer.css("-webkit-transform","translateX(0)");
         });
 
+
+
         // TODO: the click listeners above are ERROR-PRONE, Hard to detect. Must handle things differently
         // an alternative: when library is opened, library could add a CSS style on the <body>, "library-open"
         // based on library-open css style, we could alter the #video and #video_player container.

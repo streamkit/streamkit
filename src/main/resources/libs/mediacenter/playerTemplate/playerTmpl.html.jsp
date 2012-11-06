@@ -1,4 +1,5 @@
 <%@ page import="org.apache.sling.api.request.RequestDispatcherOptions" %>
+<%@ page import="org.apache.sling.service.player.SocialMediaMetadata" %>
 <%@page session="false" %>
 <%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0" %>
 <%-- Ensure the presence of the Sling objects --%>
@@ -6,19 +7,24 @@
 
 <%
     String videoName = resource.getName();
+    String getVideoPath = SocialMediaMetadata.getVideoPath(slingRequest, response);
+    String thumbanil = SocialMediaMetadata.getThumbnail(slingRequest, response);
+    String title = SocialMediaMetadata.getTitle(slingRequest, response);
+    String description = SocialMediaMetadata.getDescription(slingRequest, response);
 %>
 
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-    <title>
-        Playing <%=videoName%>
-    </title>
+    <title>Playing <%=videoName%></title>
 
-    <!-- %=
-            //Packages.java.text.MessageFormat.format(rb.getString("page.template.title"), title)
-        % -->
+    <meta property="og:type" content="movie" />
+    <meta property="og:video:type" content="application/x-shockwave-flash" />
+    <meta property="og:title" content="<%=title%>" />
+    <meta property="og:description" content="<%=description%>" />
+    <meta property="og:image" content="<%=thumbanil%>" />
+    <meta property="og:video" content="<%=getVideoPath%>" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript">
