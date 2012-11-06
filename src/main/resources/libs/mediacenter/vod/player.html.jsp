@@ -5,7 +5,7 @@
 
 <%
     String getVideoPath = SocialMediaMetadata.getVideoPath(slingRequest, response);
-    String image = SocialMediaMetadata.getScreenshot(slingRequest, response);
+    String image = SocialMediaMetadata.getThumbnail(slingRequest, response);
     String title = SocialMediaMetadata.getTitle(slingRequest, response);
     String description = SocialMediaMetadata.getDescription(slingRequest, response);
 %>
