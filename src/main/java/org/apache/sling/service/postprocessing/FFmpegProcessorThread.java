@@ -57,7 +57,10 @@ public class FFmpegProcessorThread implements Runnable {
 
             Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
             String mimeType = mimeTypeProperty.getValue().getString();
-            if ("video/mp4".equals(mimeType) || "video/mpeg4".equals(mimeType) || "video/x-flv".equals(mimeType)) {
+            if ("video/mp4".equals(mimeType) ||
+                    "video/mpeg4".equals(mimeType) ||
+                    "video/x-flv".equals(mimeType) ||
+                    "video/x-f4v".equals(mimeType)) {
 
                 logger.log(LogService.LOG_INFO, "Reading file jcr");
 
@@ -88,6 +91,9 @@ public class FFmpegProcessorThread implements Runnable {
 
                 session.save();
 
+            // in case video mime type not supported
+            } else {
+                throw new Exception("This video format is not supported: " + mimeType);
             }
         } catch (ItemNotFoundException infe) {
             logger.log(LogService.LOG_DEBUG, "Node has been already removed!", infe.fillInStackTrace());

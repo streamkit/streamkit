@@ -63,7 +63,8 @@ public class Notification  {
         }
 
         if (e != null) {
-            return "MediaCenter notification. Upload error on mediaFile: " + resourceName;
+            return "MediaCenter notification. Upload error on mediaFile: " + resourceName + "\n" +
+                    e.getMessage();
         }
         return "MediaCenter notification. Upload success, mediaFile: " + resourceName;
     }
