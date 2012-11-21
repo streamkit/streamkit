@@ -264,7 +264,8 @@
                         -->
                         <Sling-Bundle-Resources>
                             /assets;overwrite:=true;uninstall:=true,
-                            /libs/mediacenter/fmle/fmle_profile.xml;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/fmle/fmle_profile.xml
+                            /libs/mediacenter/broadcaster/fmle_profile.xml;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/broadcaster/fmle_profile.xml,
+                            /libs/mediacenter/broadcaster/wirecast_profile.wcst;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/broadcaster/wirecast_profile.wcst
                         </Sling-Bundle-Resources>
 
                         <Sling-Initial-Content>

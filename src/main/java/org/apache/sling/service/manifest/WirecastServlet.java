@@ -23,14 +23,16 @@ import java.util.Locale;
 @Component(immediate=true)
 @Service
 @Properties({
-        @Property(name = "service.description", value="MediaCenter FMLE profile"),
+        @Property(name = "service.description", value="MediaCenter Wirecast profile"),
         @Property(name = "service.vendor", value="org.mediaCenter"),
         @Property(name = "sling.servlet.resourceTypes", value= "mediacenter:live"),
         @Property(name = "sling.servlet.selectors", value="player"),
-        @Property(name = "sling.servlet.extensions", value="fmle"),
+        @Property(name = "sling.servlet.extensions", value="wcst"),
         @Property(name = "sling.servlet.prefix", value="-1", propertyPrivate = true)
 })
-public class FMLEServlet extends SlingSafeMethodsServlet  {
+public class WirecastServlet extends SlingSafeMethodsServlet  {
+
+
 
     @Reference
     private SlingRepository repository;
@@ -66,11 +68,11 @@ public class FMLEServlet extends SlingSafeMethodsServlet  {
 
         response.setContentType("text/xml");
         response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Content-Disposition","attachment; filename=\"" + "FLashMediaLiverEncoder_profile.xml\"");//fileName);
+        response.setHeader("Content-Disposition","attachment; filename=\"" + "Wirecast_profile.wcst\"");//fileName);
 
         PrintWriter out = null;
         try {
-            String resourcePath = "/libs/mediacenter/broadcaster/fmle_profile.xml";
+            String resourcePath = "/libs/mediacenter/broadcaster/wirecast_profile.wcst";
             ResourceResolver resourceResolver = request.getResourceResolver();
             // req is the SlingHttpServletRequest
             Resource res = resourceResolver.getResource(resourcePath);
@@ -100,27 +102,25 @@ public class FMLEServlet extends SlingSafeMethodsServlet  {
 
 
             String strProfileTemplate = writer.toString();
-            String dynProfile = strProfileTemplate.replace(uStr("[url]"), uStr("rtmp://" + originServerPath + "/" + originServerLiveApp));
-            
-            String streamName = "";
-            String videoOutputsize = "";
-            String videoDatarate = "";
-            String audioDatarate = "";
-            String audioFormat = "MP3";
+            String url = "rtmp://" + originServerPath + "/" + originServerLiveApp;
+            String dynProfile = strProfileTemplate;
+
+            String outputs = "";
+            String presets = "";
             for (Manifest.Media media : manifest.getMedias()) {
-                streamName += media.getMediaURL() + ";";
-                if (media.getWidth() != null && media.getHeight() != null) {
-                    videoOutputsize += media.getWidth().toString() + "x" + media.getHeight().toString() + ";";
-                }
-                videoDatarate += media.getVideoBitrate().toString() + ";";
-                audioDatarate = media.getAudioBitrate().toString();
+                outputs += "<output output_enabled=\"1\" output_type=\"2\" output_transport=\"7\" output_url=\"" + url + "\" output_location=\"" + media.getMediaURL() +"\" output_presetname=\"" + media.getMediaURL() + "\" unique_id=\"1\" impersonate_fme_2_5=\"0\" output_branding=\"\" flash_user_agent=\"Wirecast/FM 1.0\" />";
+                presets += "<preset output_presetname=\"" + media.getMediaURL() + "\">\n" +
+                                "<movie format=\"Flash\">\n" +
+                                    "<track mo_width=\"" + media.getWidth().toString() + "\" mo_height=\"" +  media.getHeight().toString() + "\" type=\"1986618479\" colourspace=\"846624121\" mo_enabled=\"1\" " +
+                                    "codecname=\"H.264\" fps=\"25\" compressed=\"1\" timescale=\"3000\" " +
+                                    "target_bit_rate=\"" + media.getVideoBitrate().toString() + "\" profile=\"1835100526\" limit_bit_rate=\"0\" key_frame_rate=\"240\" timecode_interval=\"30\" timecode_on=\"0\" FlashVideoDisableH264BFrames=\"0\" main_concept=\"1\" />\n" +
+                                    "<track type=\"1635083375\" bps=\"16\" channels=\"2\" samplerate=\"44100\" mo_enabled=\"1\" codecname=\"MPEG-4 Audio\" target_bit_rate=\"" + media.getAudioBitrate().toString() + "\" timescale=\"44100\" />\n" +
+                                "</movie>\n" +
+                            "</preset>";
             }
 
-            dynProfile = dynProfile.replace(uStr("[stream]"), uStr(streamName));
-            dynProfile = dynProfile.replace(uStr("[videoDatarate]"), uStr(videoDatarate));
-            dynProfile = dynProfile.replace(uStr("[videoOutputsize]"), uStr(videoOutputsize));
-            dynProfile = dynProfile.replace(uStr("[audioFormat]"), uStr(audioFormat));
-            dynProfile = dynProfile.replace(uStr("[audioDatarate]"), uStr(audioDatarate));
+            dynProfile = dynProfile.replace("[outputs]", outputs);
+            dynProfile = dynProfile.replace("[presets]", presets);
 
             out.println(dynProfile);
 
@@ -130,12 +130,5 @@ public class FMLEServlet extends SlingSafeMethodsServlet  {
             if (out != null) out.close();
         }
     }
-    
-    private String uStr(String value) {
-        return value.replace("", "\u0000");
-    }
-
-
-
 }
 

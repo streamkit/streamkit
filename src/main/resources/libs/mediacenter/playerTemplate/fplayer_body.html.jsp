@@ -17,7 +17,7 @@
         var manifest_f4m = browserUrl.replace(".fplayer.html", ".player.f4m").replace(new RegExp("/menu" + '$'), "");
         var ajaxReturnJson = ajaxCall(jsonBrowserUrl);
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
-        var downloadPath = jsonObj.downloadPath;
+        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
         var duration = jsonObj.duration;
 
         var snapshotPath = "http://watt.at/clientStrobe/livebroadcast_starting_shortly.jpg";
@@ -38,20 +38,30 @@
 
         // Embed OSMF player
         var playerAbsoluteURL = "http://watt.at/clientStrobe";
+        // var playerAbsoluteURL = "http://fpdownload.adobe.com/strobe";
         var pqs = new ParsedQueryString();
         var parameterNames = pqs.params(false);
         // Note that the buffer parameters below increase the OSMF defaults by 10 seconds
         var parameters = {
             src: manifest_f4m,
             autoPlay: autoPlay,
+            autoDynamicStreamSwitch: "true",
             poster: absoluteSnapshotPath,
             verbose: true,
             controlBarAutoHide: "true",
             controlBarPosition: "bottom",
             streamType: streamType,
+            bufferTime: 7,
             initialBufferTime: 2,
             expandedBufferTime: 7,
-            plugin_cdn: playerAbsoluteURL + "/StrobeCDNPlugin.swf"
+            dynamicStreamBufferTime: 7,
+            liveBufferTime: 7,
+            liveDynamicStreamingBufferTime: 7,
+            minContinuousPlaybackTime: 16,
+            highQualityThreshold: 560,
+            bufferingOverlay: "true",
+            playButtonOverlay: "true",
+            plugin_cdn: playerAbsoluteURL + "/StrobeCDNPlugin_v1.1.swf"
         };
 
         for (var i = 0; i < parameterNames.length; i++) {
@@ -76,7 +86,8 @@
 
         // Embed the player SWF:
         swfobject.embedSWF(
-                playerAbsoluteURL + "/StrobeMediaPlayback.swf"
+                // playerAbsoluteURL+ "/FlashMediaPlayback.swf"
+                playerAbsoluteURL+ "/StrobeMediaPlayback.swf"
                 , "StrobeMediaPlayback"
                 , "100%"
                 , "100%"

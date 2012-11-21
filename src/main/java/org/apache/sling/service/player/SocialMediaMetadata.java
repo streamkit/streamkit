@@ -14,7 +14,7 @@ public class SocialMediaMetadata {
 
     public static final String getVideoPath(SlingHttpServletRequest request, HttpServletResponse response) throws Exception {
         String requestPath = request.getRequestURL().toString();
-        String f4m_manifest = requestPath.replace(".fplayer", ".player").replace(".html", ".f4m");
+        String f4m_manifest = requestPath.replace(".fplayer", ".player").replace(".html", ".f4m").replace("/menu", "");
 
         Node mediaNode = request.getResource().adaptTo(Node.class);
 

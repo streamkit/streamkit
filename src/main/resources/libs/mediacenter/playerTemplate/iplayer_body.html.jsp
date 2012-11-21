@@ -15,7 +15,7 @@
         var jsonObj = jQuery.parseJSON(ajaxReturnJson);
 
         var snapshotPath = jsonObj.snapshotPath;
-        var downloadPath = jsonObj.downloadPath;
+        var downloadPath = jsonObj.mediaPaths[0].downloadPath;
 
         var absoluteSnapshotPath = snapshotPath;
         var absoluteMediaDownloadPath = downloadPath;

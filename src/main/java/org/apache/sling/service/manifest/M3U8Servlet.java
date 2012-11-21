@@ -64,7 +64,7 @@ public class M3U8Servlet extends SlingSafeMethodsServlet  {
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = null;
-        long sessionNumber = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
+
         try {
 
             out = response.getWriter();
@@ -81,7 +81,7 @@ public class M3U8Servlet extends SlingSafeMethodsServlet  {
                 if (media.getAudioCodec() != null && media.getVideoCodec() != null) mediaParams += ",CODECS=\"" + media.getAudioCodec() + "," + media.getVideoCodec() + "\"";
                 if (media.getWidth() != null && media.getHeight() != null) mediaParams += ",RESOLUTION=" + media.getWidth() + "x" + media.getHeight() + "";
                 out.println(mediaParams);
-
+                long sessionNumber = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
                 out.println("http://" + manifest.getBaseURL() + "/" + media.getMediaURL() + "/chunklist.m3u8?wowzasessionid=" + sessionNumber);
             }
 
