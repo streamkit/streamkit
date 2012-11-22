@@ -269,8 +269,7 @@
                             <sling.additional.bundle.4>httpclient-osgi</sling.additional.bundle.4>
                             <sling.additional.bundle.5>httpcore-osgi</sling.additional.bundle.5>
 
-                            <sling.additional.bundle.6>org.apache.sling.jcr.jackrabbit.accessmanager
-                            </sling.additional.bundle.6>
+                            <sling.additional.bundle.6>org.apache.sling.jcr.jackrabbit.accessmanager</sling.additional.bundle.6>
                             <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
                             <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
                             <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
