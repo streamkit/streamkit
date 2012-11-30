@@ -84,13 +84,13 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            org.mediacenter.content,
-                            org.mediacenter.content.post.processor
+                            org.mediacenter.content;version=${project.version},
+                            org.mediacenter.content.post.processor;version=${project.version}
                         </Export-Package>
 
-                        <Private-Package>
+                        <!--<Private-Package>
                             org.mediacenter.content.post.processor
-                        </Private-Package>
+                        </Private-Package> -->
 
                         <!-- initial content to be loaded on bundle installation -->
                         <Sling-Bundle-Resources>
@@ -284,7 +284,7 @@
         <dependency>
             <groupId>org.mediacenter</groupId>
             <artifactId>commons_api</artifactId>
-            <version>1.6</version>
+            <version>1.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -374,11 +374,11 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.event</artifactId>
+            <version>3.1.4</version>
             <scope>provided</scope>
-            <version>2.4.0</version>
         </dependency>
 
-        <!-- JS Test -->
+        <!-- JS Unit Tests -->
         <dependency>
             <groupId>com.googlecode.jstd-maven-plugin</groupId>
             <artifactId>jstd-maven-plugin</artifactId>

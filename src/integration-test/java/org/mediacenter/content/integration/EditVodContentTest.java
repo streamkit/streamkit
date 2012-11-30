@@ -22,6 +22,7 @@ public class EditVodContentTest extends VodManagerIntegrationTestBase
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
         entity.addPart("description", new StringBody("test not public"));
+        entity.addPart("title", new StringBody("test_video_private"));
         entity.addPart("active", new StringBody("false"));
 
         getRequestExecutor().execute(

@@ -23,6 +23,7 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
         entity.addPart("description", new StringBody("test description"));
+        entity.addPart("title", new StringBody("test_video"));
 //        entity.addPart("code", new InputStreamBody(getClass().getResourceAsStream("/test.js"), "test.js"));
 
         getRequestExecutor().execute(
@@ -43,6 +44,7 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
         entity.addPart("description", new StringBody("test not public"));
+        entity.addPart("title", new StringBody("test_video_private"));
         entity.addPart("active", new StringBody("false"));
 
         getRequestExecutor().execute(
@@ -70,7 +72,8 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
         final MultipartEntity entity = new MultipartEntity();
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
-        entity.addPart("description", new StringBody("test not public"));
+        entity.addPart("description", new StringBody("test public"));
+        entity.addPart("title", new StringBody("test_video_public"));
 
         getRequestExecutor().execute(
                 getRequestBuilder()

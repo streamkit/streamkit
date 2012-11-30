@@ -1,12 +1,15 @@
 package org.mediacenter.content.post.processor;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
+import javax.servlet.http.HttpServletRequest;
 
 
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
@@ -46,6 +49,37 @@ public class CreateVodContentProcessor extends EditVodProcessorBase implements S
     @Override
     protected void doProcess(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
         super.doProcess(request, changes);
+        validateLocation(request, changes);
+    }
 
+    /**
+     * Method used to handle international characters and also to replace spaces with "_".
+     * -------------------
+     * NOTE : IN PROGRESS
+     * -------------------
+     * @param request
+     * @param changes
+     * @throws Exception
+     */
+    private void validateLocation(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
+        Session session = request.getResourceResolver().adaptTo(Session.class);
+
+        Node n = session.getNode(request.getResource().getPath());
+        if ( ! n.hasProperty("title")) {
+            return;
+        }
+        String name = n.getProperty("title").getString();
+
+        String normalizedName = getNormalizedName( name );
+
+        // to learn more about nameHint go to this URL
+        // http://sling.apache.org/site/manipulating-content-the-slingpostservlet-servletspost.html
+        n.setProperty("title", getNormalizedName( name ));
+    }
+
+    private String getNormalizedName( String name ) {
+        String nfdNormalizedString = Normalizer.normalize(name, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 }

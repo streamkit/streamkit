@@ -74,20 +74,13 @@
                     </div>
                 </div>
 
--                <!-- TBD
                  <div class="control-group">
                     <label class="control-label" for="active">Album:</label>
-                    <label class="control-label" for="mediaFile">Media file:<sup title="This field is mandatory.">*</sup></label>
                      <div class="controls">
                         <input class="input-xlarge" type="text" name="album" id="album"
-                               required="false"
-                               aria-required="false"
-                               title="An album must have at least 3 letters"
-                               pattern="[a-zA-Z_0-9 -]{3,}" />
-                        <input type="file" name="mediaFile" id="mediaFile" accept="video/mp4" class="input-file"/>
+                               data-value="model.album" />
                      </div>
                  </div>
--                -->
 
                 <div class="actions" style="display:none">
                     <button id="submitBtn" type="submit" style="display:none" class="btn primary">Process</button>
