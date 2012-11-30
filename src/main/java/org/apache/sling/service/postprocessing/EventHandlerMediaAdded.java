@@ -4,7 +4,6 @@ import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.event.JobProcessor;
 import org.apache.sling.jcr.api.SlingRepository;
-import org.apache.sling.jcr.resource.JcrResourceResolverFactory;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -34,9 +33,6 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
 
     @Reference
     private SlingRepository repository;
-
-    @Reference
-    private JcrResourceResolverFactory resolverFactory;
 
     @Reference
 	private EventAdmin eventAdmin;
