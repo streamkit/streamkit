@@ -54,6 +54,30 @@ public class CreateVodContentProcessor extends EditVodProcessorBase implements S
 
     /**
      * Method used to handle international characters and also to replace spaces with "_".
+     *
+     * Algorithm for Node Name Creation
+
+     * If request is posted with an URL ending in slash / or slash-star /*, the SlingPostServlet derives a name for the
+     * node to be created upon the request applying the following algorithm:
+
+     * If a :name parameter is supplied, the (first) value of this parameter is used unmodified as the name for the new node.
+     * If the name is illegally formed with respect to JCR name requirements, an exception will be thrown when trying
+     * to create the node.
+     *
+     * The assumption with the :name parameter is, that the caller knows what he (or she) is supplying and should get
+     * the exact result if possible.
+     *
+     * Otherwise if a :nameHint parameter is supplied, the (first) value of this parameter is used to generate the node name.
+     * A name filtering is applied to this hint to ensure a valid JCR node name.
+     *
+     * Otherwise a series of request parameters supplied to set content is inspected for a possible name.
+     * The list of the names of these parameter is configurable with the SlingPostServlet and defaults ot
+     * [ title, jcr:title, name, description, jcr:description, abstract ]. The first request parameter with a non-empty
+     * value is used and filtered to get the valid JCR name.
+     *
+     * Otherwise an ever increasing auto generated number is used. Filtering is also applied to this numeric name.
+     *
+     * To read more go to: http://sling.apache.org/site/manipulating-content-the-slingpostservlet-servletspost.html
      * -------------------
      * NOTE : IN PROGRESS
      * -------------------
@@ -63,18 +87,18 @@ public class CreateVodContentProcessor extends EditVodProcessorBase implements S
      */
     private void validateLocation(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
         Session session = request.getResourceResolver().adaptTo(Session.class);
-
+        /*
         Node n = session.getNode(request.getResource().getPath());
+
         if ( ! n.hasProperty("title")) {
             return;
         }
-        String name = n.getProperty("title").getString();
+
+
+        String name = request.getParameter(":nameHint");
 
         String normalizedName = getNormalizedName( name );
-
-        // to learn more about nameHint go to this URL
-        // http://sling.apache.org/site/manipulating-content-the-slingpostservlet-servletspost.html
-        n.setProperty("title", getNormalizedName( name ));
+        */
     }
 
     private String getNormalizedName( String name ) {

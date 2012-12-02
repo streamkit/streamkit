@@ -16,7 +16,7 @@ TestCase("AbstractSaveVodCommandTest", {
         @model.set({description:"some desc"})
         window.Sling = {currentPath: "content/channel/demo"}
         t = new Date()
-        assertEquals("actionUrl is wrong", @cmd.getActionUrl(), "content/channel/demo/vod/#{t.getFullYear()}/#{t.getMonth()+1}/vod_Test_ok" )
+        assertEquals("actionUrl is wrong", @cmd.getActionUrl(), "content/channel/demo/vod/#{t.getFullYear()}/#{t.getMonth()+1}/" )
 
     testActionUrlForExisintgVOD: ->
         @model.set({title:"vod_Test_ok"})
@@ -37,10 +37,12 @@ TestCase("AbstractSaveVodCommandTest", {
         @model.set({progress: 35})
         @model.set({isValid: true})
         @model.set({messages: [] })
+        @model.set({mediaFile: {} })
         formData = @cmd.createFormData()
         assertUndefined( formData.messages )
         assertUndefined( formData.isValid )
         assertUndefined( formData.progress )
+        assertUndefined( formData.mediaFile )
 
     testRequestHasCreateModifyInfo: ->
         formData = @cmd.createFormData()
@@ -49,5 +51,23 @@ TestCase("AbstractSaveVodCommandTest", {
         assertEquals(formData["jcr:lastModified"], "")
         assertEquals(formData["jcr:lastModifiedBy"], "")
 
+    testRequestHasCorrectActiveTypeHint: ->
+        formData = @cmd.createFormData()
+        assertEquals(formData['active@TypeHint'], 'Boolean')
+
+    testNewContentSends_NameHint: ->
+        @model.set({title:"vod_Test_ok"})
+        @model.set({description:"some desc"})
+        formData = @cmd.createFormData()
+        assertEquals(formData[':nameHint'], 'vod_Test_ok')
+        assertEquals(formData.title, 'vod_Test_ok')
+
+    testExistingContentDoestSend_NameHint: ->
+        @model.set({title:"vod_Test_ok"})
+        @model.set({description:"some desc"})
+        @model.set({'sling:resourceType':'mediacenter:vod'})
+        formData = @cmd.createFormData()
+        assertUndefined(":nameHint not allowed in existing content", formData[':nameHint'] )
+        assertEquals(formData.title, 'vod_Test_ok')
 
 })

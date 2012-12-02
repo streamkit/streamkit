@@ -25,6 +25,25 @@ TestCase("VodModelTest", {
     testModelIsValid: ->
         @model = new VodModel()
 
+    testMediaFileValidation: ->
+        @model = new VodModel()
+        vodContent =
+         'title': "existing_content"
+         'sling:resourceType' : 'mediacenter:vod'
+
+        @model.setContent( vodContent )
+        assertFalse("vod model should NOT be new", @model.isNew() )
+        assertFalse("mediaFile shouldn't be required", @model.validation.mediaFile.required )
+
+        @model = new VodModel()
+        vodContent =
+         'title': "existing_content"
+
+        @model.setContent( vodContent )
+        assertTrue("vod model should be new", @model.isNew() )
+        assertTrue("mediaFile should be required", @model.validation.mediaFile.required )
+
+
     testAddingMessage: ->
         @model = new VodModel()
         @model.resetMessages()

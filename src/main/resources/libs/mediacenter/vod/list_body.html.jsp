@@ -237,6 +237,7 @@
         {
             editForm = Backbone.View.Factory.createView(document.querySelector("#editFormContainer"), new VodModel());
             showModal();
+            $("#saveVodButton").html("Upload");
         }
 
         var cancelVodButton_clickHandler = function (event)
@@ -263,6 +264,7 @@
                 vodModel.contentPath = event.target.getAttribute("data-content-path");
                 editForm = Backbone.View.Factory.createView(document.querySelector("#editFormContainer"), vodModel);
                 showModal();
+                $("#saveVodButton").html("Save");
                 break;
             case "deleteContentButton":
                 event.preventDefault();

@@ -26,8 +26,10 @@ class window.VodModel extends AbstractModel
            minLength: 4
         tags:
            required: true
-        #mediaFile:
-           #required: true
+        mediaFile:
+           required: true
+           msg: "Please select a video file"
+
 
     isValid: ->
        typeof @get('isValid') != "undefined" and @get('isValid') is true
@@ -41,8 +43,9 @@ class window.VodModel extends AbstractModel
     setResourceType: ->
        @set({'sling:resourceType' : 'mediacenter:vod'})
 
-    setContent: ( content ) ->
+    setContent: ( content ) =>
         @set( content ) if content? && content["sling:resourceType"] == "mediacenter:vod"
+        @validation.mediaFile.required = @isNew()
 
     # this is called by CreateVodCommand
     setUploadCmd: ( cmd ) -> @_uploadCmd = cmd

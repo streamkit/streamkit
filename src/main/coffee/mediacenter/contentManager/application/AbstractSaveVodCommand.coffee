@@ -13,15 +13,22 @@ class window.AbstractSaveVodCommand
         formData['jcr:lastModified'] = "" # Sling should auto-fill this value
         formData['jcr:lastModifiedBy'] = "" # Sling should auto-fill this value
         formData['active@TypeHint'] = 'Boolean'
+
+        # To conform with Apache Sling specs at
+        # http://sling.apache.org/site/manipulating-content-the-slingpostservlet-servletspost.html
+        # Chapter: Algorithm for Node Name Creation
+        if ( @vodModel.isNew() )
+            formData[':nameHint'] = formData.title
+
         delete formData.isValid
         delete formData.messages
         delete formData.progress
+        delete formData.mediaFile
         return formData
 
     getActionUrl: ->
         actionUrl = @vodModel.contentPath
         today = new Date()
-        titleText = @vodModel.get('title')
         if ( @vodModel.isNew() )
-            actionUrl = "#{Sling.currentPath}/vod/#{today.getFullYear()}/#{(today.getMonth()+1)}/#{titleText}"
+            actionUrl = "#{Sling.currentPath}/vod/#{today.getFullYear()}/#{(today.getMonth()+1)}/"
         return actionUrl
