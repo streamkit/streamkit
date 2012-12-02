@@ -12,7 +12,7 @@
 
     <artifactId>commons_api</artifactId>
     <packaging>bundle</packaging>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.8-SNAPSHOT</version>
 
     <name>MediaCenter commons api</name>
     <description>Shared libraries and services for Java services mainly.</description>
