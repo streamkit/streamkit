@@ -1,0 +1,35 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="../../main/resources/js/chosen/chosen.jquery-0.9.9.js"></script>
+    <link rel="stylesheet" href="../../main/resources/css/chosen/chosen-0.9.9.css">
+    <title>Chosen demo</title>
+</head>
+<body>
+<!-- single dropdown -->
+<select class="chosen" style="width:200px;">
+    <option>Choose...</option>
+    <option>jQuery</option>
+    <option>MooTools</option>
+    <option>Maß Prototype</option>
+    <option>ça Dojo Toolkit</option>
+</select>
+
+<!-- multiple dropdown -->
+<select class="chosen_multi" multiple="true" style="width:400px;">
+    <option>Choose...</option>
+    <option>jQuery</option>
+    <option selected="selected">MooTools</option>
+    <option>Prototype</option>
+    <option selected="selected">Dojo Toolkit</option>
+</select>
+
+<script type="text/javascript">
+    jQuery(document).ready(function()
+    {
+        jQuery(".chosen").data("placeholder","Select framework...").chosen();
+    });
+</script>
+</body>
+</html>
