@@ -25,4 +25,9 @@ public class MediaCenterResourceType
      */
     public static final String ALBUM = "mediacenter:album";
 
+    /**
+     * This value defines the <code>sling:resourceType</code> of a Channel Library Node.
+     * This Node is usually the direct child of a channel: "content/vod"
+     */
+    public static final String LIBRARY = "mediacenter:library";
 }
