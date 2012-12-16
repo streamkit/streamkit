@@ -50,7 +50,7 @@ public class AlbumServiceImpl implements AlbumService
 
         //1. make sure the JCR Node for the album exists
         Node albumNode = getOrCreateAlbumNode(channelNode, albumName);
-        Node videoDestNode = getOrCreateDatePathInAlbum(albumNode);
+        Node videoDestNode = getOrCreateDatePathInAlbum(albumNode, videoNode);
 
         //2. add video to the album
         Session session = videoNode.getSession();
@@ -134,11 +134,17 @@ public class AlbumServiceImpl implements AlbumService
         return albumNode;
     }
 
-    private Node getOrCreateDatePathInAlbum(Node albumNode) throws RepositoryException
+    /**
+     * NOTE: THIS METHOD ASSUMES ALL videos have YEAR/MONTH in path
+     * @param albumNode Node of the album
+     * @param videoNode Node of the video
+     * @return the node that contains the same YEAR and MONTH of the video
+     * @throws RepositoryException
+     */
+    private Node getOrCreateDatePathInAlbum(Node albumNode, Node videoNode) throws RepositoryException
     {
-        Calendar now = Calendar.getInstance();
-        String year = String.valueOf(now.get(Calendar.YEAR));
-        String month = String.valueOf(now.get(Calendar.MONTH) + 1);
+        String month = videoNode.getParent().getName();
+        String year = videoNode.getParent().getParent().getName();
 
         if (!albumNode.hasNode(year))
         {

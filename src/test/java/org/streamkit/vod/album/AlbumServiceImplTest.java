@@ -77,7 +77,7 @@ public class AlbumServiceImplTest extends RepositoryTestBase
     @Test
     public void testNewVod_NewAlbum() throws Exception
     {
-        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("12").addNode("01")
+        Node newVod = channelNode.addNode("vod").addNode("2011").addNode("12")
                 .addNode("new_vod", "nt:unstructured");
         newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
         newVod.setProperty("title", "new_vod");
@@ -86,15 +86,11 @@ public class AlbumServiceImplTest extends RepositoryTestBase
 
         albumService.addVideoToAlbum(newVod, "new_vod_album");
 
-        Calendar now = Calendar.getInstance();
-        String year = String.valueOf(now.get(Calendar.YEAR));
-        String month = String.valueOf(now.get(Calendar.MONTH) + 1);
-
         Node albumNode = rootNode.getNode("content/channel/demo/albums/new_vod_album/");
         assertNotNull(albumNode);
         assertEquals( albumNode.getProperty("sling:resourceType").getString(), MediaCenterResourceType.ALBUM);
 
-        Node clonedVodNode = albumNode.getNode( year + "/" + month + "/new_vod");
+        Node clonedVodNode = albumNode.getNode( "2011/12/new_vod");
         assertNotNull( clonedVodNode );
         assertEquals(newVod.getProperty("jcr:uuid").getString(), clonedVodNode.getProperty("jcr:uuid").getString());
         assertEquals( newVod.getProperty("title").getString(), clonedVodNode.getProperty("title").getString());
@@ -103,7 +99,7 @@ public class AlbumServiceImplTest extends RepositoryTestBase
     @Test
     public void testNewVod_ExistingAlbum() throws Exception
     {
-        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("12").addNode("01")
+        Node newVod = channelNode.addNode("vod").addNode("2011").addNode("9")
                 .addNode("new_vod", "nt:unstructured");
         newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
         newVod.setProperty("title", "new_vod");
@@ -111,9 +107,6 @@ public class AlbumServiceImplTest extends RepositoryTestBase
         newVod.addMixin("mix:shareable");
 
         // first, make sure album exists
-        Calendar now = Calendar.getInstance();
-        String year = String.valueOf(now.get(Calendar.YEAR));
-        String month = String.valueOf(now.get(Calendar.MONTH) + 1);
         Node albumNode = channelNode.addNode("album");
         albumNode.setProperty("sling:resourceType", MediaCenterResourceType.ALBUM);
 
@@ -121,7 +114,7 @@ public class AlbumServiceImplTest extends RepositoryTestBase
 
         albumNode = rootNode.getNode("content/channel/demo/albums/new_vod_album/");
         assertNotNull(albumNode);
-        Node clonedVodNode = albumNode.getNode( year + "/" + month + "/new_vod");
+        Node clonedVodNode = albumNode.getNode( "2011/9/new_vod");
         assertNotNull( clonedVodNode );
         assertEquals( newVod.getProperty("jcr:uuid").getString(), clonedVodNode.getProperty("jcr:uuid").getString());
         assertEquals( newVod.getProperty("title").getString(), clonedVodNode.getProperty("title").getString());
@@ -130,18 +123,13 @@ public class AlbumServiceImplTest extends RepositoryTestBase
     @Test
     public void testRemoveVod_ExistingAlbum() throws Exception
     {
-        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("12").addNode("01")
+        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("12")
                 .addNode("new_vod", "nt:unstructured");
         newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
         newVod.setProperty("title", "new_vod");
         newVod.addMixin("mix:shareable");
 
         albumService.addVideoToAlbum(newVod, "new_vod_album");
-
-
-        Calendar now = Calendar.getInstance();
-        String year = String.valueOf(now.get(Calendar.YEAR));
-        String month = String.valueOf(now.get(Calendar.MONTH) + 1);
 
         Node albumNode = rootNode.getNode("content/channel/demo/albums/new_vod_album/");
 
@@ -164,7 +152,7 @@ public class AlbumServiceImplTest extends RepositoryTestBase
     public void testWithInvalidResource() throws Exception
     {
         Node invalidChannelNode = rootNode.addNode("content").addNode("channel").addNode("invalid_channel");
-        Node newVod = invalidChannelNode.addNode("vod").addNode("2012").addNode("12").addNode("01")
+        Node newVod = invalidChannelNode.addNode("vod").addNode("2012").addNode("1")
                 .addNode("new_vod", "nt:unstructured");
         newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
         newVod.setProperty("title", "new_vod");
@@ -176,7 +164,7 @@ public class AlbumServiceImplTest extends RepositoryTestBase
     @Test
     public void testRemoveVideoFromNullAlbum() throws Exception
     {
-        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("12").addNode("01")
+        Node newVod = channelNode.addNode("vod").addNode("2012").addNode("5")
                 .addNode("new_vod", "nt:unstructured");
         newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
         newVod.setProperty("title", "new_vod");
