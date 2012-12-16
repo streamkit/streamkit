@@ -42,6 +42,12 @@ class window.EditVodForm extends Backbone.View
         if ( !@model.isNew() )
             $(@el).find("#mediaFile").parent().parent().hide()
 
+        # if album is visible, initialize AlbumManagerVodForm
+        # AlbumManagerVodForm can show, edit albums for the current VOD
+
+        # if tags is visible, initialize TagManagerVodForm
+        # TagManagerVodForm can show, edit tags for the current VOD
+
     setupBinding: =>
         console?.log "setting up Binding for EditVodForm"
 #        Backbone.ModelBinding.bind(this);
