@@ -9,27 +9,29 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.servlets.post.Modification;
 import org.apache.sling.servlets.post.SlingPostProcessor;
+import org.mediacenter.resource.ChannelNodeLookup;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Called during DELETE operations, this processor is removing the files stored on hdd
- */
+/** Called during DELETE operations, this processor is removing the files stored on hdd */
 
-@Component(immediate=true, metatype=false, name="org.mediacenter.content.post.processor.DeleteVodContentProcessor")
+@Component(immediate = true, metatype = false,
+        name = "org.mediacenter.content.post.processor.DeleteVodContentProcessor")
 @Service(SlingPostProcessor.class)
 @Properties({
-        @Property(name="service.description", value="Mediacenter - DeletVod post processor"),
-        @Property(name="sling.servlet.resourceTypes", value= {"mediacenter:vod"}),
-        @Property(name="sling.post.processor", value="DELETE")
+        @Property(name = "service.description", value = "Mediacenter - DeletVod post processor"),
+        @Property(name = "sling.servlet.resourceTypes", value = { "mediacenter:vod" }),
+        @Property(name = "sling.post.processor", value = "DELETE")
 })
-public class DeleteVodContentProcessor extends AbstractPostProcessor implements SlingPostProcessor {
+public class DeleteVodContentProcessor extends AbstractPostProcessor implements SlingPostProcessor
+{
     private static final String JCR_MEDIA_PATH_CONFIG = "config/storage/servers";
     private static String MEDIA_ABSOLUTE_PATH = null;
 
@@ -42,59 +44,103 @@ public class DeleteVodContentProcessor extends AbstractPostProcessor implements 
     private SlingRepository repository;
 
     @Override
-    protected void doActivate(ComponentContext context)  {
-        try {
+    protected void doActivate(ComponentContext context)
+    {
+        try
+        {
             session = repository.loginAdministrative(null);
             Node storageServersNode = session.getRootNode().getNode(JCR_MEDIA_PATH_CONFIG);
             MEDIA_ABSOLUTE_PATH = storageServersNode.getProperty("rootPath").getValue().getString();
-        } catch (RepositoryException e) {
+        }
+        catch (RepositoryException e)
+        {
             e.printStackTrace();
         }
     }
+
     @Override
-    protected void doDeactivate(ComponentContext componentContext) {
-        if (session != null) {
+    protected void doDeactivate(ComponentContext componentContext)
+    {
+        if (session != null)
+        {
             session.logout();
             session = null;
         }
     }
+
     @Override
-    protected void doProcess(SlingHttpServletRequest request, List<Modification> changes) throws Exception {
+    protected void doProcess(SlingHttpServletRequest request, List<Modification> changes) throws Exception
+    {
+        Node videoNode = request.getResource().adaptTo(Node.class);
+        Node albumNode = ChannelNodeLookup.getClosestAlbumInPath(request.getResource().getParent().adaptTo(Node.class));
+        if (albumNode != null)
+        {
+            // do nothing if this video is deleted from an album
+            return;
+        }
         List<String> filePaths = findFilePaths(request);
         removeFiles(filePaths);
+
+        // remove all references of this node
+        String nodeUUID = videoNode.getIdentifier();
+        Session currentSession = videoNode.getSession();
+        if (nodeUUID != null)
+        {
+            //to read shared nodes, another session needs to be used
+            NodeIterator nodes = session.getNodeByIdentifier(videoNode.getIdentifier()).getSharedSet();
+            while (nodes.hasNext())
+            {
+                Node n = nodes.nextNode();
+
+                if (! n.getPath().equals( request.getResource().getPath()) )
+                {
+                    // delete the node using the current session for transactional purposes
+                    currentSession.getNode( n.getPath() ).remove();
+                }
+            }
+        }
     }
 
     // Search into selected node for paths to files (snapshots and videos)
-    private List<String> findFilePaths(SlingHttpServletRequest request) {
+    private List<String> findFilePaths(SlingHttpServletRequest request)
+    {
         List<String> filePaths = new ArrayList<String>();
-        try {
+        try
+        {
             // Session session = request.getResourceResolver().adaptTo(Session.class);
             String resourcePath = request.getResource().getPath();
 
             Node resourceNode = session.getRootNode().getNode(resourcePath.substring(1));
             PropertyIterator resourceNodeProperties = resourceNode.getProperties();
-            
-            while (resourceNodeProperties.hasNext()) {
-                javax.jcr.Property pr = resourceNodeProperties.nextProperty(); 
-                if (pr.getName().startsWith("snapshot")) {
+
+            while (resourceNodeProperties.hasNext())
+            {
+                javax.jcr.Property pr = resourceNodeProperties.nextProperty();
+                if (pr.getName().startsWith("snapshot"))
+                {
                     filePaths.add(pr.getValue().getString());
                 }
             }
 
             NodeIterator itResourceNodes = resourceNode.getNodes();
-            while (itResourceNodes.hasNext()) {
+            while (itResourceNodes.hasNext())
+            {
                 Node mediaPathNode = itResourceNodes.nextNode();
                 PropertyIterator itMediaPathProperties = mediaPathNode.getProperties();
 
-                while (itMediaPathProperties.hasNext()) {
+                while (itMediaPathProperties.hasNext())
+                {
                     javax.jcr.Property p = itMediaPathProperties.nextProperty();
-                    if ("mediaPath".equals(p.getName())) {
+                    if ("mediaPath".equals(p.getName()))
+                    {
                         filePaths.add(p.getValue().getString());
                     }
                 }
             }
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             ex.printStackTrace();
             // throw  new Exception("Path not found exception");
         }
@@ -102,9 +148,11 @@ public class DeleteVodContentProcessor extends AbstractPostProcessor implements 
     }
 
     // Remove files
-    private boolean removeFiles(List<String> filePaths) {
+    private boolean removeFiles(List<String> filePaths)
+    {
         boolean removedSuccessful = false;
-        for (String path : filePaths) {
+        for (String path : filePaths)
+        {
             String slash = (MEDIA_ABSOLUTE_PATH.endsWith("/") || path.startsWith("/")) ? "" : "/";
             File fileToDelete = new File(MEDIA_ABSOLUTE_PATH + slash + path);
             removedSuccessful = fileToDelete.delete();
@@ -112,5 +160,6 @@ public class DeleteVodContentProcessor extends AbstractPostProcessor implements 
 
         return removedSuccessful;
     }
+
 
 }
