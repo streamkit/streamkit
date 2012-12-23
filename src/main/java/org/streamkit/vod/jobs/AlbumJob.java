@@ -1,5 +1,9 @@
 package org.streamkit.vod.jobs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -106,9 +110,7 @@ public class AlbumJob implements EventHandler, JobProcessor
 
         try
         {
-            // TODO: this will get called when the video is added to the album too.
-            // TODO: find a way to not process it again.
-
+            // NODE: this will get called when the video is added to the album too.
             Node videoNode = session.getNode(path);
             Node existingAlbum = ChannelNodeLookup.getClosestAlbumInPath(videoNode);
 
@@ -117,18 +119,21 @@ public class AlbumJob implements EventHandler, JobProcessor
                 return;
             }
 
+            List<String> albumList = new ArrayList<String>();
+
             if (videoNode.hasProperty("album"))
             {
                 javax.jcr.Property album = videoNode.getProperty("album");
-                albumService.addVideoToAlbum(videoNode, album.getString());
+                String albumString = album.getString();
+                albumList = Arrays.asList( albumString.replaceAll(" ", "").split(","));
+
+                for ( String albumName: albumList ) {
+                    albumService.addVideoToAlbum(videoNode, albumName );
+                }
             }
 
-
-            if (videoNode.hasProperty("prevAlbum") )
-            {
-                javax.jcr.Property prevAlbum = videoNode.getProperty("prevAlbum");
-                albumService.removeVideoFromAlbum(videoNode, prevAlbum.getString());
-            }
+            //remove video from other albums
+            albumService.removeVideoFromOtherAlbums( videoNode, albumList );
         }
         catch (RepositoryException e)
         {
@@ -140,6 +145,7 @@ public class AlbumJob implements EventHandler, JobProcessor
         }
         finally
         {
+            session.save();
             session.logout();
         }
     }

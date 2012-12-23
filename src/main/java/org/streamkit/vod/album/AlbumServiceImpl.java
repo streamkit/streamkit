@@ -1,6 +1,7 @@
 package org.streamkit.vod.album;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -51,6 +52,11 @@ public class AlbumServiceImpl implements AlbumService
         //1. make sure the JCR Node for the album exists
         Node albumNode = getOrCreateAlbumNode(channelNode, albumName);
         Node videoDestNode = getOrCreateDatePathInAlbum(albumNode, videoNode);
+
+        if (videoDestNode.hasNode(videoNode.getName()))
+        {
+            return;
+        }
 
         //2. add video to the album
         Session session = videoNode.getSession();
@@ -115,6 +121,41 @@ public class AlbumServiceImpl implements AlbumService
     }
 
 
+    public void removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
+            throws RepositoryException, IllegalArgumentException
+    {
+        if (videoNode == null)
+        {
+            throw new IllegalArgumentException("You must provide a videoNode");
+        }
+        if (albumWhiteList == null)
+        {
+            logger.info("could not remove:{} from a null album", videoNode.getPath());
+            return;
+        }
+
+        String nodeUUID = videoNode.getIdentifier();
+        if (nodeUUID != null)
+        {
+            NodeIterator nodes = videoNode.getSharedSet();
+            while (nodes.hasNext())
+            {
+                Node n = nodes.nextNode();
+                String nodePath = n.getPath();
+                Node albumNode = ChannelNodeLookup.getClosestAlbumInPath( n );
+                if ( albumNode == null ) {
+                    continue;
+                }
+                if ( albumWhiteList.contains( albumNode.getName())) {
+                    continue;
+                }
+
+                logger.info("removed " + videoNode.getPath() + ", from " + albumNode.getPath());
+                n.remove();
+            }
+        }
+    }
+
     private Node getOrCreateAlbumNode(Node channelNode, String albumName) throws RepositoryException
     {
         if (!channelNode.hasNode("albums"))
@@ -136,9 +177,12 @@ public class AlbumServiceImpl implements AlbumService
 
     /**
      * NOTE: THIS METHOD ASSUMES ALL videos have YEAR/MONTH in path
+     *
      * @param albumNode Node of the album
      * @param videoNode Node of the video
+     *
      * @return the node that contains the same YEAR and MONTH of the video
+     *
      * @throws RepositoryException
      */
     private Node getOrCreateDatePathInAlbum(Node albumNode, Node videoNode) throws RepositoryException

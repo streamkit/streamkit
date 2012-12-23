@@ -1,12 +1,14 @@
 package org.streamkit.vod;
 
+import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
  * Service that links an existing video to an album.
- *
+ * <p/>
  * User: ddragosd
  * Date: 11/30/12
  */
@@ -45,7 +47,7 @@ public interface AlbumService
 
     /**
      * Removes the corresponding video link from the album.
-     * If the no video is found in that album, this method doesn't throw any exception. It won't do anything in such a case.
+     * If the no video is found in that album, this method doesn't throw any exception. It won't do anything in that case.
      *
      * @param videoNode The VideoNode to be removed.
      * @param albumPath The JCR path to the album
@@ -54,4 +56,14 @@ public interface AlbumService
      * @throws IllegalArgumentException
      */
     void removeVideoFromAlbum(Node videoNode, String albumPath) throws RepositoryException, IllegalArgumentException;
+
+    /**
+     * Removes the video from all other albums, except the allowed <code>albumWhiteList</code>
+     *
+     * @param videoNode      The videoNode from the library
+     * @param albumWhiteList The list of albums that should contain this album
+     *                       If the video belongs to other albums, its reference is removed from those albums
+     */
+    void removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
+            throws RepositoryException, IllegalArgumentException;
 }
