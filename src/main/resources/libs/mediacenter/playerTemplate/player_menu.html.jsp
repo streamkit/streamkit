@@ -1,4 +1,6 @@
 <%@ page import="javax.annotation.Resource" %>
+<%@ page import="javax.jcr.Node" %>
+<%@ page import="org.mediacenter.resource.ChannelNodeLookup" %>
 <%@page session="false" %>
 <%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0" %>
 <%-- Ensure the presence of the Sling objects --%>
@@ -31,36 +33,35 @@
 <!-- Library div overlay -->
 <div class="video_library">
     <%
-        String videoPath = resource.getPath() + ".widget_body.html";
-        String channelPath = "";
-        org.apache.sling.api.resource.Resource res = resource;
+        String videoLibraryWidgetPath = "";
+        String videoLibraryPath = "";
 
-        Boolean found = false;
-        while (found == false && res.getParent() != null)
+        Node currentChannel = ChannelNodeLookup.getClosestChannelInNode(resource.adaptTo(Node.class));
+        Node currentAlbum = ChannelNodeLookup.getClosestAlbumInPath( resource.adaptTo(Node.class) );
+
+        String channelNodePath = "";
+        if ( currentChannel != null )
         {
-
-            if (res.getResourceType().equals("mediacenter:channel"))
-            {
-                found = true;
-                channelPath = res.getPath();
-            }
-            res = res.getParent();
+            channelNodePath = currentChannel.getPath();
+            videoLibraryWidgetPath = channelNodePath + ".widget_body.html";
+            videoLibraryPath = channelNodePath;
         }
 
-        String videoLibraryPath = channelPath + ".widget_body.html";
+        String albumNodePath = "";
+        if ( currentAlbum != null )
+        {
+            albumNodePath = currentAlbum.getPath();
+            videoLibraryWidgetPath = albumNodePath + ".widget_body.html";
+            videoLibraryPath = albumNodePath;
+        }
     %>
 
 
     <!-- TODO: this is a hardcoded dependency; need to handle it/configure it elsewhere -->
     <!-- these extra modules to be included must be defined differently, so that if mediacenter/videoLibrary
         doesn't exists, the player looks ok -->
-    <sling:include path="<%= videoLibraryPath %>" resourceType="mediacenter/videoLibrary" />
+    <sling:include path="<%= videoLibraryWidgetPath %>" resourceType="mediacenter/videoLibrary" />
 </div>
-
-<script type="text/javascript">
-    // TODO: define a proper ApplicationContext and set this property in there
-    var playerMenu_channelPath = "<%=channelPath%>";
-</script>
 
 <script type="text/javascript">
     $(document).ready(function()
@@ -81,7 +82,7 @@
 
 <!--[if lt IE 9]>
 <script type="text/javascript">
-    window.videoLibraryPath = "<%=channelPath%>.library.html";
+    window.videoLibraryPath = "<%=videoLibraryPath%>.library.html";
     $(document).ready(function()
     {
         var library = $(".video_library");
