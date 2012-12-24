@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
@@ -111,6 +112,7 @@
                         <Sling-Initial-Content>
                             SLING-INF;overwrite:=false,
                             /libs/mediacenter/channel/library.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/channel,
+                            /libs/mediacenter/album/library.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/album,
                             /libs/mediacenter/videoLibrary/widget_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/videoLibrary/
                         </Sling-Initial-Content>
                         <Embed-Dependency>
@@ -264,6 +266,17 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.mediacenter</groupId>
+            <artifactId>commons_api</artifactId>
+            <version>1.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>

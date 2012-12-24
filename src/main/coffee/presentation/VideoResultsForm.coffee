@@ -25,6 +25,7 @@ class window.VideoResultsForm extends Backbone.View
         @doSearch() unless  @model.getSearchString() == "null"
 
     setUpInfiniteList: ->
+        thisCls = this
         @listDataProvider = new iList.LazyDataProvider({
             source:         @model.getSearchResults()
             loadPolicy:     new iList.loadPolicy.WindowScroll(),  # loads more when browser window is scrolled down
@@ -33,7 +34,8 @@ class window.VideoResultsForm extends Backbone.View
                 return ({
                         element:   vodItem,
                         index:      _i+1,
-                        path:       vodItem['jcr:path'],
+                        libraryPath: vodItem['jcr:path'],
+                        path:       thisCls.getVideoLink(vodItem['jcr:path']),
                         created:    $.timeago( new Date( (vodItem['created'] || vodItem['jcr:created']) ) )} for vodItem in data )
 
         })
@@ -47,6 +49,9 @@ class window.VideoResultsForm extends Backbone.View
             # Domain
             dataProvider:           @listDataProvider  } )
 
+    getVideoLink: ( path ) =>
+        return path.replace( @model.getChannelPath() + "/vod", @model.getAlbumPath())  if @model.getAlbumPath() != ""
+        return path
 
     doSearch: (m, searchString) =>
         console?.log("searching for #{@model.getSearchString()}")
@@ -57,7 +62,7 @@ class window.VideoResultsForm extends Backbone.View
 
         # created can be different from jcr:created when content is imported
         queryBuilder = new SearchVodQueryBuilder(["title", "created", "jcr:created", "active"])
-        queryString = queryBuilder.getQuery( @model.getSearchString(), @model.getChannelPath() )
+        queryString = queryBuilder.getQuery( @model.getSearchString(), @model.getSearchContext() )
 
         @listDataProvider.getLoader().url = queryString
         @listDataProvider.getLoader().offset = 0

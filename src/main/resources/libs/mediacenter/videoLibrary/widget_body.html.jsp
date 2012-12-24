@@ -1,6 +1,6 @@
 <!-- small version of the video-library, assuming the other dependencies of the player are already loaded -->
-
-<%@ page import="org.apache.sling.api.request.RequestDispatcherOptions" %>
+<%@page import="org.mediacenter.resource.ChannelNodeLookup" %>
+<%@page import="javax.jcr.Node" %>
 <%@page session="false" %>
 <%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0" %>
 <%-- Ensure the presence of the Sling objects --%>
@@ -48,16 +48,34 @@
     </div>
 </div>
 
+<%
+    Node currentChannel = ChannelNodeLookup.getClosestChannelInNode( resource.adaptTo(Node.class) );
+    Node currentAlbum = ChannelNodeLookup.getClosestAlbumInPath( resource.adaptTo(Node.class) );
+
+    String channelNodePath = "";
+    if ( currentChannel != null )
+    {
+        channelNodePath = currentChannel.getPath();
+    }
+
+    String albumNodePath = "";
+    if ( currentAlbum != null )
+    {
+        albumNodePath = currentAlbum.getPath();
+    }
+%>
+
 
 <script type="text/javascript">
     window.videoLibrary = window.videoLibrary || {};
 
     window.videoLibrary.completeCount = 0;
 
-    window.videoLibrary.logger = function (msg)
-    {
-        if (typeof console != "undefined" && console != null)
-        {
+    window.videoLibrary.contextChannelPath = "<%= channelNodePath %>";
+    window.videoLibrary.contextAlbumPath = "<%= albumNodePath %>";
+
+    window.videoLibrary.logger = function (msg) {
+        if (typeof console != "undefined" && console != null) {
             console.log(msg);
         }
     }
@@ -65,22 +83,15 @@
     window.videoLibrary.initLibrary = function ()
     {
         window.videoLibrary.completeCount++;
-        if (window.videoLibrary.completeCount < 6)
-        {
+        if (window.videoLibrary.completeCount < 6) {
             return;
         }
 
         var _searchModel, _searchForm, _searchResults, _channelPath;
         _searchModel = new VideoSearchModel();
 
-        try {
-            // playerMenu_channelPath may be set from player_menu.html.jsp
-            _channelPath = playerMenu_channelPath;
-        } catch (exception) {
-            _channelPath = Sling.currentPath;
-        }
-
-        _searchModel.setChannelPath(_channelPath);
+        _searchModel.setChannelPath(window.videoLibrary.contextChannelPath);
+        _searchModel.setAlbumPath(window.videoLibrary.contextAlbumPath);
 
         _searchForm = Backbone.View.Factory.createView( jQuery("#librarySearchFormContainer")[0], _searchModel);
         _searchResults = Backbone.View.Factory.createView( jQuery("#librarySearchResultsContainer")[0], _searchModel);
@@ -90,8 +101,7 @@
         {
             test: window.jQuery,
             nope: ['<%= request.getContextPath() %>/js/jquery-1.7.1.min.js'],
-            complete: function()
-            {
+            complete: function() {
                 window.videoLibrary.logger("jQuery dependency has been loaded");
                 window.videoLibrary.initLibrary();
 

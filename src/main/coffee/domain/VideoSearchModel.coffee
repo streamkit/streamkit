@@ -13,6 +13,14 @@ class window.VideoSearchModel extends Backbone.Model
     getSearchResults: -> @get('searchResults')
     setSearchResults: (value) -> @set({searchResults:value})
 
+    getSearchContext: =>
+        return @getAlbumPath() if @getAlbumPath() != ""
+        return @getChannelPath()
+    # setSearchContext: (value) -> @set({searchContext:value})
+
     getChannelPath: -> @get('channelPath')
     setChannelPath: (value) -> @set({channelPath:value})
+
+    getAlbumPath: -> @get('albumPath')
+    setAlbumPath: (value) -> @set({albumPath:value})
 
