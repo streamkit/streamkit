@@ -12,7 +12,7 @@
     <groupId>org.mediacenter.admin</groupId>
     <artifactId>content_management</artifactId>
     <packaging>bundle</packaging>
-    <version>1.11-SNAPSHOT</version>
+    <version>1.11</version>
 
     <name>Admin Content Management</name>
 
