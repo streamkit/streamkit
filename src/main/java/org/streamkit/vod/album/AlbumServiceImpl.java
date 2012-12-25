@@ -9,6 +9,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -48,6 +49,9 @@ public class AlbumServiceImpl implements AlbumService
             logger.info("addVideoToAlbum{} - (" + albumName + ") albumName not valid");
             return;
         }
+
+        //0. make sure the videoNode is shareable
+        videoNode.addMixin("mix:shareable");
 
         //1. make sure the JCR Node for the album exists
         Node albumNode = getOrCreateAlbumNode(channelNode, albumName);
@@ -142,7 +146,7 @@ public class AlbumServiceImpl implements AlbumService
             {
                 Node n = nodes.nextNode();
                 String nodePath = n.getPath();
-                Node albumNode = ChannelNodeLookup.getClosestAlbumInPath( n );
+                Node albumNode = ChannelNodeLookup.getClosestAlbumInPath(n);
                 if ( albumNode == null ) {
                     continue;
                 }
