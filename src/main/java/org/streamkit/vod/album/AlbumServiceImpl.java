@@ -46,7 +46,7 @@ public class AlbumServiceImpl implements AlbumService
             // A video can belong to a single user-defined album at a time.
             // This may change in the future.
             // removeNodeShares(videoNode);
-            logger.info("addVideoToAlbum{} - (" + albumName + ") albumName not valid");
+            logger.info("addVideoToAlbum{} - (" + albumName + ") albumName not valid for " + videoNode.getPath() );
             return;
         }
 
@@ -125,7 +125,7 @@ public class AlbumServiceImpl implements AlbumService
     }
 
 
-    public void removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
+    public Boolean removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
             throws RepositoryException, IllegalArgumentException
     {
         if (videoNode == null)
@@ -135,8 +135,9 @@ public class AlbumServiceImpl implements AlbumService
         if (albumWhiteList == null)
         {
             logger.info("could not remove:{} from a null album", videoNode.getPath());
-            return;
+            return false;
         }
+        Boolean mustSave = false;
 
         String nodeUUID = videoNode.getIdentifier();
         if (nodeUUID != null)
@@ -156,8 +157,10 @@ public class AlbumServiceImpl implements AlbumService
 
                 logger.info("removed " + videoNode.getPath() + ", from " + albumNode.getPath());
                 n.remove();
+                mustSave = true;
             }
         }
+        return mustSave;
     }
 
     private Node getOrCreateAlbumNode(Node channelNode, String albumName) throws RepositoryException

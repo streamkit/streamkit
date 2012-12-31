@@ -12,7 +12,7 @@
     <parent>
         <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.8</version>
+        <version>1.10</version>
     </parent>
 
     <groupId>org.mediacenter.service</groupId>
@@ -131,6 +131,7 @@
                             <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
                             <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
                             <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
+
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -144,7 +145,7 @@
         <dependency>
             <groupId>org.mediacenter</groupId>
             <artifactId>commons_api</artifactId>
-            <version>1.8</version>
+            <version>1.9-SNAPSHOT</version>
         </dependency>
 
         <!-- Apache Sling project dependencies -->
@@ -179,8 +180,9 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.jcr.resource</artifactId>
-            <scope>provided</scope>
-            <version>2.0.6</version>
+            <!--<scope>provided</scope>-->
+            <!--<version>2.0.6</version>-->
+            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.sling</groupId>
@@ -235,19 +237,6 @@
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.commons.testing</artifactId>
             <version>2.0.6</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- jar containing the definition for node types ( resource.cnd ) -->
-        <dependency>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>org.apache.sling.jcr.resource</artifactId>
-            <version>2.2.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jackrabbit</groupId>
-            <artifactId>jackrabbit-jcr-commons</artifactId>
-            <version>2.2.4</version>
             <scope>test</scope>
         </dependency>
 

@@ -1,78 +1,33 @@
 package org.streamkit.vod.album;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Iterator;
 
 import javax.jcr.Node;
-import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
-import org.apache.jackrabbit.commons.cnd.CndImporter;
-import org.apache.sling.commons.testing.jcr.RepositoryTestBase;
-import org.apache.sling.event.impl.DistributingEventHandler;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mediacenter.resource.MediaCenterResourceType;
 import org.streamkit.vod.AlbumService;
+import org.streamkit.vod.MediaCenterRepositoryTestBase;
 
-import junit.framework.Assert;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ddascal
- * Date: 11/30/12
- * Time: 11:42 AM
- * To change this template use File | Settings | File Templates.
- */
 @RunWith(value = JUnit4.class)
-public class AlbumServiceImplTest extends RepositoryTestBase
+public class AlbumServiceImplTest extends MediaCenterRepositoryTestBase
 {
-    private Node rootNode;
-    private Node channelNode;
 
     private AlbumService albumService;
 
-
-    @Before
+    @Override
     public void setupBefore() throws Exception
     {
-        setUp();
-        assertTrue(registerNodeType(getSession(),
-                DistributingEventHandler.class.getResourceAsStream("/SLING-INF/nodetypes/resource.cnd")));
-
-        rootNode = getTestRootNode();
-
-        channelNode = rootNode.addNode("content");
-        channelNode = channelNode.addNode("channel").addNode("demo");
-        channelNode.setPrimaryType("nt:unstructured");
-        channelNode.setProperty("sling:resourceType", MediaCenterResourceType.CHANNEL);
+        super.setupBefore();
 
         albumService = new AlbumServiceImpl();
-    }
-
-    private boolean registerNodeType(Session session, InputStream resourceAsStream)
-    {
-        try
-        {
-            CndImporter.registerNodeTypes(new InputStreamReader(resourceAsStream, "UTF-8"), session);
-            return true;
-        }
-        catch (Exception e)
-        {
-            // ignore
-            return false;
-        }
-    }
-
-    @After
-    public void tearDownAfter() throws Exception
-    {
-        tearDown();
     }
 
     @Test
@@ -257,6 +212,62 @@ public class AlbumServiceImplTest extends RepositoryTestBase
         assertFalse("album2 should not have the video", albumNode4.hasNode("2009/10/multi_album_vod"));
         assertFalse("album3 should not have the video", albumNode4.hasNode("2009/10/multi_album_vod"));
         assertFalse("album4 should not have the video", albumNode4.hasNode("2009/10/multi_album_vod"));
+    }
+
+
+    @Test
+    public void testAddingMultipleVods() throws Exception
+    {
+        javax.jcr.query.QueryManager queryManager = getSession().getWorkspace().getQueryManager();
+        String expression = "SELECT * from [nt:unstructured] as x " +
+                "where ISDESCENDANTNODE(x,[" + rootNode.getPath() + "/content/channel/demo/albums/new_vod_album_1/]) " +
+                "and x.[sling:resourceType]='mediacenter:vod'"; // order by x.'jcr:created' DESC";
+
+        Query query = queryManager.createQuery(expression, Query.JCR_SQL2);
+
+        Node newVod = channelNode.addNode("vod").addNode("2011").addNode("12")
+                .addNode("new_vod_1", "nt:unstructured");
+        newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
+        newVod.setProperty("title", "new_vod_1");
+
+        albumService.addVideoToAlbum(newVod, "new_vod_album_1");
+        getSession().save();
+
+        Node albumNode = rootNode.getNode("content/channel/demo/albums/new_vod_album_1/");
+        assertNotNull(albumNode);
+        assertEquals(albumNode.getProperty("sling:resourceType").getString(), MediaCenterResourceType.ALBUM);
+
+        Node clonedVodNode = albumNode.getNode("2011/12/new_vod_1");
+        assertNotNull(clonedVodNode);
+        assertEquals(newVod.getProperty("jcr:uuid").getString(), clonedVodNode.getProperty("jcr:uuid").getString());
+        assertEquals(newVod.getProperty("title").getString(), clonedVodNode.getProperty("title").getString());
+        getSession().save();
+
+        QueryResult result = query.execute();
+        Iterator nodesIterator = result.getRows();
+        int i = 0;
+        while (nodesIterator.hasNext())
+        {
+            i++;
+            nodesIterator.next();
+        }
+        assertEquals("Should match 1 node only", 1, i);
+
+        newVod = channelNode.addNode("vod").addNode("2011").addNode("12")
+                .addNode("new_vod_2", "nt:unstructured");
+        newVod.setProperty("sling:resourceType", MediaCenterResourceType.VOD);
+        newVod.setProperty("title", "new_vod_2");
+
+        result = query.execute();
+        nodesIterator = result.getRows();
+        i = 0;
+        while (nodesIterator.hasNext())
+        {
+            i++;
+            nodesIterator.next();
+        }
+        assertEquals("Should match 1 node only", 1, i);
+
     }
 
     // negative tests

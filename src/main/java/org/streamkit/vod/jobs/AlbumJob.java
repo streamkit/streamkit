@@ -89,25 +89,28 @@ public class AlbumJob implements EventHandler, JobProcessor
     {
         logger.info("process{}");
         String resourcePath = event.getProperty("resourcePath").toString();
+        Session session = null;
 
         try
         {
-            updateAlbumForVideo(resourcePath);
+            session = repository.loginAdministrative(null);
+            updateAlbumForVideo(resourcePath, session);
         }
         catch (RepositoryException e)
         {
             logger.error("Could not access repository. ", e);
         }
-
+        finally
+        {
+            session.logout();
+        }
 
         signalComplete(event);
         return true;
     }
 
-    private void updateAlbumForVideo(String path) throws RepositoryException
+    private void updateAlbumForVideo(String path, Session session) throws RepositoryException
     {
-        Session session = repository.loginAdministrative(null);
-
         try
         {
             // NODE: this will get called when the video is added to the album too.
@@ -133,7 +136,11 @@ public class AlbumJob implements EventHandler, JobProcessor
             }
 
             //remove video from other albums
-            albumService.removeVideoFromOtherAlbums( videoNode, albumList );
+            Boolean mustSave = albumService.removeVideoFromOtherAlbums( videoNode, albumList );
+            if ( mustSave == true )
+            {
+                session.save();
+            }
         }
         catch (RepositoryException e)
         {
@@ -142,11 +149,6 @@ public class AlbumJob implements EventHandler, JobProcessor
         catch (IllegalArgumentException e)
         {
             logger.error("AlbumService exception. Could not add/remove video to/from album. ", e);
-        }
-        finally
-        {
-            session.save();
-            session.logout();
         }
     }
 

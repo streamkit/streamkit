@@ -63,7 +63,8 @@ public interface AlbumService
      * @param videoNode      The videoNode from the library
      * @param albumWhiteList The list of albums that should contain this album
      *                       If the video belongs to other albums, its reference is removed from those albums
+     * @return true, if there are modifications to be saved, false otherwise
      */
-    void removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
+    Boolean removeVideoFromOtherAlbums(Node videoNode, List<String> albumWhiteList)
             throws RepositoryException, IllegalArgumentException;
 }
