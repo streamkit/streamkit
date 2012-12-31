@@ -24,14 +24,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.servlet.Servlet;
 
-import org.apache.felix.scr.annotations.*;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -43,7 +51,6 @@ import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.io.JSONWriter;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.servlets.get.impl.helpers.JsonResourceWriter;
-import org.mediacenter.api.query.impl.ContentQueryBuilder;
 import org.mediacenter.resource.MediaCenterResourceType;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -53,37 +60,46 @@ import org.slf4j.LoggerFactory;
 /**
  * A SlingSafeMethodsServlet that renders the search results as JSON data.
  * <p>
- * Sample usage: http://localhost:8080/content/channel/demo.search.json?q=mySearchTerm
- * or
- * http://localhost:8080/content/channel/demo.search.json?q=mySearchTerm&offset=0&rows=15
+ * Currently this class is only a clone of JsonQueryServlet, and should be
+ * optimized in the future.
  * </p>
+ * <p/>
  * <p>
+ * Sample usage: http://localhost:8080/content/channel/demo.content-query.tidy.json?queryType=xpath&statement=//*
+ * or
+ * http://localhost:8080/content/channel/demo.content-query.tidy.json?queryType=xpath&statement=//element(*,nt:unstructured)[@sling:resourceType='mediacenter:vod']/(@active,@title,@jcr:created,@jcr:createdBy)
+ * <p/>
  * This servlet only serves content from the current node.
  * </p>
- * Use this as the default query servlet for json get requests for MediaCenter Channels.
+ * <p/>
+ * Use this as the default query servlet for json get requests for MediaCenter Channels
  */
 @Component(immediate = true, metatype = false,
         label = "ContentQueryServlet", description = "Default Query Servlet to search for videos")
 @Service
 @Properties({
-        @Property(name = "service.description", value = "MediaCenter Query Servlet"),
+        @Property(name = "service.description", value = "MediaCenter Query Servlet ( raw )"),
         @Property(name = "service.vendor", value = "org.mediaCenter"),
         @Property(name = "sling.servlet.resourceTypes", value = {
                 MediaCenterResourceType.CHANNEL,
                 MediaCenterResourceType.LIBRARY,
                 MediaCenterResourceType.ALBUM }),
-        @Property(name = "sling.servlet.selectors", value = "search"),
+        @Property(name = "sling.servlet.selectors", value = "content-query"),
         @Property(name = "sling.servlet.extensions", value = "json"),
         @Property(name = "sling.servlet.prefix", value = "-1", propertyPrivate = true)
 })
-public class ContentQueryServlet extends SlingSafeMethodsServlet
+public class ContentRawQueryServlet extends SlingSafeMethodsServlet
 {
 
     private static final long serialVersionUID = 1L;
 
-    private final Logger log = LoggerFactory.getLogger(ContentQueryServlet.class);
+    private final Logger log = LoggerFactory.getLogger(ContentRawQueryServlet.class);
 
-    public static final String SEARCH_TERM = "q";
+    /** Search clause */
+    public static final String STATEMENT = "statement";
+
+    /** Query type */
+    public static final String QUERY_TYPE = "queryType";
 
     /** Result set offset */
     public static final String OFFSET = "offset";
@@ -114,12 +130,9 @@ public class ContentQueryServlet extends SlingSafeMethodsServlet
 
     private Session session;
 
-    private ContentQueryBuilder queryBuilder;
-
-    public ContentQueryServlet()
+    public ContentRawQueryServlet()
     {
         itemWriter = new JsonResourceWriter(null);
-        queryBuilder = new ContentQueryBuilder();
     }
 
     /**
@@ -162,25 +175,32 @@ public class ContentQueryServlet extends SlingSafeMethodsServlet
     protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse resp) throws IOException
     {
         dumpResult(req, resp);
+    }
 
+    /**
+     * Retrieve the query type from the request.
+     *
+     * @param req request
+     *
+     * @return the query type.
+     */
+    protected String getQueryType(SlingHttpServletRequest req)
+    {
+        return req.getParameter(QUERY_TYPE);
     }
 
 
     /**
-     * Retrieve the search term to lookup for
+     * Retrieve the query statement from the request.
      *
-     * @param req request
+     * @param req       request
+     * @param queryType the query type, as previously determined
      *
-     * @return the search term.
+     * @return the query statement.
      */
-    protected String getSearchTerm(SlingHttpServletRequest req)
+    protected String getStatement(SlingHttpServletRequest req, String queryType)
     {
-        String searchTerm = req.getParameter(SEARCH_TERM);
-        if (searchTerm == null)
-        {
-            searchTerm = "";
-        }
-        return searchTerm;
+        return req.getParameter(STATEMENT);
     }
 
     /**
@@ -197,21 +217,17 @@ public class ContentQueryServlet extends SlingSafeMethodsServlet
         {
             ResourceResolver resolver = req.getResourceResolver();
 
-            Boolean isChannel = req.getResource().isResourceType(MediaCenterResourceType.CHANNEL);
-            String statement = "";
+            String queryType = getQueryType(req);
 
-            if (isChannel == true)
+            String statement = getStatement(req, queryType);
+
+            if ( queryType.equals("xpath"))
             {
-                statement =
-                        queryBuilder.getXPathQueryForChannel(req.getResource().adaptTo(Node.class), getSearchTerm(req));
-            }
-            else
-            {
-                statement =
-                        queryBuilder.getXPathQueryForAlbum(req.getResource().adaptTo(Node.class), getSearchTerm(req));
+                statement = checkJcrRoot(req, statement);
             }
 
-            Iterator<Map<String, Object>> result = resolver.queryResources(statement, Query.XPATH);
+            Iterator<Map<String, Object>> result = resolver.queryResources(
+                    statement, queryType);
 
             if (req.getParameter(OFFSET) != null)
             {
@@ -325,6 +341,14 @@ public class ContentQueryServlet extends SlingSafeMethodsServlet
         }
     }
 
+    private String checkJcrRoot(SlingHttpServletRequest req, String statement)
+    {
+        if (statement.indexOf("jcr:root") < 0)
+        {
+            statement = "/jcr:root" + req.getResource().getPath() + statement;
+        }
+        return statement;
+    }
 
     private void dumpProperties(JSONWriter w, Resource nodeRes,
             List<String> properties) throws JSONException
