@@ -13,6 +13,7 @@ import org.streamkit.vod.album.PostprocessingIntegrationTestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  */
@@ -37,24 +38,20 @@ public class AlbumJobIntegrationTest extends PostprocessingIntegrationTestBase
                         .withEntity(entity)
         ).assertStatus(201);
 
-        Thread.sleep(6000);
+        Thread.sleep(2000);
 
         getRequestExecutor().execute(
                 getRequestBuilder().buildGetRequest(demoChannelPath + "/vod/2012/9/1/test_video.json")
                         .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
         ).assertContentContains("mix:shareable");
 
-        // TODO: work in progress
-        //assertAlbumQuery(demoChannelPath + "/albums/test_album", "");
-    }
-
-    private void assertAlbumQuery(String albumPath, String expectedResult) throws Exception
-    {
-        String requestString = albumPath + ".search.json";
+        String requestString = demoChannelPath + "/albums/test_album.search.json";
 
         String jsonResponse = getRequestExecutor().execute(
                 getRequestBuilder().buildGetRequest(requestString)).getContent();
-        assertEquals(jsonResponse, expectedResult);
+        assertTrue(jsonResponse.contains("\"name\":\"test_video\""));
+        assertTrue(jsonResponse.contains("\"album\":\"test_album\""));
+        assertTrue(jsonResponse.contains("\"jcr:path\":\"/content/channel/demo/vod/2012/9/1/test_video\""));
     }
 
 
