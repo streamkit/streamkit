@@ -17,7 +17,7 @@
 
     <groupId>org.mediacenter.service</groupId>
     <artifactId>mediacenter-postprocessing</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.10-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Postprocessing</name>
@@ -131,7 +131,6 @@
                             <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
                             <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
                             <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
-
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
