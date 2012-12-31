@@ -128,12 +128,19 @@ public class ContentQueryServlet extends SlingSafeMethodsServlet
      * @throws Exception
      */
     @Activate
-    protected void activate(BundleContext bundleContext, Map<String, Object> props) throws Exception
+    protected void activate(BundleContext bundleContext, Map<String, Object> props)
     {
-        session = repository.loginAdministrative(null);
-        Object n = props.get(JCR_HTTP_SERVER_PATH);
-        Node storageNode = session.getRootNode().getNode(n.toString());
-        HTTP_SERVER_URL = storageNode.getProperty("httpUrl").getValue().getString();
+        try
+        {
+            session = repository.loginAdministrative(null);
+            Object n = props.get(JCR_HTTP_SERVER_PATH);
+            Node storageNode = session.getRootNode().getNode(n.toString());
+            HTTP_SERVER_URL = storageNode.getProperty("httpUrl").getValue().getString();
+        }
+        catch (Exception ex)
+        {
+            HTTP_SERVER_URL = "not-defined";
+        }
     }
 
     protected void deactivate(ComponentContext componentContext) throws RepositoryException
