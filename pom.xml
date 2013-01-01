@@ -10,7 +10,7 @@
     <packaging>bundle</packaging>
 
     <artifactId>video-library</artifactId>
-    <version>1.12</version>
+    <version>1.13-SNAPSHOT</version>
 
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
