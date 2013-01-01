@@ -12,18 +12,8 @@ class window.SearchVodQueryBuilder
     constructor: ( includeProperties = null ) ->
         @propertiesToInclude = includeProperties || SearchVodQueryBuilder.defaultProperties
 
-    _getDefaultQuery: ( channelPath )->
-        orderByStatement = "order by @jcr:created descending"
-        return this._createQueryString( "", channelPath, orderByStatement )
-
     _getQueryByString: ( str, channelPath ) ->
-        orderByStatement = "order by @jcr:score descending, @jcr:created descending"
-        return this._createQueryString( str, channelPath, orderByStatement )
-
-    _createQueryString: ( str, channelPath, orderByStatement ) ->
-        xPathStatement="//(@title)[jcr:contains(.,'#{str}*'),sling:resourceType='mediacenter:vod']" #/(rep:excerpt(.))"
-        queryString = channelPath + ".content-query.tidy.json?queryType=xpath&statement=#{xPathStatement}"
-        queryString += orderByStatement
+        return channelPath + ".search.json?q=#{str}"
 
     _addProperties: ( queryString ) ->
         queryString += "&property=#{prop}" for prop in @propertiesToInclude when prop != null
@@ -31,6 +21,4 @@ class window.SearchVodQueryBuilder
 
     getQuery: ( searchString = "", channelPath = "" ) ->
         searchString = "" if searchString == null || typeof searchString == "undefined"
-        if ( searchString.length < 1)
-            return this._addProperties( this._getDefaultQuery( channelPath ) )
         return this._addProperties( this._getQueryByString( searchString, channelPath ) )
