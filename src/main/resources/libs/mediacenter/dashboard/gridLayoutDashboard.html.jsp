@@ -4,8 +4,6 @@
 <%-- Ensure the presence of the Sling objects --%>
 <sling:defineObjects/>
 
-<span>GRID LAYOUT DASHBOARD SAMPLE WITH MASONRY LAYOUT</span>
-
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/masonry/jquery.masonry.js"></script>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/mediacenter/masonry.css">
 

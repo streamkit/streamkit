@@ -3,7 +3,7 @@
     <parent>
         <artifactId>media-center-parent</artifactId>
         <groupId>org.mediacenter</groupId>
-        <version>1.8</version>
+        <version>1.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -43,6 +43,7 @@
                         </Sling-Bundle-Resources>
                         <Sling-Initial-Content>
                             /libs/mediacenter/channel/dashboard.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/channel,
+                            /libs/mediacenter/dashboard/dashboardHeader.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/dashboard,
                             /libs/mediacenter/dashboard/dashboardTmpl.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/dashboard,
                             /libs/mediacenter/dashboard/gridLayoutDashboard.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/dashboard,
                             /libs/mediacenter/widget/widget.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/widget
@@ -61,22 +62,18 @@
         <dependency>
             <groupId>org.mediacenter</groupId>
             <artifactId>commons_api</artifactId>
-            <version>1.5</version>
+            <version>1.9</version>
         </dependency>
 
         <dependency>
             <groupId>javax.jcr</groupId>
             <artifactId>jcr</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
-            <version>1.6.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -88,14 +85,12 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.api</artifactId>
-            <version>2.0.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.jcr.api</artifactId>
             <version>2.0.6</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -110,7 +105,6 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.commons.json</artifactId>
-            <version>2.0.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -121,6 +115,7 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

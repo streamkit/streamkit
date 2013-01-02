@@ -21,8 +21,6 @@
 
     //render the page using the default page template
     String pageTemplate = resource.getPath() + ".dashboardTmpl.html";
-
-    request.getSession().setAttribute("channelPath", resource.getPath());
 %>
 
 <sling:include path="<%=pageTemplate%>" resourceType="mediacenter/dashboard" flush="true"></sling:include>
