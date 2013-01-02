@@ -67,7 +67,7 @@
     </div>
 </div>
 
-<div id="uploadContainer" class="uploadContainer"
+<div id="uploadContainer" class="uploadContainer span12"
      data-component="UploadContainer"
      data-component-template="\${document.querySelector('#uploadContainerTemplate')}"
      data-component-item-renderer-template="\${document.querySelector('#uploadControlBarTemplate')}">
