@@ -17,8 +17,10 @@ import static org.junit.Assert.assertFalse;
 @Category(IntegrationTest.class)
 public class CreateVodContentTest extends VodManagerIntegrationTestBase
 {
+
     @Test
-    public void testNewContentIsShareable() throws Exception {
+    public void testNewContentIsShareable() throws Exception
+    {
         final MultipartEntity entity = new MultipartEntity();
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
@@ -38,8 +40,10 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
         ).assertContentContains("mix:shareable");
     }
 
+
     @Test
-    public void testNewContent_PrivatePermissions() throws Exception {
+    public void testNewContent_PrivatePermissions() throws Exception
+    {
         final MultipartEntity entity = new MultipartEntity();
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
@@ -68,7 +72,39 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
 
 
     @Test
-    public void testNewContent_PublicPermissions() throws Exception {
+    public void testNewContentOnMonth_PrivatePermissions() throws Exception
+    {
+        final MultipartEntity entity = new MultipartEntity();
+        // Add Sling POST options
+        entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
+        entity.addPart("description", new StringBody("test not public"));
+        entity.addPart(":nameHint", new StringBody("test video private"));
+        entity.addPart("title", new StringBody("test video private"));
+        entity.addPart("active", new StringBody("false"));
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildPostRequest(demoChannelPath + "/vod/2012/9/2/")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+                        .withEntity(entity)
+        ).assertStatus(201);
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/2/test_video_private.json")
+                        .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
+        ).assertContentContains("rep:AccessControllable");
+
+        getRequestExecutor().execute(
+                getRequestBuilder()
+                        .buildGetRequest(demoChannelPath + "/vod/2012/9/2/test_video_private.json")
+        ).assertStatus(404); // private content should not be visible
+    }
+
+
+    @Test
+    public void testNewContent_PublicPermissions() throws Exception
+    {
         final MultipartEntity entity = new MultipartEntity();
         // Add Sling POST options
         entity.addPart("sling:resourceType", new StringBody("mediacenter:vod"));
@@ -95,7 +131,6 @@ public class CreateVodContentTest extends VodManagerIntegrationTestBase
 
         assertFalse("Content should not have ACL", content.contains("rep:AccessControllable"));
     }
-
 
 
 }
