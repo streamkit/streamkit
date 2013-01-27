@@ -1,0 +1,7 @@
+{
+    "jcr:primaryType" : "nt:unstructured",
+    "jcr:title" : "FFmpeg path",
+    "jcr:description" : "FFmpeg path and parameters",
+    "sling:resourceType" : "mediacenter:ffmpeg",
+    "path" : "ffmpeg"
+}

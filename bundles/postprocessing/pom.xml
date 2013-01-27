@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work for
+  additional information regarding copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+  applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.10</version>
+    </parent>
+
+    <groupId>org.mediacenter.service</groupId>
+    <artifactId>mediacenter-postprocessing</artifactId>
+    <version>1.10-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>Postprocessing</name>
+    <description>
+        Reading media properties and creating screenshot using FFmpeg
+    </description>
+
+    <!-- Properties -->
+    <properties>
+        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
+        <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/postprocessing.git</git.repo>
+        <git.subtree>bundles/postprocessing</git.subtree>
+
+        <!-- hook to specify a different Sling version for testing -->
+        <!--<sling.version>6</sling.version>-->
+        <!-- hook to enable debuging during integration tests -->
+        <!--<jar.executor.vm.options>-Xmx512m -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=9002,server=y,suspend=y</jar.executor.vm.options>-->
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <build>
+        <!-- Add new java source dir, required for OSGI JUnit tests -->
+        <resources>
+            <!--
+            <resource>
+                <directory>src/junit/java</directory>
+            </resource>
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <!-- Compile sources for OSGI JUnit tests -->
+            <!--<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/junit/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+
+                        <Export-Package>
+                            org.apache.sling.service.postprocessing.*,version=${project.version}
+                            org.streamkit.vod;version=${project.version},
+                            org.streamkit.vod.jobs;version=${project.version},
+                            org.streamkit.vod.post.handler;version=${project.version}
+                        </Export-Package>
+
+                        <Sling-Test-Regexp>
+                            .*Test
+                        </Sling-Test-Regexp>
+
+                        <Sling-Initial-Content>
+                            SLING-INF;overwrite:=false
+                        </Sling-Initial-Content>
+
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <!-- integration tests -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.12.4</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <!-- configure the bundles to be installed during integration tests -->
+                            <sling.additional.bundle.1>org.apache.sling.junit.core</sling.additional.bundle.1>
+                            <sling.additional.bundle.2>org.apache.sling.testing.tools
+                            </sling.additional.bundle.2>
+                            <sling.additional.bundle.3>org.apache.sling.junit.remote</sling.additional.bundle.3>
+                            <sling.additional.bundle.4>httpclient-osgi</sling.additional.bundle.4>
+                            <sling.additional.bundle.5>httpcore-osgi</sling.additional.bundle.5>
+
+                            <sling.additional.bundle.6>org.apache.sling.jcr.jackrabbit.accessmanager</sling.additional.bundle.6>
+                            <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
+                            <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
+                            <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <dependencies>
+        <!-- streamkit Project dependencies -->
+        <dependency>
+            <groupId>org.mediacenter</groupId>
+            <artifactId>commons_api</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+        <!-- Apache Sling project dependencies -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <version>2.0.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.api</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.resource</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.event</artifactId>
+            <version>3.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+
+
+        <!-- Basic dependencies for Unit Tests -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mediacenter.service</groupId>
+            <artifactId>mediacenter-notifications</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java Unit Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.testing</artifactId>
+            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!-- TODO create separate API package, this is just to get the special Sling test runner -->
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.junit.core</artifactId>
+            <version>1.0.6</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+    </dependencies>
+
+</project>
