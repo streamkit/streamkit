@@ -1,0 +1,3 @@
+- Notification service reacts to events sent on this topic path: org/apache/sling/mediacenter/resouces/notification/EMAIL
+- The event parameters are: TITLE, CONTENT and TO, which represent the title, content and to-email address, that needs to be sent
+- Mail server information(smpt host, credentials etc) need to be updated for test purposes in JCR: /config/notifications/server

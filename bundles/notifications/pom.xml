@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.8</version>
+    </parent>
+    
+    <groupId>org.mediacenter.service</groupId>
+    <artifactId>notifications</artifactId>
+    <packaging>bundle</packaging>
+    <version>1.8-SNAPSHOT</version>
+
+    <name>Notifications</name>
+    <description>
+        Notifications messages to be saved to repository or sent through mail
+    </description>
+
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/notifications.git</git.repo>
+        <git.subtree>bundles/notifications</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <build>
+        <!-- Add new java source dir, required for OSGI JUnit tests -->
+        <resources>
+          <resource>
+            <directory>src/junit/java</directory>
+          </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+
+        </resources>
+
+        <plugins>
+            <!-- Compile sources for OSGI JUnit tests -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals><goal>add-source</goal></goals>
+                        <configuration>
+                            <sources>
+                                <source>src/junit/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.7.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>1.5.2</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <service.vendor>The Apache Software Foundation</service.vendor>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                        <instructions>
+                            <!--
+                            <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                            <Bundle-Name>${pom.name}</Bundle-Name>
+                            <Bundle-Version>${pom.version}</Bundle-Version>
+
+                            <Import-Package></Import-Package>
+                            <Export-Package>org.apache.sling.mediacenter.notifications</Export-Package>
+                            -->
+
+                            <!-- <Embed-Dependency>*;scope=provided;type=!pom;inline=true</Embed-Dependency>-->
+
+                        <Export-Package>javax.mail*, com.sun.mail*, org.apache.sling.mediacenter.notifications.*</Export-Package>
+                        <Sling-Test-Regexp>.*Test</Sling-Test-Regexp>
+                        <Sling-Initial-Content>SLING-INF;overwrite:=false;</Sling-Initial-Content>
+                        </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+      <dependency>
+          <groupId>org.apache.jackrabbit</groupId>
+          <artifactId>jackrabbit-core</artifactId>
+          <version>2.1.1</version>
+
+      </dependency>
+      <dependency>
+          <groupId>org.apache.jackrabbit</groupId>
+          <artifactId>jackrabbit-jcr-commons</artifactId>
+          <version>2.1.1</version>
+
+      </dependency>
+
+
+        <dependency>
+          <groupId>javax.jcr</groupId>
+          <artifactId>jcr</artifactId>
+          <version>2.0</version>
+
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.sling</groupId>
+          <artifactId>org.apache.sling.jcr.api</artifactId>
+          <version>2.1.0</version>
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+            <version>1.6.0</version>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.sling</groupId>
+          <artifactId>org.apache.sling.event</artifactId>
+          <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+        </dependency>
+
+        <dependency>
+            <!-- TODO create separate API package, this is just to get the special Sling test runner -->
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.junit.core</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
+    </dependencies>
+
+
+
+    <profiles>
+        <profile>
+            <!--
+                Use this profile to install the OSGi bundle
+                automatically, during development
+            -->
+            <id>autoInstallBundle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
