@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>widgets</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>live_preview_widget</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <!-- Generation of SCR descriptors -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            <!-- Bundling the content management bundle -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!-- initial content to be loaded on bundle installation -->
+                        <Sling-Bundle-Resources>
+                            /js,
+                            /css
+                        </Sling-Bundle-Resources>
+                        <Sling-Initial-Content>
+                            SLING-INF;overwrite:=false,
+                            /libs/mediacenter/widget/live-preview-widget;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/widget/live-preview-widget
+                        </Sling-Initial-Content>
+                        <!--<Embed-Dependency>-->
+                            <!--org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"-->
+                        <!--</Embed-Dependency>-->
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
