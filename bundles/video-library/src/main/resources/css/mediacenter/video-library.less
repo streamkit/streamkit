@@ -1,0 +1,103 @@
+#libraryWidget {
+    @border-radius: 3px;
+    @gray: #504f4f;
+    @orange: #c59300;
+
+    .ellipsis-text ( @text_width: 150px ) {
+        -o-text-overflow: ellipsis;   /* Opera */
+        text-overflow:    ellipsis;   /* IE, Safari (WebKit) */
+        overflow:hidden;              /* don't show excess chars */
+        white-space:nowrap;           /* force single line */
+        width: @text_width;           /* fixed width */
+    }
+
+    .libraryWidgetContainer {
+        position: absolute;
+        top: 0px;
+        color:#FFFFFF;
+        height: 95%;
+        width: 100%;
+        background-color:#000000;
+        z-index: 2;
+        overflow:auto;
+        overflow-x: hidden;
+        -ms-overflow-x: hidden;
+
+        form {
+            background-color: rgba(200, 200, 200, .25);
+            padding: 10px 11px 1px 10px;
+            margin: 0 0 0 0;
+        }
+    }
+
+    #closeLibraryWidget {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-right: 5px;
+        cursor:pointer;
+        font-weight:bold;
+    }
+
+    .searchResults {
+
+        .loading {
+            img {
+                background-size: initial;
+            }
+        }
+        .loaded {
+            img {
+                background-size: initial;
+            }
+            display: none;
+        }
+
+        a {
+            div {
+                float:left;
+                text-align: left;
+
+                margin:10px 7px;
+
+                padding-left: 5px;
+                padding-top: 5px;
+                padding-right: 5px;
+
+                /*width: 165px;*/
+                height: 140px;
+
+                background-color: @gray;
+                border-radius: @border-radius;
+
+                &:hover {
+                    background-color: @orange;
+                }
+
+                img {
+                    height: 90px;
+                    width: 160px;
+                    background-color: black;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: contain;
+                }
+
+                p {
+                    .ellipsis-text( 150px );
+                    display: block;
+                    margin: 0 0 0;
+                    /* height: 100%; */
+                    color:#FFF;
+
+                }
+
+                time.time-ago {
+                    .ellipsis-text( 150px );
+                    display:block;
+                    color: #838383;
+                }
+            }
+        }
+    }
+}
