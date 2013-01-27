@@ -1,0 +1,22 @@
+.video_player {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    bottom: 0px;
+    padding: 0px 0px 30px 0px;
+
+    z-index: 0;
+
+    height: 100%;
+}
+
+.menu_off .video_player {
+    padding: 0px 0px 0px 0px;
+}
+
+#embed {
+    display: none;
+    visibility: hidden;
+}
+

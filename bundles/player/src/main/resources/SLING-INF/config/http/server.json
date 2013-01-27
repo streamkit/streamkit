@@ -1,0 +1,9 @@
+{
+    "jcr:primaryType" : "nt:unstructured",
+    "jcr:title" : "HTTP Server",
+    "jcr:description" : "Information about http server location",
+    "sling:resourceType" : "mediacenter:servers",
+
+    "httpUrl": "download.live.crestin.tv:80"
+
+}

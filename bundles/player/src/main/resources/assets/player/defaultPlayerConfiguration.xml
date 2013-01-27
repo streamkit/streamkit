@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration id="0" name="light">
+    <modules>
+        <module name="flex-player" version="1.0">
+            <fileName>/assets/player/modules/flex-player-1.5-SNAPSHOT.swf</fileName>
+        </module>
+
+        <module name="flex-control-bar" version="1.0">
+            <fileName>/assets/player/modules/flex-control-bar-1.5-SNAPSHOT.swf</fileName>
+        </module>
+    </modules>
+
+    <skin name="Default Skin" label="Default Skin">
+        <fileName>/assets/player/skins/default-skin-1.0.swf</fileName>
+    </skin>
+</configuration>

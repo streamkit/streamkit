@@ -1,0 +1,114 @@
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 0.8em;
+    background-color: #333;
+
+}
+
+a:link, a:visited, a:active {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #CCC;
+}
+
+.fade-in-fx {
+    visibility: visible !important;
+    opacity: 1 !important;
+    -webkit-transition: visibility 0s linear 0s, opacity .3s linear;
+    -moz-transition: visibility 0s linear 0s, opacity .3s linear;
+    -ms-transition: visibility 0s linear 0s, opacity .3s linear;
+    -o-transition: visibility 0s linear 0s, opacity .3s linear;
+    transition: visibility 0s linear 0s, opacity .3s linear
+}
+
+.fade-out-fx {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    -webkit-transition: visibility 0s linear 1.5s, opacity 1.5s linear;
+    -moz-transition: visibility 0s linear 1.5s, opacity 1.5s linear;
+    -ms-transition: visibility 0s linear 1.5s, opacity 1.5s linear;
+    -o-transition: visibility 0s linear 1.5s, opacity 1.5s linear;
+    transition: visibility 0s linear 1.5s, opacity 1.5s linear
+}
+
+/* should the video library be player's concern */
+.video_library {
+    display: none;
+    position: absolute;
+    color: #FFFFFF;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    background-color: #000000;
+    z-index: 2;
+    overflow: auto;
+    overflow-x: hidden;
+    -ms-overflow-x: hidden;
+}
+
+#close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.channel_contact {
+    display: none;
+    position: absolute;
+    top: 0px;
+    color: #FFFFFF;
+    height: 50%;
+    width: 70%;
+    background-color: #000000;
+    z-index: 2;
+}
+
+.video_player {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    bottom: 0px;
+    padding: 0px 0px 30px 0px;
+
+    z-index: 0;
+}
+
+.menu_off .video_player {
+    padding: 0px 0px 0px 0px;
+}
+
+.video_menu {
+
+    position: absolute;
+    display: table;
+
+    text-align: center;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 30px;
+    background-color: #000;
+    z-index: 1;
+    vertical-align: middle;
+
+    /* background */
+    background: #000000;
+}
+
+.video_menu a,
+.video_menu a:hover {
+    cursor: pointer;
+    color: #ffffff;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    text-decoration: none;
+}

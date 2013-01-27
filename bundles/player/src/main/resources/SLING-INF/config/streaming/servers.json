@@ -1,0 +1,12 @@
+{
+    "jcr:primaryType" : "nt:unstructured",
+    "jcr:title" : "Servers",
+    "jcr:description" : "All system available servers",
+    "sling:resourceType" : "mediacenter:servers",
+        "s1":
+        {
+            "streamUrl": "amsix49.crestin.tv:80",
+            "vodApplicationName": "vod",
+            "liveApplicationName": "live"
+        }
+}

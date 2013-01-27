@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.8</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
+    </parent>
+
+    <groupId>org.mediacenter.service</groupId>
+    <artifactId>player</artifactId>
+    <version>1.10-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>Player</name>
+    <description>Bundle containing the default public player</description>
+
+    <!-- Properties -->
+    <properties>
+        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
+        <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/player.git</git.repo>
+        <git.subtree>bundles/player</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <profiles>
+        <profile>
+            <!-- run this profile only when you need to upgrade the flash player -->
+            <id>copy-swf</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-swf</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <outputDirectory>
+                                                ${project.basedir}/src/main/resources/assets/player/modules
+                                            </outputDirectory>
+                                            <groupId>org.sda.mediacenter</groupId>
+                                            <artifactId>flex-player</artifactId>
+                                            <version>1.5-SNAPSHOT</version>
+                                            <type>swf</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <outputDirectory>
+                                                ${project.basedir}/src/main/resources/assets/player/modules
+                                            </outputDirectory>
+                                            <groupId>org.sda.mediacenter</groupId>
+                                            <artifactId>flex-control-bar</artifactId>
+                                            <version>1.5-SNAPSHOT</version>
+                                            <type>swf</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <outputDirectory>
+                                                ${project.basedir}/src/main/resources/assets/player/
+                                            </outputDirectory>
+                                            <groupId>org.sda.mediacenter</groupId>
+                                            <artifactId>flex-main-sling</artifactId>
+                                            <version>1.5-SNAPSHOT</version>
+                                            <type>swf</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <outputDirectory>
+                                                ${project.basedir}/src/main/resources/assets/player/skins
+                                            </outputDirectory>
+                                            <groupId>org.sda.mediacenter</groupId>
+                                            <artifactId>default-skin</artifactId>
+                                            <version>1.0</version>
+                                            <type>swf</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+                Use this profile to install the OSGi bundle
+                automatically, during development
+            -->
+            <id>autoInstallBundle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <version>2.0.4-incubator</version>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.api</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+
+        <!-- JCR -->
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-core</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr-commons</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>
+            <version>2.0.2-incubator</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Json Object -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.json</artifactId>
+            <version>2.0.4-incubator</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.servlets.get</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mediacenter</groupId>
+            <artifactId>commons_api</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.7.2</version>
+                <!-- As QDox is trying to inspect/load the classes
+                    we have to add a slf4j implementation to the
+                    class path of the plugin - we usually use
+                    a static field for the logger and during class
+                    loading this field requires an slf4j implementation!
+                -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>1.5.2</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <service.vendor>The Apache Software Foundation</service.vendor>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.3.5</version>
+                <configuration>
+                    <instructions> <!--
+                        <Embed-Dependency>
+                            org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"
+                        </Embed-Dependency>
+                        -->
+                        <Sling-Bundle-Resources>
+                            /assets;overwrite:=true;uninstall:=true,
+                            /libs/mediacenter/broadcaster/fmle_profile.xml;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/broadcaster/fmle_profile.xml,
+                            /libs/mediacenter/broadcaster/wirecast_profile.wcst;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/broadcaster/wirecast_profile.wcst
+                        </Sling-Bundle-Resources>
+
+                        <Sling-Initial-Content>
+                            crossdomain.xml;overwrite:=true;uninstall:=true,
+                            SLING-INF;overwrite:=false,
+                            <!--SLING-CONTENT/content/player;overwrite:=true;uninstall:=true;path:=SLING-CONTENT/content/player,-->
+                            /libs/mediacenter/playerTemplate;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
+                            /libs/mediacenter/vod/player.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/vod/fplayer.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/vod/iplayer.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/live/player.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/live,
+                            /libs/mediacenter/live/fplayer.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/live,
+                            /libs/mediacenter/live/iplayer.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/live,
+
+                            /libs/mediacenter/playerTemplate/fplayer_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
+                            /libs/mediacenter/playerTemplate/iplayer_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
+                            /libs/mediacenter/playerTemplate/player_menu.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/playerTemplate,
+                        </Sling-Initial-Content>
+                        <Export-Package>
+                            org.apache.sling.cdn.service.interfaces,
+                            org.apache.sling.service.player
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

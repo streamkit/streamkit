@@ -1,0 +1,41 @@
+<document version="5" os="macosx" original_document_path="/Users/selfxp/Downloads/wirecast.wcst">
+	<vam_state master_audio_shown="1000" transition_0_unique_id="-- CUT --" transition_1_unique_id="-- SMOOTH --" transition_2_unique_id="side" />
+	<transition_data />
+	<chroma_key_data />
+	<advanced_output>
+		<output_list>
+			[outputs]
+		</output_list>
+	</advanced_output>
+	<output_presets>
+		[presets]
+	</output_presets>
+	<volume value="1" />
+	<auto_live />
+	<output_annotations>
+		<xml_tag output_title="" output_author="" output_copyright="" output_info="" />
+	</output_annotations>
+	<transition_duration />
+	<visual_style />
+	<single_output />
+	<media_directories />
+	<layer_names />
+	<sections />
+	<aspectRatio />
+	<shotsLiveWhenSaved />
+	<assets>
+		<asset name="Blank Shot" unique_id="319A7491-0D6E-4C36-AE86-E205D3CBB794_shot" type="shot" media-type="9" blank_shot="1" created_for_layer="5" />
+		<asset name="Blank Shot" unique_id="7B7EFFE6-1566-4424-B2DA-063008AD52FA_shot" type="shot" media-type="9" blank_shot="1" created_for_layer="1" />
+		<asset name="Blank Shot" unique_id="BE40098C-CE86-414E-9365-781731BA21BD_shot" type="shot" media-type="9" blank_shot="1" created_for_layer="2" />
+		<asset name="Blank Shot" unique_id="0B0FF132-FA6F-4277-B4A9-A7FC95F79291_shot" type="shot" media-type="9" blank_shot="1" created_for_layer="3" />
+		<asset name="Blank Shot" unique_id="F57D1C83-0220-4814-9130-472FEE82D070_shot" type="shot" media-type="9" blank_shot="1" created_for_layer="4" />
+	</assets>
+	<xml_tag />
+	<shots>
+		<shot event_type="2" unique_id="319A7491-0D6E-4C36-AE86-E205D3CBB794_shot" />
+		<shot event_type="2" unique_id="7B7EFFE6-1566-4424-B2DA-063008AD52FA_shot" />
+		<shot event_type="2" unique_id="BE40098C-CE86-414E-9365-781731BA21BD_shot" />
+		<shot event_type="2" unique_id="0B0FF132-FA6F-4277-B4A9-A7FC95F79291_shot" />
+		<shot event_type="2" unique_id="F57D1C83-0220-4814-9130-472FEE82D070_shot" />
+	</shots>
+</document>
