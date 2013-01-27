@@ -1,0 +1,8 @@
+{
+    "contentManager":
+    {
+        "name": "Content Manager Resource",
+        "jcr:primaryType":"nt:unstructured",
+        "sling:resourceType" : "mediacenter/contentManager"
+    }
+}

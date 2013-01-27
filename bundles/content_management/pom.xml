@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.10</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
+    </parent>
+
+    <groupId>org.mediacenter.admin</groupId>
+    <artifactId>content_management</artifactId>
+    <packaging>bundle</packaging>
+    <version>1.13-SNAPSHOT</version>
+
+    <name>Admin Content Management</name>
+
+    <!-- Properties -->
+    <properties>
+        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
+        <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/content_management.git</git.repo>
+        <git.subtree>bundles/content_management</git.subtree>
+        <commons.version>1.11</commons.version>
+        <!-- hook to specify a different Sling version for testing -->
+        <!--<sling.version>6</sling.version>-->
+        <!-- hook to enable debuging during integration tests -->
+        <!--<jar.executor.vm.options>-Xmx512m -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=9002,server=y,suspend=y</jar.executor.vm.options>-->
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <commons.version>1.12-SNAPSHOT</commons.version>
+            </properties>
+        </profile>
+
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/coffee</directory>
+            </resource>
+            <!-- REPLACING JS VERSIONS WITHIN THE HTML -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/pageTmpl.html.jsp</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <!-- Generation of SCR descriptors -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+
+            <!-- Bundling the content management bundle -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.mediacenter.content;version=${project.version},
+                            org.mediacenter.content.post.processor;version=${project.version}
+                        </Export-Package>
+
+                        <!--<Private-Package>
+                            org.mediacenter.content.post.processor
+                        </Private-Package> -->
+
+                        <!-- initial content to be loaded on bundle installation -->
+                        <Sling-Bundle-Resources>
+                            /js,
+                            /css
+                        </Sling-Bundle-Resources>
+                        <Sling-Initial-Content>
+                            SLING-INF;overwrite:=false,
+                            /libs/mediacenter/contentManager;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/contentManager,
+                            /libs/mediacenter/vod/edit.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/vod/edit_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/vod/list.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/vod/list_body.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/vod,
+                            /libs/mediacenter/channel/vodManager.html.jsp;overwrite:=true;uninstall:=true;path:=/libs/mediacenter/channel
+                        </Sling-Initial-Content>
+                        <Embed-Dependency>
+                            org.apache.sling.servlets.get;inline="org/apache/sling/servlets/get/impl/helpers/JsonResourceWriter.*"
+                        </Embed-Dependency>
+                        <Private-Package>
+                            org.apache.sling.service.content.servlet
+                        </Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <!-- COPY COMMON BUNDLE AND UNPACK IT -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>copy-common_bundle-dependencies</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <outputDirectory>
+                                        ${project.build.directory}/commons
+                                    </outputDirectory>
+                                    <groupId>org.mediacenter</groupId>
+                                    <artifactId>commons</artifactId>
+                                    <version>${commons.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>**/*.js</includes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.google.jstestdriver</groupId>
+                                    <artifactId>jstestdriver</artifactId>
+                                    <version>1.3.3d</version>
+                                    <classifier>cobertura-patched</classifier>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.theoryinpractise</groupId>
+                <artifactId>coffee-maven-plugin</artifactId>
+                <version>1.3.4</version>
+                <executions>
+                    <execution>
+                        <id>coffee</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>coffee</goal>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <coffeeDir>src/main/coffee</coffeeDir>
+                            <coffeeOutputDirectory>${project.build.directory}/coffee/js/mediacenter
+                            </coffeeOutputDirectory>
+                            <compileIndividualFiles>true</compileIndividualFiles>
+                            <bare>false</bare>
+
+                            <version>1.2.0</version>
+
+                            <minifiedFile>
+                                ${project.build.directory}/coffee/js/mediacenter/${project.artifactId}-${project.version}.min.js
+                            </minifiedFile>
+
+                            <setOfFilesToMinify>
+                                <directory>${project.build.directory}/coffee/js/mediacenter</directory>
+                                <includes>
+                                    <include>${project.artifactId}-${project.version}.js</include>
+                                </includes>
+                            </setOfFilesToMinify>
+
+                            <coffeeJoinSets>
+                                <joinSet>
+                                    <id>${project.artifactId}-${project.version}</id>
+                                    <fileSet>
+                                        <directory>${basedir}/src/main/coffee</directory>
+                                        <includes>
+                                            <include>**/*.coffee</include>
+                                        </includes>
+                                    </fileSet>
+                                </joinSet>
+                            </coffeeJoinSets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>coffee-tests</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>coffee</goal>
+                        </goals>
+                        <configuration>
+                            <coffeeDir>src/test/coffee</coffeeDir>
+                            <coffeeOutputDirectory>${project.build.directory}/test-classes/js</coffeeOutputDirectory>
+                            <compileIndividualFiles>true</compileIndividualFiles>
+                            <bare>false</bare>
+                            <version>1.2.0</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.googlecode.jstd-maven-plugin</groupId>
+                <artifactId>jstd-maven-plugin</artifactId>
+                <version>1.3.2.5</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <skipTests>${maven.test.skip}</skipTests>
+                    <browser>${browserPath}</browser>
+                    <testOutput>${project.build.directory}/surefire-reports</testOutput>
+                    <port>9801</port>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>run-tests</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.12.4</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <!-- configure the bundles to be installed during integration tests -->
+                            <sling.additional.bundle.1>org.apache.sling.junit.core</sling.additional.bundle.1>
+                            <sling.additional.bundle.2>org.apache.sling.testing.tools
+                            </sling.additional.bundle.2>
+                            <sling.additional.bundle.3>org.apache.sling.junit.remote</sling.additional.bundle.3>
+                            <sling.additional.bundle.4>httpclient-osgi</sling.additional.bundle.4>
+                            <sling.additional.bundle.5>httpcore-osgi</sling.additional.bundle.5>
+
+                            <sling.additional.bundle.6>org.apache.sling.jcr.jackrabbit.accessmanager</sling.additional.bundle.6>
+                            <sling.additional.bundle.7>commons_api</sling.additional.bundle.7>
+                            <sling.additional.bundle.8>cobertura</sling.additional.bundle.8>
+                            <sling.additional.bundle.9>${project.artifactId}</sling.additional.bundle.9>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mediacenter</groupId>
+            <artifactId>commons_api</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.servlets.post</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.contentloader</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-api</artifactId>
+            <version>2.2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.jackrabbit.accessmanager</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.base</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.resource</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.servlets.get</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- this one is needed by integration tests, by SlingTestBase -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.event</artifactId>
+            <version>3.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JS Unit Tests -->
+        <dependency>
+            <groupId>com.googlecode.jstd-maven-plugin</groupId>
+            <artifactId>jstd-maven-plugin</artifactId>
+            <version>1.3.2.5</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
