@@ -6,8 +6,11 @@ The build depends on [Apache Maven](http://maven.apache.org/guides/getting-start
 For those familiar with `maven` it's pretty straight forward:
 
     mvn clean install
-
-Build also integrates unit tests; in case the build fails b/c it cannot open a browser add `browserPath` parameter:
+    
+### NOTE: on the first build you need to execute the following command    
+    mvn clean install -gs=./initial-settings.xml
+    
+Build also integrates javascript unit tests; in case the build fails b/c it cannot open a browser add `browserPath` parameter:
 
     mvn clean install -DbrowserPath=/path/to/my/browser
 
