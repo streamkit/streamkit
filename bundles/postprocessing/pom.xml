@@ -218,8 +218,8 @@
 
         <dependency>
             <groupId>org.mediacenter.service</groupId>
-            <artifactId>mediacenter-notifications</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <artifactId>notifications</artifactId>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
 
