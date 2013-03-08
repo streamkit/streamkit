@@ -56,6 +56,7 @@ public class EventHandlerMediaAdded implements JobProcessor, EventHandler {
 	}
 
     private void getStoragePaths() throws Exception {
+        // TODO: extract this method into a service
         Node storageServersNode = session.getRootNode().getNode(JCR_MEDIA_PATH_CONFIG);
         MEDIA_ABSOLUTE_PATH = storageServersNode.getProperty("rootPath").getValue().getString();
         String activeServer = storageServersNode.getProperty("activeServer").getValue().getString();
