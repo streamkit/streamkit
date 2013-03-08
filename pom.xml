@@ -94,7 +94,8 @@
                             org.apache.sling.service.postprocessing.*,version=${project.version}
                             org.streamkit.vod;version=${project.version},
                             org.streamkit.vod.jobs;version=${project.version},
-                            org.streamkit.vod.post.handler;version=${project.version}
+                            org.streamkit.vod.post.handler;version=${project.version},
+                            org.streamkit.vod.post;version=${project.version}
                         </Export-Package>
 
                         <Sling-Test-Regexp>
