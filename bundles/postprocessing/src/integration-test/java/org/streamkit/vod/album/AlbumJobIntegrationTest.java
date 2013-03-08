@@ -2,6 +2,7 @@ package org.streamkit.vod.album;
 
 import java.io.IOException;
 import java.lang.Exception;
+import java.lang.Thread;
 
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
@@ -52,6 +53,8 @@ public class AlbumJobIntegrationTest extends PostprocessingIntegrationTestBase
         uploadNewVideo("video1_multi_album", "album1");
         uploadNewVideo("video2_multi_album", "album1,album2");
         uploadNewVideo("video3_multi_album", "album2");
+
+        Thread.sleep(2000);
 
         // query album1
         String jsonResponse = getRequestExecutor().execute(
