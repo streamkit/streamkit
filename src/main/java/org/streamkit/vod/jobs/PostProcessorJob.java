@@ -1,6 +1,8 @@
 package org.streamkit.vod.jobs;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -43,7 +45,8 @@ import org.streamkit.vod.post.VodPostProcessor;
         @Property(name = "service.description",
                 value = "Job called for background processing post creating or updating a Video"),
         @Property(name = "event.topics",
-                value = { MediaCenterResourceTopic.VOD_ADDED_TOPIC, MediaCenterResourceTopic.VOD_UPDATED_TOPIC })
+                value = { MediaCenterResourceTopic.VOD_ADDED_TOPIC,
+                        MediaCenterResourceTopic.VOD_UPDATED_TOPIC })
 })
 @Service(value = { EventHandler.class })
 public class PostProcessorJob implements EventHandler, JobProcessor
@@ -105,7 +108,17 @@ public class PostProcessorJob implements EventHandler, JobProcessor
             for (VodPostProcessor processor : postProcessors)
             {
                 // TODO: execute processors in order
-                Boolean result = processor.process(videoNode);
+                Boolean result = false;
+
+                if (event.getTopic().equals(MediaCenterResourceTopic.VOD_ADDED_TOPIC))
+                {
+                    result = processor.processAdded(videoNode);
+                }
+                else
+                {
+                    result = processor.processUpdated(videoNode);
+                }
+
                 if (!result)
                 {
                     return false;
@@ -132,6 +145,7 @@ public class PostProcessorJob implements EventHandler, JobProcessor
         synchronized (this.postProcessors)
         {
             postProcessors.add(processor);
+            sortPostProcessors();
         }
     }
 
@@ -141,6 +155,18 @@ public class PostProcessorJob implements EventHandler, JobProcessor
         {
             postProcessors.remove(processor);
         }
+    }
+
+    private void sortPostProcessors()
+    {
+        Collections.sort(postProcessors,
+                new Comparator<VodPostProcessor>()
+                {
+                    public int compare(VodPostProcessor vodPostProcessor, VodPostProcessor vodPostProcessor2)
+                    {
+                        return (vodPostProcessor.getExecutionOrder() - vodPostProcessor2.getExecutionOrder());
+                    }
+                });
     }
 
     private void signalComplete(Event event)

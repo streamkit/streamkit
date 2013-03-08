@@ -3,21 +3,26 @@ package org.streamkit.vod.post.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.mediacenter.resource.ChannelNodeLookup;
+import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streamkit.vod.AlbumService;
 import org.streamkit.vod.post.VodPostProcessor;
+import org.streamkit.vod.post.VodPostProcessorBaseImpl;
 
 /**
  * Processor ensuring the Video is added the the corresponding albums.
@@ -26,17 +31,35 @@ import org.streamkit.vod.post.VodPostProcessor;
  */
 @Component(immediate = true, metatype = true)
 @Properties({
-        @Property(name = "order", intValue = 10)
+        @Property(name = "order", intValue = 20)
 })
 @Service(value = { VodPostProcessor.class })
-public class AlbumProcessor implements VodPostProcessor
+public class AlbumProcessor extends VodPostProcessorBaseImpl implements VodPostProcessor
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Reference
     private AlbumService albumService;
 
-    public Boolean process(Node videoNode)
+    @Activate
+    public void start(final ComponentContext context, final Map<String, Object> configuration) throws Exception
+    {
+        configure(configuration);
+    }
+
+    @Deactivate
+    public void stop(final ComponentContext context)
+    {
+
+    }
+
+    public Boolean processUpdated(Node videoNode)
+    {
+        updateAlbumForVideo(videoNode);
+        return true;
+    }
+
+    public Boolean processAdded(Node videoNode) throws RepositoryException
     {
         updateAlbumForVideo(videoNode);
         return true;
