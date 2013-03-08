@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 @Category(IntegrationTest.class)
 public class VodEntityJobIntegrationTest extends PostprocessingIntegrationTestBase
 {
+
+
     @Test
     public void testVideoHasCreatedField() throws Exception
     {
@@ -80,5 +82,6 @@ public class VodEntityJobIntegrationTest extends PostprocessingIntegrationTestBa
                         .withCredentials(SlingTestBase.ADMIN, SlingTestBase.ADMIN)
                         .withEntity(entity)
         ).assertStatus(201);
+
     }
 }
