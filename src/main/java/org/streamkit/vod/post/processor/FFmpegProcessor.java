@@ -172,8 +172,8 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
 
         if (sendNotif) {
             // Send notification informing channel owner about the postprocessing status
-            Notification notif = new Notification(eventAdmin, repository, e, propPath);
-            notif.send();
+//            Notification notif = new Notification(eventAdmin, repository, e, propPath);
+//            notif.send();
         }
     }
 
