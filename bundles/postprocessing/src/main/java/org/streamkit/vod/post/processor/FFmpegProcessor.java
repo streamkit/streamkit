@@ -6,6 +6,7 @@ import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.service.postprocessing.FFmpegService;
 import org.apache.sling.service.postprocessing.Notification;
 import org.apache.sling.service.postprocessing.dto.MediaProperties;
+import org.mediacenter.resource.ChannelNodeLookup;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.log.LogService;
@@ -18,7 +19,7 @@ import java.io.*;
 
 @Component(immediate = true, metatype = false)
 @Properties({
-   @Property(name = "order", intValue = 10)
+   @Property(name = "order", intValue = 9)
 })
 @Service(value = { VodPostProcessor.class })
 public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPostProcessor {
@@ -67,13 +68,20 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
         // String propPath = (String) event.getProperty(SlingConstants.PROPERTY_PATH);
         // String propResType = (String) event.getProperty(SlingConstants.PROPERTY_RESOURCE_TYPE);
 
+        Node albumNode = ChannelNodeLookup.getClosestAlbumInPath(videoNode);
+
+        if ( albumNode != null ) {
+            // no processing for album nodes.
+            return true;
+        }
+
         if ( !ensureMediaFileExists(videoNode) ) {
             return false;
         }
 
-        propPath = videoNode.getPath();
+        propPath = videoNode.getNode("mediaFile").getPath();
 
-        runFFmpeg();
+        runFFmpeg(videoNode.getNode("mediaFile"));
 //        FFmpegProcessorThread pt = new FFmpegProcessorThread(repository,  MEDIA_ABSOLUTE_PATH, MEDIA_HDD_PATH, propPath, ffmpegService, logger, eventAdmin);
 //        new Thread(pt).start();
 //        logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
@@ -86,7 +94,7 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
 
 
 
-    public void runFFmpeg() {
+    public void runFFmpeg(Node mediaFileNode) {
         String videoDirPath = getVideoDirPath(propPath);
         String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
         String videoPath = getVideoPath(propPath, videoDirPath, MEDIA_HDD_PATH);
@@ -98,13 +106,9 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
         Session session = null;
         try {
 
-            String jcrContentNodePathShort = propPath.substring(1);
-            String jcrContentNodePathLong = jcrContentNodePathShort + "/jcr:content";
-            // Try both {..}/mediaFile and {..}/mediaFile/jcr:content
-            session = repository.loginAdministrative(null);
-            String jcrContentNodePath = (session.getRootNode().hasNode(jcrContentNodePathLong)) ? jcrContentNodePathLong : jcrContentNodePathShort;
+            session = mediaFileNode.getSession();
 
-            Node dataNode = session.getRootNode().getNode(jcrContentNodePath);
+            Node dataNode = mediaFileNode;
 
             javax.jcr.Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
             String mimeType = mimeTypeProperty.getValue().getString();
@@ -140,7 +144,7 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
                 dataNode.remove();
                 logger.log(LogService.LOG_INFO, "Fiele Node removed: " + dataNode.getIdentifier());
 
-                session.save();
+//                session.save();
 
                 // in case video mime type not supported
             } else {
@@ -160,16 +164,16 @@ public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPost
             removeFileOnError(absoluteVideoPath, absoluteSnapshotPath);
 
         } finally {
-            if (session != null) {
+            /*if (session != null) {
                 session.logout();
                 session = null;
-            }
+            }*/
         }
 
         if (sendNotif) {
             // Send notification informing channel owner about the postprocessing status
-            Notification notif = new Notification(eventAdmin, repository, e, propPath);
-            notif.send();
+//            Notification notif = new Notification(eventAdmin, repository, e, propPath);
+//            notif.send();
         }
     }
 
