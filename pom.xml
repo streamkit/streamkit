@@ -34,7 +34,8 @@
                         <Sling-Bundle-Resources>
                             /js,
                             /css,
-                            /img
+                            /img,
+                            /client-libs
                         </Sling-Bundle-Resources>
                     </instructions>
                 </configuration>
