@@ -40,6 +40,8 @@ class window.EditVodForm extends Backbone.View
         rivets?.formatters.date = (value) ->
             moment?(value).format('YYYY/MM/DD hh:mm:ss') || value
 
+        @model.ensureCreateFieldExists() if (@model.isNew())
+
         tmpl = _.template(@template)
         @el.innerHTML = tmpl()
         @setupBinding()

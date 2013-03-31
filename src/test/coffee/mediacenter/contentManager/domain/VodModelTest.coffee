@@ -94,4 +94,27 @@ TestCase("VodModelTest", {
 
         cmd.cancel = cancelUploadMethod
 
+    testThatCreatedFieldIsSet: ->
+        @model = new VodModel()
+        vodContent =
+         'title': 'existing_content'
+         'description' : 'some description'
+
+        @model.setContent( vodContent )
+        assertTrue("vod model should be new", @model.isNew() )
+        createdField = @model.get("created")
+        assertTrue("created field should be set automatically if it wasn't set already",
+            (typeof createdField != "undefined" && createdField != null ) )
+
+    testThatCreatedDoesntChangeWhenSet: ->
+        @model = new VodModel()
+        vodContent =
+         'title': 'existing_content_with_date'
+         'created': 'Sun 30 Jul 2013 15:50:50'
+         'sling:resourceType' : 'mediacenter:vod'
+
+        @model.setContent( vodContent )
+        createdField = @model.get("created")
+        assertEquals('Sun 30 Jul 2013 15:50:50', createdField )
+
 })

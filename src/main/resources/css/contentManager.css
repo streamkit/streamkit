@@ -10,6 +10,10 @@ input, textarea, select, .uneditable-input {
     height: auto;
 }
 
+.modal {
+    max-height: 650px;
+}
+
 
 ul li {
     list-style-type: none;

@@ -32,7 +32,6 @@ class window.VodModel extends AbstractModel
            required: true
            msg: "Please select a video file"
 
-
     isValid: ->
        typeof @get('isValid') != "undefined" and @get('isValid') is true
 
@@ -48,6 +47,11 @@ class window.VodModel extends AbstractModel
     setContent: ( content ) =>
         @set( content ) if content? && content["sling:resourceType"] == "mediacenter:vod"
         @validation.mediaFile.required = @isNew()
+        @ensureCreateFieldExists()
+
+    ensureCreateFieldExists: =>
+        createdField = @get("created")
+        @set("created", new Date().toString() ) if (createdField == null || typeof createdField == "undefined")
 
     # this is called by CreateVodCommand
     setUploadCmd: ( cmd ) -> @_uploadCmd = cmd
