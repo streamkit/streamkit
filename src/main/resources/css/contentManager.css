@@ -6,6 +6,10 @@ div {
     display: block;
 }
 
+input, textarea, select, .uneditable-input {
+    height: auto;
+}
+
 
 ul li {
     list-style-type: none;

@@ -208,6 +208,9 @@
 
         var modal_hideHandler = function(event)
         {
+            if (event.target != event.currentTarget ) {
+                return false;
+            }
             editForm.remove();
             $("#saveVodButton").unbind();
             $("#cancelVodButton").unbind();

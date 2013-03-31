@@ -13,6 +13,7 @@ class window.AbstractSaveVodCommand
         formData['jcr:lastModified'] = "" # Sling should auto-fill this value
         formData['jcr:lastModifiedBy'] = "" # Sling should auto-fill this value
         formData['active@TypeHint'] = 'Boolean'
+        formData['created@TypeHint'] = 'Date'
 
         # To conform with Apache Sling specs at
         # http://sling.apache.org/site/manipulating-content-the-slingpostservlet-servletspost.html

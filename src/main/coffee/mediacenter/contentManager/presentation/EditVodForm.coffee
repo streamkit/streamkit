@@ -5,7 +5,7 @@ class window.EditVodForm extends Backbone.View
     lastValidationError: ""
 
     mb = 1024 * 1024;
-    maxFileSizeMB = 1536
+    maxFileSizeMB = 2048
 
     constructor: (obj) ->
         {@template} = obj
@@ -36,11 +36,22 @@ class window.EditVodForm extends Backbone.View
 
     render: =>
         console?.log "rendering EditVodForm"
+
+        rivets?.formatters.date = (value) ->
+            moment?(value).format('YYYY/MM/DD hh:mm:ss') || value
+
         tmpl = _.template(@template)
         @el.innerHTML = tmpl()
         @setupBinding()
         if ( !@model.isNew() )
             $(@el).find("#mediaFile").parent().parent().hide()
+
+        $(@el).find("#createdDatePicker").datetimepicker(
+            format: "yyyy/MM/dd hh:mm:ss"
+            language: "en"
+        )
+
+        $(@el).find("#createdDatePicker").on('changeDate', @createdDatePicker_changeDateHandler)
 
         # if album is visible, initialize AlbumManagerVodForm
         # AlbumManagerVodForm can show, edit albums for the current VOD
@@ -62,6 +73,10 @@ class window.EditVodForm extends Backbone.View
         # trigger form validation + submit
         vodForm.submitBtn.click()
         return @model.isValid()
+
+    createdDatePicker_changeDateHandler: (event) =>
+        # $(this.el).find("#created").val()
+        @model.set("created", event.localDate.toString())
 
     form_submitHandler: (event) ->
         console?.log "Saving content"

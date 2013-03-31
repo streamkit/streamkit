@@ -88,6 +88,12 @@
 </div>
 
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/bootstrap/bootstrap.js"></script>
+<!-- JS Date handler -->
+<script type="text/javascript" src="<%=request.getContextPath()%>/client-libs/momentjs/moment-2.0.0.min.js"></script>
+<!-- bootstrap-datetimepicker is needed for the edit vod popup -->
+<script type="text/javascript" src="<%=request.getContextPath()%>/client-libs/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/client-libs/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+
 
 </body>
 </html>

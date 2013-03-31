@@ -18,6 +18,8 @@ class window.VodModel extends AbstractModel
             required: true
             maxLength: 125
             minLength: 6
+        created:
+            required: true
         description:
             required: true
             minLength: 5

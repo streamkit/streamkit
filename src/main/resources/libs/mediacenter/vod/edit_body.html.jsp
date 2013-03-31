@@ -38,6 +38,20 @@
                         <span class="help-inline"></span>
                     </div>
                 </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="created">Date:<sup title="This field is mandatory.">*</sup></label>
+                    <div id="createdDatePicker" class="controls input-append date">
+                        <input class="input-xlarge" type="text" name="created" id="created"
+                                data-value="model.created | date"
+                                required="true" />
+                        <span class="add-on">
+                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                        </span>
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+
                 <div class="control-group">
                     <label class="control-label" for="description">Description:<sup title="This field is mandatory.">*</sup></label>
                     <div class="controls">
