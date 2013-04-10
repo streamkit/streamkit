@@ -38,7 +38,7 @@ class window.EditVodForm extends Backbone.View
         console?.log "rendering EditVodForm"
 
         rivets?.formatters.date = (value) ->
-            moment?(value).format('YYYY/MM/DD hh:mm:ss') || value
+            moment?(value).format('YYYY/MM/DD HH:mm:ss') || value
 
         @model.ensureCreateFieldExists() if (@model.isNew())
 
