@@ -19,6 +19,8 @@
     <properties>
         <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
         <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/client-libs.git</git.repo>
+        <git.subtree>bundles/client-libs</git.subtree>
     </properties>
 
     <build>
