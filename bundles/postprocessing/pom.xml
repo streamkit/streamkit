@@ -17,7 +17,7 @@
 
     <groupId>org.mediacenter.service</groupId>
     <artifactId>mediacenter-postprocessing</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>1.11-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Postprocessing</name>
@@ -94,7 +94,8 @@
                             org.apache.sling.service.postprocessing.*,version=${project.version}
                             org.streamkit.vod;version=${project.version},
                             org.streamkit.vod.jobs;version=${project.version},
-                            org.streamkit.vod.post.handler;version=${project.version}
+                            org.streamkit.vod.post.handler;version=${project.version},
+                            org.streamkit.vod.post;version=${project.version}
                         </Export-Package>
 
                         <Sling-Test-Regexp>
@@ -218,8 +219,8 @@
 
         <dependency>
             <groupId>org.mediacenter.service</groupId>
-            <artifactId>mediacenter-notifications</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <artifactId>notifications</artifactId>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
 

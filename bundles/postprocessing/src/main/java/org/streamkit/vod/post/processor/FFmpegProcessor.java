@@ -1,41 +1,100 @@
-package org.apache.sling.service.postprocessing;
+package org.streamkit.vod.post.processor;
 
+import org.apache.felix.scr.annotations.*;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.sling.jcr.api.SlingRepository;
+import org.apache.sling.service.postprocessing.FFmpegService;
+import org.apache.sling.service.postprocessing.Notification;
 import org.apache.sling.service.postprocessing.dto.MediaProperties;
+import org.mediacenter.resource.ChannelNodeLookup;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.log.LogService;
+import org.streamkit.vod.post.VodPostProcessor;
+import org.streamkit.vod.post.VodPostProcessorBaseImpl;
 
 import javax.jcr.*;
 import java.io.*;
 
-/**
- * @author Cosmin Stanciu
- */
-public class FFmpegProcessorThread implements Runnable {
 
-    private SlingRepository repository;    
-    private String MEDIA_ABSOLUTE_PATH = null;
-    private String MEDIA_HDD_PATH = null;
-    private String propPath = "";
-    private FFmpegService ffmpegService;
-    private LogService logger;
-    private Exception e;
-    private EventAdmin eventAdmin;  
+@Component(immediate = true, metatype = false)
+@Properties({
+   @Property(name = "order", intValue = 9)
+})
+@Service(value = { VodPostProcessor.class })
+public class FFmpegProcessor extends VodPostProcessorBaseImpl implements VodPostProcessor {
+    private Session session = null;
+    private static final String JCR_MEDIA_PATH_CONFIG = "config/storage/servers";
+    private static String MEDIA_ABSOLUTE_PATH = null;
+    private static String MEDIA_HDD_PATH = null;
+    private String propPath;
     private boolean sendNotif = true;
-    
+    private Exception e;
 
-    public FFmpegProcessorThread (SlingRepository repository, String media_absolute_path, String media_hadd_path, String propPath,
-                                  FFmpegService ffmpegService, LogService logger, EventAdmin eventAdmin) {
-        this.repository = repository;
-        this.MEDIA_ABSOLUTE_PATH = media_absolute_path;
-        this.MEDIA_HDD_PATH = media_hadd_path;
-        this.propPath = propPath;
-        this.ffmpegService = ffmpegService;
-        this.logger = logger;
-        this.eventAdmin = eventAdmin;
+    @Reference
+    private LogService logger;
+
+    @Reference
+    private SlingRepository repository;
+
+    @Reference
+	private EventAdmin eventAdmin;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    private FFmpegService ffmpegService;
+
+    protected void activate(ComponentContext context)  throws Exception {
+        session = repository.loginAdministrative(null);
+        getStoragePaths();
     }
-    
-    public void run() {
+    protected void deactivate(ComponentContext componentContext) throws RepositoryException {
+        if (session != null) {
+            session.logout();
+            session = null;
+        }
+    }
+
+    private void getStoragePaths() throws Exception {
+        Node storageServersNode = session.getRootNode().getNode(JCR_MEDIA_PATH_CONFIG);
+        MEDIA_ABSOLUTE_PATH = storageServersNode.getProperty("rootPath").getValue().getString();
+        String activeServer = storageServersNode.getProperty("activeServer").getValue().getString();
+        MEDIA_HDD_PATH = session.getRootNode().getNode(JCR_MEDIA_PATH_CONFIG + "/" + activeServer).getProperty("path").getValue().getString();
+    }
+
+
+
+
+    public Boolean processAdded (Node videoNode) throws RepositoryException {
+        // String propPath = (String) event.getProperty(SlingConstants.PROPERTY_PATH);
+        // String propResType = (String) event.getProperty(SlingConstants.PROPERTY_RESOURCE_TYPE);
+
+        Node albumNode = ChannelNodeLookup.getClosestAlbumInPath(videoNode);
+
+        if ( albumNode != null ) {
+            // no processing for album nodes.
+            return true;
+        }
+
+        if ( !ensureMediaFileExists(videoNode) ) {
+            return false;
+        }
+
+        propPath = videoNode.getNode("mediaFile").getPath();
+
+        runFFmpeg(videoNode.getNode("mediaFile"));
+//        FFmpegProcessorThread pt = new FFmpegProcessorThread(repository,  MEDIA_ABSOLUTE_PATH, MEDIA_HDD_PATH, propPath, ffmpegService, logger, eventAdmin);
+//        new Thread(pt).start();
+//        logger.log(LogService.LOG_INFO, "Event resource added: path -> " + propPath + ", resType -> " + propResType);
+//        if (propPath.endsWith("mediaFile") && ("nt:file".equals(propResType) || "nt:resource".equals(propResType))) {
+//            logger.log(LogService.LOG_INFO, "Starting thread for resourceType:  " + propResType);
+//        }
+
+        return true;
+    }
+
+
+
+    public void runFFmpeg(Node mediaFileNode) {
         String videoDirPath = getVideoDirPath(propPath);
         String absoluteVideoDirPath = MEDIA_ABSOLUTE_PATH + "/" + MEDIA_HDD_PATH + videoDirPath;
         String videoPath = getVideoPath(propPath, videoDirPath, MEDIA_HDD_PATH);
@@ -47,15 +106,11 @@ public class FFmpegProcessorThread implements Runnable {
         Session session = null;
         try {
 
-            String jcrContentNodePathShort = propPath.substring(1);
-            String jcrContentNodePathLong = jcrContentNodePathShort + "/jcr:content";
-            // Try both {..}/mediaFile and {..}/mediaFile/jcr:content
-            session = repository.loginAdministrative(null);
-            String jcrContentNodePath = (session.getRootNode().hasNode(jcrContentNodePathLong)) ? jcrContentNodePathLong : jcrContentNodePathShort;
-            
-            Node dataNode = session.getRootNode().getNode(jcrContentNodePath);
+            session = mediaFileNode.getSession();
 
-            Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
+            Node dataNode = mediaFileNode;
+
+            javax.jcr.Property mimeTypeProperty = dataNode.getProperty("jcr:mimeType");
             String mimeType = mimeTypeProperty.getValue().getString();
             if ("video/mp4".equals(mimeType) ||
                     "video/mpeg4".equals(mimeType) ||
@@ -89,9 +144,9 @@ public class FFmpegProcessorThread implements Runnable {
                 dataNode.remove();
                 logger.log(LogService.LOG_INFO, "Fiele Node removed: " + dataNode.getIdentifier());
 
-                session.save();
+//                session.save();
 
-            // in case video mime type not supported
+                // in case video mime type not supported
             } else {
                 throw new Exception("This video format is not supported: " + mimeType);
             }
@@ -101,7 +156,7 @@ public class FFmpegProcessorThread implements Runnable {
 
         } catch (InvalidItemStateException iise) {
             logger.log(LogService.LOG_DEBUG, "Node has been already removed!", iise.fillInStackTrace());
-            sendNotif = false;            
+            sendNotif = false;
 
         } catch (Exception e) {
             this.e = e;
@@ -109,16 +164,16 @@ public class FFmpegProcessorThread implements Runnable {
             removeFileOnError(absoluteVideoPath, absoluteSnapshotPath);
 
         } finally {
-            if (session != null) {
+            /*if (session != null) {
                 session.logout();
                 session = null;
-            }
+            }*/
         }
 
         if (sendNotif) {
             // Send notification informing channel owner about the postprocessing status
-            Notification notif = new Notification(eventAdmin, repository, e, propPath);
-            notif.send();
+//            Notification notif = new Notification(eventAdmin, repository, e, propPath);
+//            notif.send();
         }
     }
 
@@ -206,5 +261,23 @@ public class FFmpegProcessorThread implements Runnable {
 
     protected String getSnapshotPath(String mediaPath) {
         return mediaPath.replace("mp4", "jpg");
+    }
+
+    private Boolean ensureMediaFileExists( Node videoNode) {
+
+        try {
+            videoNode.getNode("mediaFile");
+            return true;
+        } catch (RepositoryException e1) {
+            return false;
+        }
+    }
+
+    public Boolean processUpdated(Node videoNode) {
+        return null;
+    }
+
+    public int getExecutionOrder() {
+        return 0;
     }
 }

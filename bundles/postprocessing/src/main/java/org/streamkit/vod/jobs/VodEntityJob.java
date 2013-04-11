@@ -1,10 +1,10 @@
 package org.streamkit.vod.jobs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -22,17 +22,12 @@ import org.mediacenter.resource.ChannelNodeLookup;
 import org.mediacenter.resource.MediaCenterResourceTopic;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-import org.osgi.service.log.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streamkit.vod.AlbumService;
 
-/**
- * This job adds a specific video to an album, based on the property saved on the JCR Node
- * when the resource has been saved.
- */
 @Deprecated
-public class AlbumJob
+public class VodEntityJob implements EventHandler, JobProcessor
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -55,7 +50,7 @@ public class AlbumJob
     public void handleEvent(Event event)
     {
         /*logger.info("handleEvent{}");
-        if ( !JobUtil.acknowledgeJob(event) )
+        if (!JobUtil.acknowledgeJob(event))
         {
             JobUtil.rescheduleJob(event);
         }
@@ -91,7 +86,7 @@ public class AlbumJob
         try
         {
             session = repository.loginAdministrative(null);
-            updateAlbumForVideo(resourcePath, session);
+            ensureCreatedPropertyExistsForVideo(resourcePath, session);
         }
         catch (RepositoryException e)
         {
@@ -106,47 +101,24 @@ public class AlbumJob
         return true;
     }
 
-    private void updateAlbumForVideo(String path, Session session) throws RepositoryException
+    private void ensureCreatedPropertyExistsForVideo(String path, Session session) throws RepositoryException
     {
-        try
+        Node videoNode = session.getNode(path);
+        if (!videoNode.hasProperty("created"))
         {
-            // NODE: this will get called when the video is added to the album too.
-            Node videoNode = session.getNode(path);
-            Node existingAlbum = ChannelNodeLookup.getClosestAlbumInPath(videoNode);
-
-            if (existingAlbum != null)
+            Calendar createdDate = null;
+            if (videoNode.hasProperty("jcr:created"))
             {
-                return;
+                createdDate = videoNode.getProperty("jcr:created").getDate();
             }
-
-            List<String> albumList = new ArrayList<String>();
-
-            if (videoNode.hasProperty("album"))
+            else
             {
-                javax.jcr.Property album = videoNode.getProperty("album");
-                String albumString = album.getString();
-                albumList = Arrays.asList( albumString.replaceAll(" ", "").split(","));
-
-                for ( String albumName: albumList ) {
-                    albumService.addVideoToAlbum(videoNode, albumName );
-                }
+                createdDate = Calendar.getInstance();
+                createdDate.setTime(new Date());
             }
+            videoNode.setProperty("created", createdDate);
+        }
 
-            //remove video from other albums
-            Boolean mustSave = albumService.removeVideoFromOtherAlbums( videoNode, albumList );
-            if ( mustSave == true )
-            {
-                session.save();
-            }
-        }
-        catch (RepositoryException e)
-        {
-            logger.error("Could not add/remove video to/from album. ", e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            logger.error("AlbumService exception. Could not add/remove video to/from album. ", e);
-        }
     }
 
     /**
@@ -159,6 +131,4 @@ public class AlbumJob
         logger.info("complete{}");
         JobUtil.finishedJob(event);
     }
-
-
 }

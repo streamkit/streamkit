@@ -1,7 +1,8 @@
 package org.streamkit.vod.jobs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -12,38 +13,50 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.event.EventUtil;
-import org.apache.sling.event.jobs.JobManager;
-import org.apache.sling.event.jobs.JobProcessor;
 import org.apache.sling.event.jobs.JobUtil;
 import org.apache.sling.jcr.api.SlingRepository;
-import org.mediacenter.resource.ChannelNodeLookup;
 import org.mediacenter.resource.MediaCenterResourceTopic;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-import org.osgi.service.log.LogService;
+import org.apache.sling.event.jobs.JobProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.streamkit.vod.AlbumService;
+import org.streamkit.vod.post.VodPostProcessor;
 
 /**
- * This job adds a specific video to an album, based on the property saved on the JCR Node
- * when the resource has been saved.
+ * Created with IntelliJ IDEA.
+ * User: ddascal
+ * Date: 3/3/13
+ * Time: 9:50 PM
+ * To change this template use File | Settings | File Templates.
  */
-@Deprecated
-public class AlbumJob
+
+@Component(immediate = true, metatype = false)
+@References({
+        @Reference(name = "vodProcessor", referenceInterface = VodPostProcessor.class,
+                cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+})
+@Properties({
+        @Property(name = "service.description",
+                value = "Job called for background processing post creating or updating a Video"),
+        @Property(name = "event.topics",
+                value = { MediaCenterResourceTopic.VOD_ADDED_TOPIC,
+                        MediaCenterResourceTopic.VOD_UPDATED_TOPIC })
+})
+@Service(value = { EventHandler.class })
+public class PostProcessorJob implements EventHandler, JobProcessor
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Reference
-    private JobManager jobManager;
-
-    @Reference
-    private AlbumService albumService;
-
-    @Reference
     private SlingRepository repository;
+
+    private final List<VodPostProcessor> postProcessors = new ArrayList<VodPostProcessor>();
 
     /**
      * When the event handler receives a job event, it calls =Job.processJob(event, this)= and returns.
@@ -54,17 +67,16 @@ public class AlbumJob
      */
     public void handleEvent(Event event)
     {
-        /*logger.info("handleEvent{}");
-        if ( !JobUtil.acknowledgeJob(event) )
+        logger.info("handleEvent{}");
+        if (!JobUtil.acknowledgeJob(event))
         {
             JobUtil.rescheduleJob(event);
         }
         if (EventUtil.isLocal(event))
         {
             JobUtil.processJob(event, this);
-        }*/
+        }
     }
-
 
     /**
      * To understand this method better read the specs at
@@ -91,7 +103,29 @@ public class AlbumJob
         try
         {
             session = repository.loginAdministrative(null);
-            updateAlbumForVideo(resourcePath, session);
+            Node videoNode = session.getNode(resourcePath);
+
+            for (VodPostProcessor processor : postProcessors)
+            {
+                // TODO: execute processors in order
+                Boolean result = false;
+
+                if (event.getTopic().equals(MediaCenterResourceTopic.VOD_ADDED_TOPIC))
+                {
+                    result = processor.processAdded(videoNode);
+                }
+                else
+                {
+                    result = processor.processUpdated(videoNode);
+                }
+
+                if (!result)
+                {
+                    return false;
+                }
+            }
+
+            session.save();
         }
         catch (RepositoryException e)
         {
@@ -106,59 +140,38 @@ public class AlbumJob
         return true;
     }
 
-    private void updateAlbumForVideo(String path, Session session) throws RepositoryException
+    protected void bindVodProcessor(final VodPostProcessor processor)
     {
-        try
+        synchronized (this.postProcessors)
         {
-            // NODE: this will get called when the video is added to the album too.
-            Node videoNode = session.getNode(path);
-            Node existingAlbum = ChannelNodeLookup.getClosestAlbumInPath(videoNode);
-
-            if (existingAlbum != null)
-            {
-                return;
-            }
-
-            List<String> albumList = new ArrayList<String>();
-
-            if (videoNode.hasProperty("album"))
-            {
-                javax.jcr.Property album = videoNode.getProperty("album");
-                String albumString = album.getString();
-                albumList = Arrays.asList( albumString.replaceAll(" ", "").split(","));
-
-                for ( String albumName: albumList ) {
-                    albumService.addVideoToAlbum(videoNode, albumName );
-                }
-            }
-
-            //remove video from other albums
-            Boolean mustSave = albumService.removeVideoFromOtherAlbums( videoNode, albumList );
-            if ( mustSave == true )
-            {
-                session.save();
-            }
-        }
-        catch (RepositoryException e)
-        {
-            logger.error("Could not add/remove video to/from album. ", e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            logger.error("AlbumService exception. Could not add/remove video to/from album. ", e);
+            postProcessors.add(processor);
+            sortPostProcessors();
         }
     }
 
-    /**
-     * TODO: investigate what happens if there are other EventHandlers attached to the same event
-     *
-     * @param event
-     */
+    protected void unbindVodProcessor(final VodPostProcessor processor)
+    {
+        synchronized (this.postProcessors)
+        {
+            postProcessors.remove(processor);
+        }
+    }
+
+    private void sortPostProcessors()
+    {
+        Collections.sort(postProcessors,
+                new Comparator<VodPostProcessor>()
+                {
+                    public int compare(VodPostProcessor vodPostProcessor, VodPostProcessor vodPostProcessor2)
+                    {
+                        return (vodPostProcessor.getExecutionOrder() - vodPostProcessor2.getExecutionOrder());
+                    }
+                });
+    }
+
     private void signalComplete(Event event)
     {
         logger.info("complete{}");
         JobUtil.finishedJob(event);
     }
-
-
 }

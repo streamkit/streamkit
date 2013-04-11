@@ -488,7 +488,7 @@ public class Encoder {
 		try {
 			RBufferedReader reader = null;
 			reader = new RBufferedReader(new InputStreamReader(ffmpeg.getErrorStream()));
-            if ("short".equals(type)) {
+                if ("short".equals(type)) {
                 return parseMultimediaInfoShort(source, reader);
             } else {
                 return parseMultimediaInfo(source, reader);
@@ -684,7 +684,7 @@ public class Encoder {
         }
 
         // Extract videocodec
-        Pattern pVCodec = Pattern.compile("Video: ([0-9A-Za-z-_:]*),", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+        Pattern pVCodec = Pattern.compile("Video: ([0-9A-Za-z-_:]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher mVCodec = pVCodec.matcher(outputStr);
         if (mVCodec.find()) {
             video.setDecoder(mVCodec.group(1));

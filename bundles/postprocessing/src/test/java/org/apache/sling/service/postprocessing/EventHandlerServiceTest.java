@@ -2,6 +2,7 @@ package org.apache.sling.service.postprocessing;
 
 import org.apache.sling.jackrabbit.AbstractJackrabbitTestCase;
 import org.apache.sling.service.postprocessing.dto.MediaProperties;
+import org.streamkit.vod.post.processor.FFmpegProcessor;
 
 import javax.jcr.Node;
 import java.net.URL;
@@ -19,7 +20,7 @@ public class EventHandlerServiceTest extends AbstractJackrabbitTestCase {
     private String TEST_FILE_PATH_OK = null;
     private String TEST_FILE_PATH_FAULTY = null;
 
-    private EventHandlerMediaAdded ehs = new EventHandlerMediaAdded();
+    private FFmpegProcessor ehs = new FFmpegProcessor();
     private String propPath =  "/content/channel/adventist_at/ondemand/27_1311867496192/mediaFile";
 
     // @Before
