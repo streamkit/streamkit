@@ -23,6 +23,12 @@
         <git.subtree>bundles/client-libs</git.subtree>
     </properties>
 
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <!-- Bundling the content management bundle -->
