@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.8</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>client-libs</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>Media Center Javascript libs</name>
+    <description>Bundle containing third-party JS files for Client Side usage mainly.</description>
+
+    <properties>
+        <!-- If you set this to true, the scripts are mounted through the file resource provider! -->
+        <fileMount>false</fileMount>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/client-libs.git</git.repo>
+        <git.subtree>bundles/client-libs</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <build>
+        <plugins>
+            <!-- Bundling the content management bundle -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!-- initial content to be loaded on bundle installation -->
+                        <Sling-Bundle-Resources>
+                            /js,
+                            /css,
+                            /img,
+                            /client-libs
+                        </Sling-Bundle-Resources>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
