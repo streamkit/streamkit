@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.7</version>
+    </parent>
+
+    <artifactId>media-center-bundles</artifactId>
+    <groupId>org.mediacenter</groupId>
+    <packaging>pom</packaging>
+    <version>1.5-SNAPSHOT</version>
+
+    <modules>
+        <module>bundles/commons</module>
+        <module>bundles/commons_api</module>
+        <module>bundles/content_management</module>
+        <module>bundles/notifications</module>        
+        <module>bundles/postprocessing</module>
+        <module>bundles/player</module>
+        <!-- <module>channel_management</module> -->
+        <module>bundles/dashboard</module>
+        <module>bundles/widgets</module>
+        <module>bundles/video-library</module>
+        <module>bundles/authentication</module>
+        <!-- <module>bundles/client-libs</module> -->
+    </modules>
+
+    <name>Media Center Bundles</name>
+    <description>Media Center Bundles for Sling containing all the modules to build at once</description>
+    <inceptionYear>2011</inceptionYear>
+
+    <url>http://streamkit.org</url>
+
+    <repositories>
+        <repository>
+            <id>mediacenter-repo</id>
+            <url>http://nexus.crestin.tv/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
+</project>
+
