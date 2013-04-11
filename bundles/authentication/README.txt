@@ -1,16 +1,22 @@
-This bundle is an OSGI Fragment Bundle that attaches to org.apache.sling.auth.selector bundle,
-and becomes a resource for that bundle, in order to show a custom login form.
+To build this bundle use:
+mvn clean install -Pdevelopment [-DbrowserPath=/usr/bin/firefox]
 
-To build and test:
-A: FIRST TIME YOU INSTALL THIS BUNDLE
-1. mvn clean install -PautoInstallBundle
-   1.1 Check that the status of this bundle is "Installed" in Felix Web Console
-2. In Felix Web Console locate org.apache.sling.auth.selector bundle:
-   2.1 Stop the bundle
-   2.2 Refresh package imports
-   2.3 Start bundle
-3. Check that the status of this bundle has changed from "Installed" into "Fragment".
+To run the integration tests for this bundle use:
+mvn clean verify site -Pdevelopment,integration-tests
 
-B: CONSECUTIVE INSTALLS
-NOTE: once this bundle is recognized as a fragment, you should be fine executing just step 1:
-1. mvn clean install -PautoInstallBundle
+To test this bundle, just open up:
+http://localhost:8080/content/channel/{$channelName}.vodManager.html?sling:authRequestLogin=true
+
+Executing JS unit tests with IntelliJ
+
+1. Make sure you have JSTestDriver plugin installed
+2. Open src/test/resources/jsTestDriver.conf and make sure basepath points to the right folder on your local machine
+   basepath: "/Projects/MediaCenter/media-center-git/bundles/content_management"
+3. Run src/test/resources/jsTestDriver.conf ( right-click on it and select Run )
+4. When making changes to the CoffeeScript files, run the following maven command to recompile the JS files
+   mvn clean process-test-resources
+5. To run a single test, edit the jsTestDriver.conf file and specify which test file to run
+    I.e.: test:
+           - target/test-classes/js/VodModelTest.js
+    This config runs just the VodModelTest file
+6. When finished, revert the jsTestDriver.conf file so that it doesn't get committed into Git
