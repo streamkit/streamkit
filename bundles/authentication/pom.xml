@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>media-center-parent</artifactId>
+        <groupId>org.mediacenter</groupId>
+        <version>1.8</version>
+        <!--<relativePath>../parent/pom.xml</relativePath>-->
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>authentication</artifactId>
+    <version>1.20-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>Media Center Authentication</name>
+    <description>
+        This bundle is a fragment attached to the Sling FormAuth bundle and provides
+        a simple customized login form.
+    </description>
+
+    <properties>
+        <git.repo>git@git.crestin.tv:repos/media_center_bundles/authentication.git</git.repo>
+        <git.subtree>bundles/authentication</git.subtree>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${git.repo}</connection>
+        <url>scm:git:${git.repo}</url>
+        <developerConnection>scm:git:${git.repo}</developerConnection>
+    </scm>
+
+    <build>
+        <plugins>
+            <!-- Bundling the project -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Fragment-Host>org.apache.sling.auth.selector</Fragment-Host>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
